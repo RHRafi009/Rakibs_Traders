@@ -1166,6 +1166,7 @@ public class Sell extends javax.swing.JFrame {
         page.setFlagTime();
         page.setTime();
         this.setFlagTime();
+        //asdd
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_btnExpensesActionPerformed
 

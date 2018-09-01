@@ -988,6 +988,16 @@ public class Buy extends javax.swing.JFrame {
             String pcs = boxAndPcs.substring(boxAndPcs.indexOf(":")+1,boxAndPcs.lastIndexOf("."));
             jTextFieldItemBuyQtyBox.setText(box);
             jTextFieldItemBuyQtyPcs.setText(pcs);
+            //String box = jTextFieldItemBuyQtyBox.getText();
+            //String pcs = jTextFieldItemBuyQtyPcs.getText();
+            if(box.equals("")) box="0";
+            if(pcs.equals("")) pcs="0";
+            if(!box.equals("")){
+                Double bx = Double.parseDouble(box);
+                //String productId = txtProductID.getText();
+                String feet1 = Functions.boxAndPcsToFeet(Double.parseDouble(box), Double.parseDouble(pcs),productId);
+                jTextFieldItemBuyQtyFeet.setText(feet1);
+            }
         }
     }//GEN-LAST:event_jTextFieldItemBuyQtyFeetActionPerformed
 

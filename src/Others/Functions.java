@@ -238,12 +238,14 @@ public class Functions {
                 Double width = Double.parseDouble(dimension.substring(0,dimension.indexOf("*")));
                 Double height = Double.parseDouble(dimension.substring(dimension.indexOf("*")+1));
                 //System.out.println(""+width+" "+height);
-                Double pcs =  Math.ceil(feet/(width/height));
-                System.out.println(""+width);
-                System.out.println(""+height);
+                Double feetPerPcs = (width*height)/144;
+                Double pcs =  Math.ceil(feet/feetPerPcs);
+                //System.out.println(""+width);
+                //System.out.println(""+height);
                 System.out.println(""+pcs);
                 
                 Double extra = pcs%pcs_per_box;
+                System.out.println(""+extra);
                 Double box =  (pcs-extra)/pcs_per_box;
                 System.out.println(""+extra);
                 System.out.println(""+box);
@@ -276,7 +278,7 @@ public class Functions {
                 //System.out.println(""+width+" "+height);
                 Double boxPcs =  Math.ceil(box*pcs_per_box);
                 Double sumPcs = pcs+boxPcs;
-                Double ft =  sumPcs*(width/height);
+                Double ft =  sumPcs*((width*height)/144);
                 feet = ""+ft;
             }
 
