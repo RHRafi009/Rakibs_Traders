@@ -477,9 +477,6 @@ public class Reports extends javax.swing.JFrame {
     private void btnExpensesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExpensesActionPerformed
         // TODO add your handling code here:
         Expenses page = Expenses.getRef();
-        page.setFlagTime();
-        page.setTime();
-        this.setFlagTime();
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_btnExpensesActionPerformed
 
