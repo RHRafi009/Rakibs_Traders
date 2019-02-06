@@ -3,12 +3,18 @@ package UI.BigPopUp;
 import Database.DBConnectionProvider;
 import UI.PopUp.NoConnection;
 import java.awt.List;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import rakibs.traders.RakibsTraders;
@@ -40,16 +46,34 @@ public class TodaysExpense extends javax.swing.JFrame {
 
         scrPaneTable = new javax.swing.JScrollPane();
         lblTodaysExpense = new javax.swing.JLabel();
+        jLabelTotalExpenseValue = new javax.swing.JLabel();
+        jLabelTotalExpense = new javax.swing.JLabel();
+        jLabelTK = new javax.swing.JLabel();
         lblBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        getContentPane().add(scrPaneTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 1017, 493));
+        getContentPane().add(scrPaneTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 1017, 410));
 
         lblTodaysExpense.setFont(new java.awt.Font("Titillium", 0, 22)); // NOI18N
         lblTodaysExpense.setForeground(new java.awt.Color(67, 196, 114));
         lblTodaysExpense.setText("Todays Expense");
         getContentPane().add(lblTodaysExpense, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 304, 43));
+
+        jLabelTotalExpenseValue.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabelTotalExpenseValue.setForeground(new java.awt.Color(255, 0, 51));
+        getContentPane().add(jLabelTotalExpenseValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 510, 230, 40));
+
+        jLabelTotalExpense.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabelTotalExpense.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelTotalExpense.setText("Todays Total Expense: ");
+        getContentPane().add(jLabelTotalExpense, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 510, 220, 40));
+
+        jLabelTK.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabelTK.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelTK.setText("TK");
+        getContentPane().add(jLabelTK, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 510, 70, 40));
 
         lblBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
         getContentPane().add(lblBackground, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -360, 2540, 1380));
@@ -58,32 +82,7 @@ public class TodaysExpense extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     //for showing table
-    /*
-     Connection con = DBConnectionProvider.getDBConnection();
-        String query= "select * from products";
-        try{
-            Statement stmt = con.createStatement();
-            ResultSet rs= stmt.executeQuery(query);
-            if(rs.next()){
-                do{
-                System.out.println(rs.getString("products_id"));
-                System.out.println(rs.getString("company_name"));
-                System.out.println(rs.getString("model"));
-                System.out.println(rs.getString("dimension"));
-                System.out.println(Integer.toString(rs.getInt("pcs_per_box")));
-                System.out.println(Integer.toString(rs.getInt("item_unit")));
-                System.out.println(Double.toString(rs.getInt("purchase_price")));
-                System.out.println(Double.toString(rs.getInt("selling_price")));
-                System.out.println(rs.getString("notes"));
-                }while(rs.next());
-            }
-
-        }catch(Exception ex){
-            System.out.println("No database connection"+ex);
-            /*NoConnection no = new NoConnection();
-            RakibsTraders.popUp(no);*/
-  //      }
-   // */
+    
     /**
      * @param args the command line arguments
      */
@@ -110,10 +109,6 @@ public class TodaysExpense extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(TodaysExpense.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -128,28 +123,48 @@ public class TodaysExpense extends javax.swing.JFrame {
     }
     
     private void setData(){
-        DefaultTableModel data = new DefaultTableModel(new String[]{"Products ID", "Company Name", "Model", "Dimension", "Pcs per Box", "Item Unit", "Purchase Price", "Selling price"}, 0);
+       
+        DefaultTableModel data = new DefaultTableModel(new String[]{"Expense ID", "Date", "Time", "Expense Category", "Addtional Category", "Payment Type", "Account", "Amount", "Notes"}, 0);
         Connection con = DBConnectionProvider.getDBConnection();
-        String query= "select * from products";
+        
+        String query= "select * from expenses where date like ?";
+        SimpleDateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date d = new Date();
+        String date = dFormat.format(d);
+//        System.err.println(query);
+        
         try{
-            Statement stmt = con.createStatement();
-            ResultSet rs= stmt.executeQuery(query);
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, "%" + date + "%" );
+            ResultSet rs= pstmt.executeQuery();
+            
+            Double totalExp = 0.0;
+            
             if(rs.next()){
                 do{
-                    String col1 = rs.getString("products_id");
-                    String col2 = rs.getString("company_name");
-                    String col3 = rs.getString("model");
-                    String col4 = rs.getString("dimension");
-                    String col5 = Integer.toString(rs.getInt("pcs_per_box"));
-                    String col6 = rs.getString("item_unit");
-                    String col7 = Double.toString(rs.getInt("purchase_price"));
-                    String col8 = Double.toString(rs.getInt("selling_price"));
-                    data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8});
+                    String col1 = rs.getString("exp_ID");
+                    String col2 = rs.getString("date");
+                    String col3 = rs.getString("time");
+                    String col4 = rs.getString("category");
+                    String col5 = rs.getString("optional_category");
+                    String col6 = rs.getString("payment_type");
+                    String col7 = rs.getString("account");
+                    double val = rs.getDouble("amount");
+                    String col8 = String.format("%.4f",val);
+                    String col9 = rs.getString("notes");
+                    data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8,col9});
+                    totalExp += val;
                 }while(rs.next());
                 table.setModel(data);
+                jLabelTotalExpenseValue.setText( String.format("%.4f",totalExp));
                 rs.close();
+                
             }
-
+            
+            
+            
+            
+            
         }catch(Exception ex){
             System.out.println("No database connection"+ex);
             NoConnection no = new NoConnection();
@@ -158,10 +173,14 @@ public class TodaysExpense extends javax.swing.JFrame {
     }
 
     //custom variable
-    JTable table = new JTable();
+    private JTable table = new JTable();
+    private JFrame caller;
     //end of custom variable
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabelTK;
+    private javax.swing.JLabel jLabelTotalExpense;
+    private javax.swing.JLabel jLabelTotalExpenseValue;
     private javax.swing.JLabel lblBackground;
     private javax.swing.JLabel lblTodaysExpense;
     private javax.swing.JScrollPane scrPaneTable;
@@ -169,6 +188,19 @@ public class TodaysExpense extends javax.swing.JFrame {
    
     private void setIcon(){
         this.setIconImage(new ImageIcon(getClass().getResource("/Resources/Icons/Icon.png")).getImage());
+    }
+    
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            caller.setEnabled(true);
+            dispose();
+        }
+    }
+    
+    
+    public void setCaller(JFrame frame){
+        this.caller = frame;
     }
 
 }

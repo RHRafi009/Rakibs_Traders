@@ -2,13 +2,20 @@ package UI.BigPopUp;
 
 import Database.DBConnectionProvider;
 import UI.PopUp.NoConnection;
+import com.placeholder.PlaceHolder;
 import java.awt.List;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import rakibs.traders.RakibsTraders;
@@ -21,10 +28,14 @@ public class EmployeeList extends javax.swing.JFrame {
     /**
      * Creates new form ProductsTable
      */
+    PlaceHolder place;
+    
+    
     public EmployeeList() {
         initComponents();
         initTable();
         setIcon();
+        place = new PlaceHolder(jTextFieldSearchEmployee,"Enter Employee Name,ID, Notes, Phone");
     }
 
     /**
@@ -38,16 +49,56 @@ public class EmployeeList extends javax.swing.JFrame {
 
         scrPaneTable = new javax.swing.JScrollPane();
         lblExpenseHistory = new javax.swing.JLabel();
+        jTextFieldSearchEmployee = new javax.swing.JTextField();
+        jButtonGO = new javax.swing.JButton();
+        jButtonRefresh = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
         lblBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        getContentPane().add(scrPaneTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 1017, 493));
+        getContentPane().add(scrPaneTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 1017, 410));
 
         lblExpenseHistory.setFont(new java.awt.Font("Titillium", 0, 22)); // NOI18N
         lblExpenseHistory.setForeground(new java.awt.Color(67, 196, 114));
         lblExpenseHistory.setText("Employee List");
         getContentPane().add(lblExpenseHistory, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 304, 43));
+
+        jTextFieldSearchEmployee.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldSearchEmployeeActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jTextFieldSearchEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 40, 250, 30));
+
+        jButtonGO.setBackground(new java.awt.Color(0, 0, 153));
+        jButtonGO.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jButtonGO.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonGO.setText("GO");
+        jButtonGO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonGOActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonGO, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 40, 60, 30));
+
+        jButtonRefresh.setBackground(new java.awt.Color(0, 0, 153));
+        jButtonRefresh.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButtonRefresh.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonRefresh.setText("REFRESH");
+        jButtonRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRefreshActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonRefresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 40, 110, 30));
+
+        jLabel3.setBackground(new java.awt.Color(204, 204, 204));
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel3.setText("Search Employee");
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 30, 140, 50));
 
         lblBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
         getContentPane().add(lblBackground, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -360, 2540, 1380));
@@ -55,36 +106,326 @@ public class EmployeeList extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    // for showing table
-    /*
-     Connection con = DBConnectionProvider.getDBConnection();
-        String query= "select * from products";
-        try{
-            Statement stmt = con.createStatement();
-            ResultSet rs= stmt.executeQuery(query);
-            if(rs.next()){
-                do{
-                System.out.println(rs.getString("products_id"));
-                System.out.println(rs.getString("company_name"));
-                System.out.println(rs.getString("model"));
-                System.out.println(rs.getString("dimension"));
-                System.out.println(Integer.toString(rs.getInt("pcs_per_box")));
-                System.out.println(Integer.toString(rs.getInt("item_unit")));
-                System.out.println(Double.toString(rs.getInt("purchase_price")));
-                System.out.println(Double.toString(rs.getInt("selling_price")));
-                System.out.println(rs.getString("notes"));
-                }while(rs.next());
-            }
+    private void jButtonRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRefreshActionPerformed
+        // TODO add your handling code here:
+        data.getDataVector().removeAllElements();
+        table.setModel(data);
+        scrPaneTable.getViewport().add(table);
+        setData();
+    }//GEN-LAST:event_jButtonRefreshActionPerformed
+    DefaultTableModel data = new DefaultTableModel(new String[]{"Employee ID", "Employee Name", "Phone 1", "Phone 2 ", "Starting Date", "Salary", "Offdays", "Address","Notes"}, 0);
+    private void jButtonGOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGOActionPerformed
+        
+        String searchData = jTextFieldSearchEmployee.getText();
+        data.getDataVector().removeAllElements();
+        table.setModel(data);
+        scrPaneTable.getViewport().add(table);
+        
+        if( !searchData.equals("Enter Employee Name,ID, Notes, Phone") ){
+            String query1 = "select * from employee  where phone1 like ? ";
+            String query2 = "select * from employee where phone2 like ?";
+            String query3 = "select * from employee where employee_name like ?";
+            String query4 = "select * from employee where emp_ID = ? ";
+            String query5 = "select * from employee where notes like ?";
+             
+            Connection con = DBConnectionProvider.getDBConnection();
+            if( searchData.startsWith("EMP#") ){ //search in vendor ID
+                try { 
+                    PreparedStatement pstmt = con.prepareStatement(query4);
+                    pstmt.setString(1, searchData );
+                    ResultSet rs = pstmt.executeQuery();
+                    
+                    if( rs.next() ){
+                            do{
+                                String col1 = rs.getString("emp_ID");
+                                String col2 = rs.getString("employee_name");
+                                String col3 = rs.getString("phone1");
+                                String col4 = rs.getString("phone2");
+                                String col7 = Integer.toString(rs.getInt("offdays_per_month"));
+                                String col5 = rs.getString("StartingDate");
+                                String col6 = Double.toString(rs.getDouble("Salary"));
+                                String col8 = rs.getString("address");
+                                String col9 = rs.getString("notes");
 
-        }catch(Exception ex){
-            System.out.println("No database connection"+ex);
-            /*NoConnection no = new NoConnection();
-            RakibsTraders.popUp(no);*/
-  //      }
-   // */
-    /**
-     * @param args the command line arguments
-     */
+                                data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8, col9 });
+                            }while(rs.next());
+                            table.setModel(data);
+                            rs.close();
+                        }
+                    
+                    
+                } catch (SQLException ex) {
+//                    Logger.getLogger(VendorList.class.getName()).log(Level.SEVERE, null, ex);
+                       Logger.getLogger(VendorList.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+            else if( searchData.matches(".*[0-9].*") ){ // check if the data is a mobile number
+                try{
+                        PreparedStatement pstmt = con.prepareStatement(query1);
+                        pstmt.setString(1, "%" + searchData + "%" );
+                        ResultSet rs = pstmt.executeQuery();
+                        PreparedStatement pstmt2 = con.prepareStatement(query2);
+                        pstmt2.setString(1,"%" + searchData + "%");
+                        ResultSet rs2 = pstmt2.executeQuery();
+                        
+                        if( rs.next() ){ // search in phone1
+                            do{
+                                String col1 = rs.getString("emp_ID");
+                                String col2 = rs.getString("employee_name");
+                                String col3 = rs.getString("phone1");
+                                String col4 = rs.getString("phone2");
+                                String col7 = Integer.toString(rs.getInt("offdays_per_month"));
+                                String col5 = rs.getString("StartingDate");
+                                String col6 = Double.toString(rs.getDouble("Salary"));
+                                String col8 = rs.getString("address");
+                                String col9 = rs.getString("notes");
+
+                                data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8, col9 });
+                            }while(rs.next());
+                            table.setModel(data);
+                            rs.close();
+                        }
+                        else {
+                            if( rs2.next() ){ //search in phone 2
+                                do{ 
+                                    String col1 = rs2.getString("emp_ID");
+                                    String col2 = rs2.getString("employee_name");
+                                    String col3 = rs2.getString("phone1");
+                                    String col4 = rs2.getString("phone2");
+                                    String col7 = Integer.toString(rs2.getInt("offdays_per_month"));
+                                    String col5 = rs.getString("StartingDate");
+                                    String col6 = Double.toString(rs2.getDouble("Salary"));
+                                    String col8 = rs2.getString("address");
+                                    String col9 = rs2.getString("notes");
+
+                                    data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8, col9 });
+                                }while(rs2.next());
+                                table.setModel(data);
+                                rs2.close();
+                            }
+                        }
+
+                    }catch(Exception ex){
+//                        System.out.println("No database connection with customer DB"+ex);
+//                        NoConnection no = new NoConnection();
+//                        RakibsTraders.popUp(no);
+                           Logger.getLogger(VendorList.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+            
+            }
+            else { // Or if its a name; first in vendor name ,then shop name
+                PreparedStatement pstmt3,pstmt4;
+                try {
+                    pstmt3 = con.prepareStatement(query3);
+                    pstmt3.setString(1,"%" + searchData + "%");
+                    ResultSet rs3 = pstmt3.executeQuery();
+                    
+                    pstmt4 = con.prepareStatement(query5); // for searching in the shop name field
+                    pstmt4.setString(1, "%" +searchData + "%" );
+                    ResultSet rs4 = pstmt4.executeQuery();
+                            
+                    if( rs3.next() ){
+                        do{
+                                String col1 = rs3.getString("emp_ID");
+                                String col2 = rs3.getString("employee_name");
+                                String col3 = rs3.getString("phone1");
+                                String col4 = rs3.getString("phone2");
+                                String col7 = Integer.toString(rs3.getInt("offdays_per_month"));
+                                String col5 = rs3.getString("StartingDate");
+                                String col6 = Double.toString(rs3.getDouble("Salary"));
+                                String col8 = rs3.getString("address");
+                                String col9 = rs3.getString("notes");
+
+                           data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8, col9 });
+                        }while(rs3.next());
+                        table.setModel(data);
+                        rs3.close();
+                    }
+                    if( rs4.next() ){
+                        do{
+                                String col1 = rs4.getString("emp_ID");
+                                String col2 = rs4.getString("employee_name");
+                                String col3 = rs4.getString("phone1");
+                                String col4 = rs4.getString("phone2");
+                                String col7 = Integer.toString(rs4.getInt("offdays_per_month"));
+                                String col5 = rs4.getString("StartingDate");
+                                String col6 = Double.toString(rs4.getDouble("Salary"));
+                                String col8 = rs4.getString("address");
+                                String col9 = rs4.getString("notes");
+                           data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8, col9 });
+                        }while(rs4.next());
+                        table.setModel(data);
+                        rs4.close();
+                    }
+                
+                } catch (SQLException ex) {
+                    Logger.getLogger(VendorList.class.getName()).log(Level.SEVERE, null, ex);
+                }       
+            }   
+        }
+        
+        
+        
+    }//GEN-LAST:event_jButtonGOActionPerformed
+
+    private void getTheSearchDone()
+    {
+        String searchData = jTextFieldSearchEmployee.getText();
+        data.getDataVector().removeAllElements();
+        table.setModel(data);
+        scrPaneTable.getViewport().add(table);
+        
+        if( !searchData.equals("Enter Employee Name,ID, Notes, Phone") ){
+            String query1 = "select * from employee  where phone1 like ? ";
+            String query2 = "select * from employee where phone2 like ?";
+            String query3 = "select * from employee where employee_name like ?";
+            String query4 = "select * from employee where emp_ID = ? ";
+            String query5 = "select * from employee where notes like ?";
+             
+            Connection con = DBConnectionProvider.getDBConnection();
+            if( searchData.startsWith("EMP#") ){ //search in vendor ID
+                try { 
+                    PreparedStatement pstmt = con.prepareStatement(query4);
+                    pstmt.setString(1, searchData );
+                    ResultSet rs = pstmt.executeQuery();
+                    
+                    if( rs.next() ){
+                            do{
+                                String col1 = rs.getString("emp_ID");
+                                String col2 = rs.getString("employee_name");
+                                String col3 = rs.getString("phone1");
+                                String col4 = rs.getString("phone2");
+                                String col7 = Integer.toString(rs.getInt("offdays_per_month"));
+                                String col5 = rs.getString("StartingDate");
+                                String col6 = Double.toString(rs.getDouble("Salary"));
+                                String col8 = rs.getString("address");
+                                String col9 = rs.getString("notes");
+
+                                data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8, col9 });
+                            }while(rs.next());
+                            table.setModel(data);
+                            rs.close();
+                        }
+                    
+                    
+                } catch (SQLException ex) {
+//                    Logger.getLogger(VendorList.class.getName()).log(Level.SEVERE, null, ex);
+                       Logger.getLogger(VendorList.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+            }
+            else if( searchData.matches(".*[0-9].*") ){ // check if the data is a mobile number
+                try{
+                        PreparedStatement pstmt = con.prepareStatement(query1);
+                        pstmt.setString(1, "%" + searchData + "%" );
+                        ResultSet rs = pstmt.executeQuery();
+                        PreparedStatement pstmt2 = con.prepareStatement(query2);
+                        pstmt2.setString(1,"%" + searchData + "%");
+                        ResultSet rs2 = pstmt2.executeQuery();
+                        
+                        if( rs.next() ){ // search in phone1
+                            do{
+                                String col1 = rs.getString("emp_ID");
+                                String col2 = rs.getString("employee_name");
+                                String col3 = rs.getString("phone1");
+                                String col4 = rs.getString("phone2");
+                                String col7 = Integer.toString(rs.getInt("offdays_per_month"));
+                                String col5 = rs.getString("StartingDate");
+                                String col6 = Double.toString(rs.getDouble("Salary"));
+                                String col8 = rs.getString("address");
+                                String col9 = rs.getString("notes");
+
+                                data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8, col9 });
+                            }while(rs.next());
+                            table.setModel(data);
+                            rs.close();
+                        }
+                        else {
+                            if( rs2.next() ){ //search in phone 2
+                                do{ 
+                                    String col1 = rs2.getString("emp_ID");
+                                    String col2 = rs2.getString("employee_name");
+                                    String col3 = rs2.getString("phone1");
+                                    String col4 = rs2.getString("phone2");
+                                    String col7 = Integer.toString(rs2.getInt("offdays_per_month"));
+                                    String col5 = rs.getString("StartingDate");
+                                    String col6 = Double.toString(rs2.getDouble("Salary"));
+                                    String col8 = rs2.getString("address");
+                                    String col9 = rs2.getString("notes");
+
+                                    data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8, col9 });
+                                }while(rs2.next());
+                                table.setModel(data);
+                                rs2.close();
+                            }
+                        }
+
+                    }catch(Exception ex){
+//                        System.out.println("No database connection with customer DB"+ex);
+//                        NoConnection no = new NoConnection();
+//                        RakibsTraders.popUp(no);
+                           Logger.getLogger(VendorList.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+            
+            }
+            else { // Or if its a name; first in vendor name ,then shop name
+                PreparedStatement pstmt3,pstmt4;
+                try {
+                    pstmt3 = con.prepareStatement(query3);
+                    pstmt3.setString(1,"%" + searchData + "%");
+                    ResultSet rs3 = pstmt3.executeQuery();
+                    
+                    pstmt4 = con.prepareStatement(query5); // for searching in the shop name field
+                    pstmt4.setString(1, "%" +searchData + "%" );
+                    ResultSet rs4 = pstmt4.executeQuery();
+                            
+                    if( rs3.next() ){
+                        do{
+                                String col1 = rs3.getString("emp_ID");
+                                String col2 = rs3.getString("employee_name");
+                                String col3 = rs3.getString("phone1");
+                                String col4 = rs3.getString("phone2");
+                                String col7 = Integer.toString(rs3.getInt("offdays_per_month"));
+                                String col5 = rs3.getString("StartingDate");
+                                String col6 = Double.toString(rs3.getDouble("Salary"));
+                                String col8 = rs3.getString("address");
+                                String col9 = rs3.getString("notes");
+
+                           data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8, col9 });
+                        }while(rs3.next());
+                        table.setModel(data);
+                        rs3.close();
+                    }
+                    if( rs4.next() ){
+                        do{
+                                String col1 = rs4.getString("emp_ID");
+                                String col2 = rs4.getString("employee_name");
+                                String col3 = rs4.getString("phone1");
+                                String col4 = rs4.getString("phone2");
+                                String col7 = Integer.toString(rs4.getInt("offdays_per_month"));
+                                String col5 = rs4.getString("StartingDate");
+                                String col6 = Double.toString(rs4.getDouble("Salary"));
+                                String col8 = rs4.getString("address");
+                                String col9 = rs4.getString("notes");
+                           data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8, col9 });
+                        }while(rs4.next());
+                        table.setModel(data);
+                        rs4.close();
+                    }
+                
+                } catch (SQLException ex) {
+                    Logger.getLogger(VendorList.class.getName()).log(Level.SEVERE, null, ex);
+                }       
+            }   
+        }
+    }
+    private void jTextFieldSearchEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSearchEmployeeActionPerformed
+        // TODO add your handling code here:
+        getTheSearchDone();
+    }//GEN-LAST:event_jTextFieldSearchEmployeeActionPerformed
+
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -126,23 +467,24 @@ public class EmployeeList extends javax.swing.JFrame {
     }
     
     private void setData(){
-        DefaultTableModel data = new DefaultTableModel(new String[]{"Products ID", "Company Name", "Model", "Dimension", "Pcs per Box", "Item Unit", "Purchase Price", "Selling price"}, 0);
+        
         Connection con = DBConnectionProvider.getDBConnection();
-        String query= "select * from products";
+        String query= "select * from employee";
         try{
             Statement stmt = con.createStatement();
             ResultSet rs= stmt.executeQuery(query);
             if(rs.next()){
                 do{
-                    String col1 = rs.getString("products_id");
-                    String col2 = rs.getString("company_name");
-                    String col3 = rs.getString("model");
-                    String col4 = rs.getString("dimension");
-                    String col5 = Integer.toString(rs.getInt("pcs_per_box"));
-                    String col6 = rs.getString("item_unit");
-                    String col7 = Double.toString(rs.getInt("purchase_price"));
-                    String col8 = Double.toString(rs.getInt("selling_price"));
-                    data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8});
+                    String col1 = rs.getString("emp_ID");
+                    String col2 = rs.getString("employee_name");
+                    String col3 = rs.getString("phone1");
+                    String col4 = rs.getString("phone2");
+                    String col7 = Integer.toString(rs.getInt("offdays_per_month"));
+                    String col5 = rs.getString("StartingDate");
+                    String col6 = Double.toString(rs.getDouble("Salary"));
+                    String col8 = rs.getString("address");
+                    String col9 = rs.getString("notes");
+                    data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8,col9});
                 }while(rs.next());
                 table.setModel(data);
                 rs.close();
@@ -156,10 +498,15 @@ public class EmployeeList extends javax.swing.JFrame {
     }
 
     //custom variable
-    JTable table = new JTable();
+    private JTable table = new JTable();
+    private JFrame caller;
     //end of custom variable
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonGO;
+    private javax.swing.JButton jButtonRefresh;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JTextField jTextFieldSearchEmployee;
     private javax.swing.JLabel lblBackground;
     private javax.swing.JLabel lblExpenseHistory;
     private javax.swing.JScrollPane scrPaneTable;
@@ -169,4 +516,16 @@ public class EmployeeList extends javax.swing.JFrame {
         this.setIconImage(new ImageIcon(getClass().getResource("/Resources/Icons/Icon.png")).getImage());
     }
 
+    public void setCaller(JFrame frame){
+        this.caller = frame;
+    }
+    
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+                caller.setEnabled(true);
+                dispose();
+        }
+    }
+    
 }

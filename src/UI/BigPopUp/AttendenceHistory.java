@@ -1,17 +1,26 @@
 package UI.BigPopUp;
 
 import Database.DBConnectionProvider;
+import Others.Functions;
 import UI.PopUp.NoConnection;
 import UI.Settings;
 import java.awt.List;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
+import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import rakibs.traders.RakibsTraders;
 
 /**
@@ -27,6 +36,7 @@ public class AttendenceHistory extends javax.swing.JFrame {
         initComponents();
         initTable();
         setIcon();
+        initCombotextField();
     }
     
     /**
@@ -40,9 +50,16 @@ public class AttendenceHistory extends javax.swing.JFrame {
 
         scrPaneTable = new javax.swing.JScrollPane();
         lblExpenseHistory = new javax.swing.JLabel();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        jButtonGo = new javax.swing.JButton();
+        jTextFieldIDName = new javax.swing.JTextField();
+        jButtonGoNameID = new javax.swing.JButton();
+        jButtonRefresh = new javax.swing.JButton();
         lblBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(1100, 630));
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         getContentPane().add(scrPaneTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 1017, 493));
 
@@ -50,12 +67,276 @@ public class AttendenceHistory extends javax.swing.JFrame {
         lblExpenseHistory.setForeground(new java.awt.Color(67, 196, 114));
         lblExpenseHistory.setText("Attendence History");
         getContentPane().add(lblExpenseHistory, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 304, 43));
+        getContentPane().add(jDateChooser1, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 30, 140, 30));
+
+        jButtonGo.setBackground(new java.awt.Color(0, 0, 204));
+        jButtonGo.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonGo.setText("GO");
+        jButtonGo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonGoActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonGo, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 30, -1, 30));
+
+        jTextFieldIDName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldIDNameActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jTextFieldIDName, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 30, 200, 30));
+
+        jButtonGoNameID.setBackground(new java.awt.Color(0, 0, 204));
+        jButtonGoNameID.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonGoNameID.setText("GO");
+        jButtonGoNameID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonGoNameIDActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonGoNameID, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 30, -1, 30));
+
+        jButtonRefresh.setBackground(new java.awt.Color(0, 153, 0));
+        jButtonRefresh.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonRefresh.setText("REFRESH");
+        jButtonRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRefreshActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonRefresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 30, -1, -1));
 
         lblBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
         getContentPane().add(lblBackground, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -360, 2540, 1380));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButtonGoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGoActionPerformed
+        // TODO add your handling code here:
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String date = dateFormat.format(jDateChooser1.getDate()); 
+        System.out.println(date);
+        DefaultTableModel data = new DefaultTableModel(new String[]{"SL","Employee ID", "Employee Name", "Date", "Start Time", "End Time", "Status"}, 0);
+        //adding combobox to a jtable cell model code
+        Connection con = DBConnectionProvider.getDBConnection();
+        String query1 = "select * from emp_attendance where Date = ? order by Date desc";
+        String query2 = "select employee_name from employee where emp_ID = ?";
+        int rownum = 0;
+        try{
+            PreparedStatement pstmt1 = con.prepareStatement(query1);
+            pstmt1.setString(1,date);
+            ResultSet rs= pstmt1.executeQuery();
+            if(rs.next()){
+                do{
+                    rownum++;
+                    String col2 = rs.getString("Emp_ID");
+                    PreparedStatement pstmt2 = con.prepareStatement(query2);
+                    pstmt2.setString(1,col2);
+                    ResultSet rs2 = pstmt2.executeQuery();
+                    String col3 = "--";
+                    while(rs2.next()){
+                        col3=rs2.getString("employee_name");
+                    }
+                    
+                    String col4 = rs.getString("Date");
+                    String col5 = rs.getString("Start_Time");
+                    String col6 = rs.getString("End_Time");
+                    String col7 = rs.getString("Status");
+                    data.addRow(new Object[]{rownum, col2, col3, col4, col5, col6, col7});
+                }while(rs.next());
+                table.setModel(data);
+                rs.close();
+            }
+
+        }catch(Exception ex){
+            System.out.println("No database connection"+ex);
+            NoConnection no = new NoConnection();
+            RakibsTraders.popUp(no);
+        }
+    }//GEN-LAST:event_jButtonGoActionPerformed
+
+    
+    private void jButtonGoNameIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGoNameIDActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel data = new DefaultTableModel(new String[]{"SL","Employee ID", "Employee Name", "Date", "Start Time", "End Time", "Status"}, 0);
+        //adding combobox to a jtable cell model code
+        Connection con = DBConnectionProvider.getDBConnection();
+        String query1 = "select * from emp_attendance where Emp_ID = ? order by Date desc";
+        String query2 = "select employee_name from employee where emp_ID = ?";
+        String query3 = "select emp_ID from employee where employee_name = ?";
+        int rownum = 0;
+        if(jTextFieldIDName.getText().startsWith("EMP#")){
+            try{
+                PreparedStatement pstmt1 = con.prepareStatement(query1);
+                pstmt1.setString(1,jTextFieldIDName.getText());
+                ResultSet rs = pstmt1.executeQuery();
+                if(rs.next()){
+                    do{
+                        rownum++;
+                        String col2 = rs.getString("Emp_ID");
+                        PreparedStatement pstmt2 = con.prepareStatement(query2);
+                        pstmt2.setString(1,col2);
+                        ResultSet rs2 = pstmt2.executeQuery();
+                        String col3 = "--";
+                        while(rs2.next()){
+                            col3=rs2.getString("employee_name");
+                        }
+
+                        String col4 = rs.getString("Date");
+                        String col5 = rs.getString("Start_Time");
+                        String col6 = rs.getString("End_Time");
+                        String col7 = rs.getString("Status");
+                        data.addRow(new Object[]{rownum, col2, col3, col4, col5, col6, col7});
+                        }while(rs.next());
+                        table.setModel(data);
+                        rs.close();
+                    }else{
+                        table.removeAll();
+                    }
+
+            }catch(Exception ex){
+                System.out.println("No database connection"+ex);
+                NoConnection no = new NoConnection();
+                RakibsTraders.popUp(no);
+            }
+        } else{
+            try{
+                PreparedStatement pstmt3 = con.prepareStatement(query3);
+                pstmt3.setString(1,jTextFieldIDName.getText());
+                ResultSet rs = pstmt3.executeQuery();
+                if(rs.next()){
+                    do{
+                        PreparedStatement pstmt1 = con.prepareStatement(query1);
+                        System.out.println(rs.getString("emp_ID"));
+                        pstmt1.setString(1,rs.getString("emp_ID"));
+                        ResultSet rs2 = pstmt1.executeQuery();
+                        if(rs2.next()){
+                        do{
+                            rownum++;
+                            String col2 = rs2.getString("Emp_ID");
+                            String col3 = jTextFieldIDName.getText();
+                            String col4 = rs2.getString("Date");
+                            String col5 = rs2.getString("Start_Time");
+                            String col6 = rs2.getString("End_Time");
+                            String col7 = rs2.getString("Status");
+                            data.addRow(new Object[]{rownum, col2, col3, col4, col5, col6, col7});
+                            }while(rs2.next());
+                            table.setModel(data);
+                            rs2.close();
+                        }
+                    }while(false);
+                    
+                }else{
+                    table.removeAll();;
+                }
+
+            }catch(Exception ex){
+                System.out.println("No database connection"+ex);
+                NoConnection no = new NoConnection();
+                RakibsTraders.popUp(no);
+            }
+        
+        }
+        
+    }//GEN-LAST:event_jButtonGoNameIDActionPerformed
+
+    private void getTheSearchDone()
+    {
+          // TODO add your handling code here:
+        DefaultTableModel data = new DefaultTableModel(new String[]{"SL","Employee ID", "Employee Name", "Date", "Start Time", "End Time", "Status"}, 0);
+        //adding combobox to a jtable cell model code
+        Connection con = DBConnectionProvider.getDBConnection();
+        String query1 = "select * from emp_attendance where Emp_ID = ? order by Date desc";
+        String query2 = "select employee_name from employee where emp_ID = ?";
+        String query3 = "select emp_ID from employee where employee_name = ?";
+        int rownum = 0;
+        if(jTextFieldIDName.getText().startsWith("EMP#")){
+            try{
+                PreparedStatement pstmt1 = con.prepareStatement(query1);
+                pstmt1.setString(1,jTextFieldIDName.getText());
+                ResultSet rs = pstmt1.executeQuery();
+                if(rs.next()){
+                    do{
+                        rownum++;
+                        String col2 = rs.getString("Emp_ID");
+                        PreparedStatement pstmt2 = con.prepareStatement(query2);
+                        pstmt2.setString(1,col2);
+                        ResultSet rs2 = pstmt2.executeQuery();
+                        String col3 = "--";
+                        while(rs2.next()){
+                            col3=rs2.getString("employee_name");
+                        }
+
+                        String col4 = rs.getString("Date");
+                        String col5 = rs.getString("Start_Time");
+                        String col6 = rs.getString("End_Time");
+                        String col7 = rs.getString("Status");
+                        data.addRow(new Object[]{rownum, col2, col3, col4, col5, col6, col7});
+                        }while(rs.next());
+                        table.setModel(data);
+                        rs.close();
+                    }else{
+                        table.removeAll();
+                    }
+
+            }catch(Exception ex){
+                System.out.println("No database connection"+ex);
+                NoConnection no = new NoConnection();
+                RakibsTraders.popUp(no);
+            }
+        } else{
+            try{
+                PreparedStatement pstmt3 = con.prepareStatement(query3);
+                pstmt3.setString(1,jTextFieldIDName.getText());
+                ResultSet rs = pstmt3.executeQuery();
+                if(rs.next()){
+                    do{
+                        PreparedStatement pstmt1 = con.prepareStatement(query1);
+                        System.out.println(rs.getString("emp_ID"));
+                        pstmt1.setString(1,rs.getString("emp_ID"));
+                        ResultSet rs2 = pstmt1.executeQuery();
+                        if(rs2.next()){
+                        do{
+                            rownum++;
+                            String col2 = rs2.getString("Emp_ID");
+                            String col3 = jTextFieldIDName.getText();
+                            String col4 = rs2.getString("Date");
+                            String col5 = rs2.getString("Start_Time");
+                            String col6 = rs2.getString("End_Time");
+                            String col7 = rs2.getString("Status");
+                            data.addRow(new Object[]{rownum, col2, col3, col4, col5, col6, col7});
+                            }while(rs2.next());
+                            table.setModel(data);
+                            rs2.close();
+                        }
+                    }while(false);
+                    
+                }else{
+                    table.removeAll();;
+                }
+
+            }catch(Exception ex){
+                System.out.println("No database connection"+ex);
+                NoConnection no = new NoConnection();
+                RakibsTraders.popUp(no);
+            }
+        
+        }
+        
+    }
+    
+    private void jButtonRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRefreshActionPerformed
+        // TODO add your handling code here:
+        setData();
+        jTextFieldIDName.setText("");
+    }//GEN-LAST:event_jButtonRefreshActionPerformed
+
+    private void jTextFieldIDNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldIDNameActionPerformed
+        // TODO add your handling code here:
+        getTheSearchDone();
+        
+    }//GEN-LAST:event_jTextFieldIDNameActionPerformed
 
     // for showing table
     /*
@@ -110,13 +391,7 @@ public class AttendenceHistory extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(AttendenceHistory.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
+        
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -132,23 +407,32 @@ public class AttendenceHistory extends javax.swing.JFrame {
     }
     
     private void setData(){
-        DefaultTableModel data = new DefaultTableModel(new String[]{"Products ID", "Company Name", "Model", "Dimension", "Pcs per Box", "Item Unit", "Purchase Price", "Selling price"}, 0);
+        DefaultTableModel data = new DefaultTableModel(new String[]{"SL","Employee ID", "Employee Name", "Date", "Start Time", "End Time", "Status"}, 0);
+        //adding combobox to a jtable cell model code
         Connection con = DBConnectionProvider.getDBConnection();
-        String query= "select * from products";
+        String query1 = "select * from emp_attendance order by Date desc";
+        String query2 = "select employee_name from employee where emp_ID = ?";
+        int rownum = 0;
         try{
             Statement stmt = con.createStatement();
-            ResultSet rs= stmt.executeQuery(query);
+            ResultSet rs= stmt.executeQuery(query1);
             if(rs.next()){
                 do{
-                    String col1 = rs.getString("products_id");
-                    String col2 = rs.getString("company_name");
-                    String col3 = rs.getString("model");
-                    String col4 = rs.getString("dimension");
-                    String col5 = Integer.toString(rs.getInt("pcs_per_box"));
-                    String col6 = rs.getString("item_unit");
-                    String col7 = Double.toString(rs.getInt("purchase_price"));
-                    String col8 = Double.toString(rs.getInt("selling_price"));
-                    data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8});
+                    rownum++;
+                    String col2 = rs.getString("Emp_ID");
+                    PreparedStatement pstmt2 = con.prepareStatement(query2);
+                    pstmt2.setString(1,col2);
+                    ResultSet rs2 = pstmt2.executeQuery();
+                    String col3 = "--";
+                    while(rs2.next()){
+                        col3=rs2.getString("employee_name");
+                    }
+                    
+                    String col4 = rs.getString("Date");
+                    String col5 = rs.getString("Start_Time");
+                    String col6 = rs.getString("End_Time");
+                    String col7 = rs.getString("Status");
+                    data.addRow(new Object[]{rownum, col2, col3, col4, col5, col6, col7});
                 }while(rs.next());
                 table.setModel(data);
                 rs.close();
@@ -159,13 +443,21 @@ public class AttendenceHistory extends javax.swing.JFrame {
             NoConnection no = new NoConnection();
             RakibsTraders.popUp(no);
         }
+        
     }
 
     //custom variable
-    JTable table = new JTable();
+    private JTable table = new JTable();
+    private JFrame caller;
+    private ArrayList<String> employeeIDAndName = new ArrayList<>();
     //end of custom variable
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonGo;
+    private javax.swing.JButton jButtonGoNameID;
+    private javax.swing.JButton jButtonRefresh;
+    private com.toedter.calendar.JDateChooser jDateChooser1;
+    private javax.swing.JTextField jTextFieldIDName;
     private javax.swing.JLabel lblBackground;
     private javax.swing.JLabel lblExpenseHistory;
     private javax.swing.JScrollPane scrPaneTable;
@@ -173,6 +465,24 @@ public class AttendenceHistory extends javax.swing.JFrame {
    
     private void setIcon(){
         this.setIconImage(new ImageIcon(getClass().getResource("/Resources/Icons/Icon.png")).getImage());
+    }
+    
+    private void initCombotextField(){
+        employeeIDAndName = Functions.employeeIDAndName();
+        Functions.setupAutoComplete(jTextFieldIDName, employeeIDAndName); 
+    }
+    
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            caller.setEnabled(true);
+            dispose();
+        }
+    }
+    
+    
+    public void setCaller(JFrame frame){
+        this.caller = frame;
     }
 
 }

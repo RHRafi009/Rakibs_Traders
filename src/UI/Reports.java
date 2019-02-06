@@ -4,15 +4,19 @@ package UI;
 import Database.DBConnectionProvider;
 import Others.Functions;
 import UI.BigPopUp.AttendenceHistory;
+import UI.BigPopUp.BillingList;
 import UI.BigPopUp.BuyReports;
+import UI.BigPopUp.CostReport;
 import UI.BigPopUp.EditUser;
 import UI.BigPopUp.Employee;
 import UI.BigPopUp.EmployeeList;
+import UI.BigPopUp.InvoiceList;
 import UI.BigPopUp.ProductsTable;
+import UI.BigPopUp.ProfitReport;
 import UI.BigPopUp.SellsReports;
 import UI.BigPopUp.UsersLog;
 import UI.BigPopUp.ViewStock;
-import UI.PopUp.Delete;
+import UI.PopUp.DeleteProducts;
 import UI.PopUp.NoConnection;
 import UI.PopUp.Save;
 import UI.PopUp.Updated;
@@ -24,6 +28,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import static java.lang.Thread.sleep;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -73,12 +78,10 @@ public class Reports extends javax.swing.JFrame {
         jButtonUsersLog = new javax.swing.JButton();
         jButtonAddStockAlertValue = new javax.swing.JButton();
         lblTime = new javax.swing.JLabel();
-        lblExpenseCategory1 = new javax.swing.JLabel();
-        lblExpenseCategory2 = new javax.swing.JLabel();
         jButtonUsersLog1 = new javax.swing.JButton();
         jButtonAddStockAlertValue1 = new javax.swing.JButton();
-        jButtonAddStockAlertValue2 = new javax.swing.JButton();
-        jButtonAddStockAlertValue3 = new javax.swing.JButton();
+        jButtonBillingList = new javax.swing.JButton();
+        jButtonInvoiceList = new javax.swing.JButton();
         Background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -261,7 +264,7 @@ public class Reports extends javax.swing.JFrame {
                 jButtonUsersLogActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonUsersLog, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 140, 180, 30));
+        getContentPane().add(jButtonUsersLog, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 160, 180, 30));
 
         jButtonAddStockAlertValue.setBackground(new java.awt.Color(0, 51, 153));
         jButtonAddStockAlertValue.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
@@ -272,22 +275,12 @@ public class Reports extends javax.swing.JFrame {
                 jButtonAddStockAlertValueActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonAddStockAlertValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 260, 180, 30));
+        getContentPane().add(jButtonAddStockAlertValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 200, 180, 30));
 
         lblTime.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         lblTime.setForeground(new java.awt.Color(255, 255, 255));
         lblTime.setText("Time: ");
         getContentPane().add(lblTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 40, 230, 30));
-
-        lblExpenseCategory1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblExpenseCategory1.setForeground(new java.awt.Color(67, 196, 114));
-        lblExpenseCategory1.setText("Set Graph here");
-        getContentPane().add(lblExpenseCategory1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 170, 570, 250));
-
-        lblExpenseCategory2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblExpenseCategory2.setForeground(new java.awt.Color(67, 196, 114));
-        lblExpenseCategory2.setText("Graph of Sells,Buy,Cost, Profit");
-        getContentPane().add(lblExpenseCategory2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 130, 290, 23));
 
         jButtonUsersLog1.setBackground(new java.awt.Color(0, 204, 102));
         jButtonUsersLog1.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
@@ -298,7 +291,7 @@ public class Reports extends javax.swing.JFrame {
                 jButtonUsersLog1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonUsersLog1, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 180, 180, 30));
+        getContentPane().add(jButtonUsersLog1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 200, 180, 30));
 
         jButtonAddStockAlertValue1.setBackground(new java.awt.Color(0, 51, 153));
         jButtonAddStockAlertValue1.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
@@ -309,29 +302,29 @@ public class Reports extends javax.swing.JFrame {
                 jButtonAddStockAlertValue1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonAddStockAlertValue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 220, 180, 30));
+        getContentPane().add(jButtonAddStockAlertValue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 160, 180, 30));
 
-        jButtonAddStockAlertValue2.setBackground(new java.awt.Color(255, 102, 0));
-        jButtonAddStockAlertValue2.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
-        jButtonAddStockAlertValue2.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonAddStockAlertValue2.setText("BILLING LIST");
-        jButtonAddStockAlertValue2.addActionListener(new java.awt.event.ActionListener() {
+        jButtonBillingList.setBackground(new java.awt.Color(255, 102, 0));
+        jButtonBillingList.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
+        jButtonBillingList.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonBillingList.setText("BILLING LIST");
+        jButtonBillingList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAddStockAlertValue2ActionPerformed(evt);
+                jButtonBillingListActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonAddStockAlertValue2, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 340, 180, 30));
+        getContentPane().add(jButtonBillingList, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 200, 180, 30));
 
-        jButtonAddStockAlertValue3.setBackground(new java.awt.Color(255, 102, 0));
-        jButtonAddStockAlertValue3.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
-        jButtonAddStockAlertValue3.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonAddStockAlertValue3.setText("INVOICE LIST");
-        jButtonAddStockAlertValue3.addActionListener(new java.awt.event.ActionListener() {
+        jButtonInvoiceList.setBackground(new java.awt.Color(255, 102, 0));
+        jButtonInvoiceList.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
+        jButtonInvoiceList.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonInvoiceList.setText("INVOICE LIST");
+        jButtonInvoiceList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAddStockAlertValue3ActionPerformed(evt);
+                jButtonInvoiceListActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonAddStockAlertValue3, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 300, 180, 30));
+        getContentPane().add(jButtonInvoiceList, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 160, 180, 30));
 
         Background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
         getContentPane().add(Background, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, 0, 1280, 669));
@@ -342,12 +335,16 @@ public class Reports extends javax.swing.JFrame {
     private void lblHomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHomeMouseClicked
         // TODO add your handling code here:
         
-        Dashboard page = new Dashboard();
+        Sell page = Sell.getRef();
+        page.setFlagTime();
+        page.setTime();
+        this.setFlagTime();
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_lblHomeMouseClicked
 
     private void lblAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAdminMouseClicked
         // TODO add your handling code here:
+        Functions.logoutLog();
         LoginPage page = LoginPage.getRef();
         page.clearField();
         RakibsTraders.changeFrame(this, page);
@@ -509,34 +506,61 @@ public class Reports extends javax.swing.JFrame {
 
     private void jButtonUsersLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUsersLogActionPerformed
         // TODO add your handling code here:
-        SellsReports page = new SellsReports();
-        RakibsTraders.bigPopUp(page);
+        if(this.access == 1 || this.access == 2){
+            SellsReports page = new SellsReports();
+            page.setCaller(this);
+            RakibsTraders.bigPopUp(page);
+            this.setEnabled(false);
+        }
+        
     }//GEN-LAST:event_jButtonUsersLogActionPerformed
 
     private void jButtonAddStockAlertValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddStockAlertValueActionPerformed
         // TODO add your handling code here:
-        Employee page = new Employee();
-        RakibsTraders.bigPopUp(page);
+        if(this.access == 1 || this.access == 2){
+            CostReport page = new CostReport();
+            page.setCaller(this);
+            RakibsTraders.bigPopUp(page);
+            this.setEnabled(false);
+        }
         
     }//GEN-LAST:event_jButtonAddStockAlertValueActionPerformed
 
     private void jButtonUsersLog1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUsersLog1ActionPerformed
         // TODO add your handling code here:
-        BuyReports page = new BuyReports();
-        RakibsTraders.bigPopUp(page);
+        if(this.access == 1 || this.access == 2){
+            BuyReports page = new BuyReports();
+            page.setCaller(this);
+            RakibsTraders.bigPopUp(page);
+            this.setEnabled(false);
+        }
     }//GEN-LAST:event_jButtonUsersLog1ActionPerformed
 
     private void jButtonAddStockAlertValue1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddStockAlertValue1ActionPerformed
         // TODO add your handling code here:
+        if(this.access == 1 || this.access == 2){
+            ProfitReport page = new ProfitReport();
+            page.setCaller(this);
+            RakibsTraders.bigPopUp(page);
+            this.setEnabled(false);
+        }
     }//GEN-LAST:event_jButtonAddStockAlertValue1ActionPerformed
 
-    private void jButtonAddStockAlertValue2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddStockAlertValue2ActionPerformed
+    private void jButtonBillingListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBillingListActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonAddStockAlertValue2ActionPerformed
+        BillingList page = new BillingList();
+        page.setCaller(this);
+        RakibsTraders.bigPopUp(page);
+        this.setEnabled(false);
+    }//GEN-LAST:event_jButtonBillingListActionPerformed
 
-    private void jButtonAddStockAlertValue3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddStockAlertValue3ActionPerformed
+    private void jButtonInvoiceListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInvoiceListActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonAddStockAlertValue3ActionPerformed
+        InvoiceList page = new InvoiceList();
+        page.setCaller(this);
+        RakibsTraders.bigPopUp(page);
+        this.setEnabled(false);
+    }//GEN-LAST:event_jButtonInvoiceListActionPerformed
 
     
     /**
@@ -565,13 +589,7 @@ public class Reports extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Reports.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
+     
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -593,13 +611,11 @@ public class Reports extends javax.swing.JFrame {
     private javax.swing.JButton btnStock;
     private javax.swing.JButton jButtonAddStockAlertValue;
     private javax.swing.JButton jButtonAddStockAlertValue1;
-    private javax.swing.JButton jButtonAddStockAlertValue2;
-    private javax.swing.JButton jButtonAddStockAlertValue3;
+    private javax.swing.JButton jButtonBillingList;
+    private javax.swing.JButton jButtonInvoiceList;
     private javax.swing.JButton jButtonUsersLog;
     private javax.swing.JButton jButtonUsersLog1;
     private javax.swing.JLabel lblAdmin;
-    private javax.swing.JLabel lblExpenseCategory1;
-    private javax.swing.JLabel lblExpenseCategory2;
     private javax.swing.JLabel lblHome;
     private javax.swing.JLabel lblReports;
     private javax.swing.JLabel lblTime;
@@ -613,12 +629,17 @@ public class Reports extends javax.swing.JFrame {
     private ArrayList<String> dimension = new ArrayList<>();
     private static Reports ref;
     private Integer flagTime = 0;
+    private Integer access = 0;
     //end custom varibles
     
     public static Reports getRef(){
         if(ref==null)
             ref = new Reports();
         return ref;
+    }
+    
+    public void setAcsess(Integer acc){
+        this.access = acc;
     }
     
     private void clearField() {
@@ -659,8 +680,10 @@ public class Reports extends javax.swing.JFrame {
                     while(flagTime==1/* && new GregorianCalendar().get(Calendar.SECOND)!=fsec*/){
                         Calendar cal = new GregorianCalendar();
                         sec = cal.get(Calendar.SECOND);
-                        System.out.println(sec);
+                        //System.out.println(sec);
                         hour = cal.get(Calendar.HOUR);
+                        if(hour==0)
+                            hour=12;
                         min = cal.get(Calendar.MINUTE);
                         am_pm = cal.get(Calendar.AM_PM);
                         if(am_pm == 0){
@@ -700,5 +723,14 @@ public class Reports extends javax.swing.JFrame {
     private void initComboDimension(String companyName, String model){
         dimension = Functions.dimension(companyName, model);
 //        Functions.setupAutoComplete(txtFieldDimension, dimension);
+    }
+    
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            Functions.logoutLog();
+            //dispose();
+            RakibsTraders.close();
+        }
     }
 }

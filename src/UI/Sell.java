@@ -5,13 +5,14 @@ import Database.DBConnectionProvider;
 import Others.Functions;
 import UI.BigPopUp.Invoice;
 import UI.BigPopUp.ProductsTable;
+import UI.BigPopUp.ViewStock;
 import UI.Buy;
-import UI.Dashboard;
 import UI.Expenses;
 import UI.LoginPage;
 import UI.PopUp.Calculate;
-import UI.PopUp.Delete;
+import UI.PopUp.DeleteProducts;
 import UI.PopUp.NoConnection;
+import UI.PopUp.NoValue;
 import UI.PopUp.Save;
 import UI.PopUp.Updated;
 import UI.Products;
@@ -25,11 +26,15 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import static java.lang.Thread.sleep;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.annotation.Resources.*;
 import javax.swing.ImageIcon;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import rakibs.traders.RakibsTraders;
 
 /**
@@ -45,6 +50,7 @@ public class Sell extends javax.swing.JFrame {
         initComponents();
         //setTime();
         initComboProductID();
+        initComboCustomerID();
         setIcon();
 //        initComboCompanyName();
     }
@@ -106,21 +112,14 @@ public class Sell extends javax.swing.JFrame {
         jLabelPayable = new javax.swing.JLabel();
         lblTime = new javax.swing.JLabel();
         jLabelPayableNumber = new javax.swing.JLabel();
-        jLabelTotalPaid = new javax.swing.JLabel();
-        txtFieldtotalPaidNumber = new javax.swing.JTextField();
-        jLabelTotalChange = new javax.swing.JLabel();
-        jLabelTotalChangeNumber = new javax.swing.JLabel();
-        jLabelDiscountSign = new javax.swing.JLabel();
-        jLabelTotalDueNumber = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jLabelTotalDue = new javax.swing.JLabel();
+        jScrollPaneTable = new javax.swing.JScrollPane();
         lblLabourcost = new javax.swing.JLabel();
         txtFieldLabourCost = new javax.swing.JTextField();
         txtFieldTimeanddate2 = new javax.swing.JTextField();
         lbltaka2 = new javax.swing.JLabel();
         lblTimeanddate2 = new javax.swing.JLabel();
         lblCustomerID = new javax.swing.JLabel();
-        jButtonViewProductList = new javax.swing.JButton();
+        jButtonViewStock = new javax.swing.JButton();
         jButtonRefreshDelete = new javax.swing.JButton();
         jButtonPayment = new javax.swing.JButton();
         jButtonRefresh2 = new javax.swing.JButton();
@@ -133,6 +132,7 @@ public class Sell extends javax.swing.JFrame {
         btnExpenses = new javax.swing.JButton();
         txtProductID = new javax.swing.JTextField();
         jButtonCalculate = new javax.swing.JButton();
+        lbltaka7 = new javax.swing.JLabel();
         Background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -290,22 +290,22 @@ public class Sell extends javax.swing.JFrame {
         lblProductModel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblProductModel.setForeground(new java.awt.Color(255, 255, 255));
         lblProductModel.setText("Product Model:");
-        getContentPane().add(lblProductModel, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 200, 103, 23));
+        getContentPane().add(lblProductModel, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 190, 103, 23));
 
         lblCompanyName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblCompanyName.setForeground(new java.awt.Color(255, 255, 255));
         lblCompanyName.setText("Company Name:");
-        getContentPane().add(lblCompanyName, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 240, 120, 23));
+        getContentPane().add(lblCompanyName, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 230, 120, 23));
 
         lblItemUnit.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblItemUnit.setForeground(new java.awt.Color(255, 255, 255));
         lblItemUnit.setText("Item Unit:");
-        getContentPane().add(lblItemUnit, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 260, 103, 23));
+        getContentPane().add(lblItemUnit, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 250, 103, 23));
 
         lblAvailableQty.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblAvailableQty.setForeground(new java.awt.Color(255, 255, 255));
         lblAvailableQty.setText("Available Qty:");
-        getContentPane().add(lblAvailableQty, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 280, 103, 23));
+        getContentPane().add(lblAvailableQty, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 270, 103, 23));
 
         lblItemSellPrice.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblItemSellPrice.setForeground(new java.awt.Color(255, 255, 255));
@@ -339,7 +339,7 @@ public class Sell extends javax.swing.JFrame {
                 txtProductModelValueActionPerformed(evt);
             }
         });
-        getContentPane().add(txtProductModelValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 200, 390, 23));
+        getContentPane().add(txtProductModelValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 190, 390, 23));
 
         jTextFieldItemSellQtyPcs.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -364,7 +364,7 @@ public class Sell extends javax.swing.JFrame {
         getContentPane().add(lblPcs, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 340, 40, 20));
 
         lbltaka6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/taka.png"))); // NOI18N
-        getContentPane().add(lbltaka6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 430, 40, 20));
+        getContentPane().add(lbltaka6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 400, 40, 20));
 
         lblBox.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/box.png"))); // NOI18N
         getContentPane().add(lblBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 340, 40, 20));
@@ -381,6 +381,11 @@ public class Sell extends javax.swing.JFrame {
         });
         getContentPane().add(jTextFieldItemSellQtyBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 340, 140, -1));
 
+        jTextFieldItemSellQtyFeet.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextFieldItemSellQtyFeetFocusGained(evt);
+            }
+        });
         jTextFieldItemSellQtyFeet.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldItemSellQtyFeetActionPerformed(evt);
@@ -414,12 +419,12 @@ public class Sell extends javax.swing.JFrame {
         jLabelAvailableQtyValue.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabelAvailableQtyValue.setForeground(new java.awt.Color(255, 255, 255));
         jLabelAvailableQtyValue.setText("0");
-        getContentPane().add(jLabelAvailableQtyValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 280, 140, 20));
+        getContentPane().add(jLabelAvailableQtyValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 270, 140, 20));
 
         jLabelCompanyName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabelCompanyName.setForeground(new java.awt.Color(255, 255, 255));
         jLabelCompanyName.setText("Company Name");
-        getContentPane().add(jLabelCompanyName, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 240, 220, 20));
+        getContentPane().add(jLabelCompanyName, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 230, 220, 20));
 
         lblInvoiceIDValue.setFont(new java.awt.Font("Titillium Web", 0, 16)); // NOI18N
         lblInvoiceIDValue.setForeground(new java.awt.Color(255, 255, 255));
@@ -536,52 +541,7 @@ public class Sell extends javax.swing.JFrame {
         jLabelPayableNumber.setForeground(new java.awt.Color(255, 102, 51));
         jLabelPayableNumber.setText("0000.00");
         getContentPane().add(jLabelPayableNumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 450, 230, 30));
-
-        jLabelTotalPaid.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelTotalPaid.setForeground(new java.awt.Color(204, 204, 204));
-        jLabelTotalPaid.setText("Total Paid:");
-        getContentPane().add(jLabelTotalPaid, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 490, 80, 20));
-
-        txtFieldtotalPaidNumber.setText("0.00");
-        txtFieldtotalPaidNumber.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtFieldtotalPaidNumberFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtFieldtotalPaidNumberFocusLost(evt);
-            }
-        });
-        txtFieldtotalPaidNumber.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFieldtotalPaidNumberActionPerformed(evt);
-            }
-        });
-        getContentPane().add(txtFieldtotalPaidNumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 490, 100, -1));
-
-        jLabelTotalChange.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelTotalChange.setForeground(new java.awt.Color(204, 204, 204));
-        jLabelTotalChange.setText("Total Change:");
-        getContentPane().add(jLabelTotalChange, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 520, 90, 30));
-
-        jLabelTotalChangeNumber.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelTotalChangeNumber.setForeground(new java.awt.Color(0, 255, 255));
-        jLabelTotalChangeNumber.setText("0.000");
-        getContentPane().add(jLabelTotalChangeNumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 520, 120, 30));
-
-        jLabelDiscountSign.setForeground(new java.awt.Color(204, 204, 204));
-        jLabelDiscountSign.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/percent.png"))); // NOI18N
-        getContentPane().add(jLabelDiscountSign, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 400, -1, 20));
-
-        jLabelTotalDueNumber.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelTotalDueNumber.setForeground(new java.awt.Color(255, 0, 51));
-        jLabelTotalDueNumber.setText("000.00");
-        getContentPane().add(jLabelTotalDueNumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 520, 120, 30));
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 490, 680, 120));
-
-        jLabelTotalDue.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelTotalDue.setForeground(new java.awt.Color(204, 204, 204));
-        jLabelTotalDue.setText("Due:");
-        getContentPane().add(jLabelTotalDue, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 520, 40, 30));
+        getContentPane().add(jScrollPaneTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 490, 680, 120));
 
         lblLabourcost.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblLabourcost.setForeground(new java.awt.Color(204, 204, 204));
@@ -589,6 +549,11 @@ public class Sell extends javax.swing.JFrame {
         getContentPane().add(lblLabourcost, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 430, 80, -1));
 
         txtFieldLabourCost.setText("0");
+        txtFieldLabourCost.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFieldLabourCostActionPerformed(evt);
+            }
+        });
         getContentPane().add(txtFieldLabourCost, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 430, 60, -1));
         getContentPane().add(txtFieldTimeanddate2, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 120, 180, 23));
 
@@ -605,16 +570,21 @@ public class Sell extends javax.swing.JFrame {
         lblCustomerID.setText("Customer ID");
         getContentPane().add(lblCustomerID, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 150, 100, 23));
 
-        jButtonViewProductList.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/view product list.png"))); // NOI18N
-        jButtonViewProductList.addActionListener(new java.awt.event.ActionListener() {
+        jButtonViewStock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/view Stock.png"))); // NOI18N
+        jButtonViewStock.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonViewProductListActionPerformed(evt);
+                jButtonViewStockActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonViewProductList, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 100, 170, 30));
+        getContentPane().add(jButtonViewStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 100, 170, 30));
 
         jButtonRefreshDelete.setBackground(new java.awt.Color(204, 0, 0));
         jButtonRefreshDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/Delete.png"))); // NOI18N
+        jButtonRefreshDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRefreshDeleteActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButtonRefreshDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 440, 70, 20));
 
         jButtonPayment.setBackground(new java.awt.Color(0, 51, 153));
@@ -625,7 +595,7 @@ public class Sell extends javax.swing.JFrame {
                 jButtonPaymentActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonPayment, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 570, 300, 30));
+        getContentPane().add(jButtonPayment, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 510, 300, 30));
 
         jButtonRefresh2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/Refresh.png"))); // NOI18N
         jButtonRefresh2.addActionListener(new java.awt.event.ActionListener() {
@@ -637,6 +607,11 @@ public class Sell extends javax.swing.JFrame {
 
         jButtonRefreshAdd.setBackground(new java.awt.Color(60, 184, 121));
         jButtonRefreshAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/add.png"))); // NOI18N
+        jButtonRefreshAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRefreshAddActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButtonRefreshAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 440, 70, 20));
 
         txtFieldPhone2.setForeground(new java.awt.Color(204, 204, 204));
@@ -681,7 +656,7 @@ public class Sell extends javax.swing.JFrame {
         jLabelItemUnit1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabelItemUnit1.setForeground(new java.awt.Color(255, 255, 255));
         jLabelItemUnit1.setText("Item Unit");
-        getContentPane().add(jLabelItemUnit1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 260, 90, 20));
+        getContentPane().add(jLabelItemUnit1, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 250, 90, 20));
 
         lbltaka3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/taka.png"))); // NOI18N
         getContentPane().add(lbltaka3, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 310, 40, 20));
@@ -725,6 +700,9 @@ public class Sell extends javax.swing.JFrame {
         });
         getContentPane().add(jButtonCalculate, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 430, 110, 30));
 
+        lbltaka7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/taka.png"))); // NOI18N
+        getContentPane().add(lbltaka7, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 430, 40, 20));
+
         Background.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         Background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
         getContentPane().add(Background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 1280, 680));
@@ -735,12 +713,16 @@ public class Sell extends javax.swing.JFrame {
     private void lblHomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHomeMouseClicked
         // TODO add your handling code here:
         
-        Dashboard page = new Dashboard();
+        Sell page = Sell.getRef();
+        page.setFlagTime();
+        page.setTime();
+        this.setFlagTime();
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_lblHomeMouseClicked
 
     private void lblAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAdminMouseClicked
         // TODO add your handling code here:
+        Functions.logoutLog();
         LoginPage page = LoginPage.getRef();
         page.clearField();
         RakibsTraders.changeFrame(this, page);
@@ -814,20 +796,24 @@ public class Sell extends javax.swing.JFrame {
 
     private void btnSettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSettingsActionPerformed
         // TODO add your handling code here:
-        Settings page = Settings.getRef();
-        page.setFlagTime();
-        page.setTime();
-        this.setFlagTime();
-        RakibsTraders.changeFrame(this, page);
+        if(this.access == 1 || this.access == 2 || this.access == 3){
+            Settings page = Settings.getRef();
+            page.setFlagTime();
+            page.setTime();
+            this.setFlagTime();
+            RakibsTraders.changeFrame(this, page);
+        }
     }//GEN-LAST:event_btnSettingsActionPerformed
 
     private void btnReturnProductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReturnProductsActionPerformed
         // TODO add your handling code here:
-        ReturnProducts page = ReturnProducts.getRef();
-        page.setFlagTime();
-        page.setTime();
-        this.setFlagTime();
-        RakibsTraders.changeFrame(this, page);
+        if(this.access == 1 || this.access == 2 || this.access == 3){
+            ReturnProducts page = ReturnProducts.getRef();
+            page.setFlagTime();
+            page.setTime();
+            this.setFlagTime();
+            RakibsTraders.changeFrame(this, page);
+        }
     }//GEN-LAST:event_btnReturnProductsActionPerformed
 
     private void txtProductModelValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProductModelValueActionPerformed
@@ -841,9 +827,17 @@ public class Sell extends javax.swing.JFrame {
         String query1 = "Select company_name, model, item_unit,selling_price FROM products WHERE products_id = ?";
         String query2 = "Select * From stock WHERE products_id = ?";
 //        initComboModel(companyName);
+
+        String productID = this.txtProductID.getText();
+        for(int i=0; i<data.getRowCount(); i++){
+            if(data.getValueAt(i, 0).equals(productID)){
+                data.removeRow(i);
+            }
+        }
+        setTotalItemAndTotalPrice();
         try{
             PreparedStatement pstmt1 = con.prepareStatement(query1);
-            String productID = this.txtProductID.getText();
+            
 //            System.err.println(productID);
             pstmt1.setString(1,productID);
             ResultSet rs1 = pstmt1.executeQuery();
@@ -865,13 +859,14 @@ public class Sell extends javax.swing.JFrame {
         
         try{
             PreparedStatement pstmt2 = con.prepareStatement(query2);
-            String productID = this.txtProductID.getText();
+            //String productID = this.txtProductID.getText();
             pstmt2.setString (1,productID);
             ResultSet rs2 = pstmt2.executeQuery(); 
             
             while( rs2.next() ){
-                this.jLabelAvailableQtyValue.setText(Integer.toString(rs2.getInt("left")));
+                this.jLabelAvailableQtyValue.setText(String.format("%.4f", rs2.getDouble("left")));
             }
+            //String.format("%.4f",col6 )
             
         }catch(Exception ex){
             System.out.println("Failed to get DBConn:: "+ex.getMessage());
@@ -893,6 +888,18 @@ public class Sell extends javax.swing.JFrame {
 
     private void jTextFieldItemSellQtyPcsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldItemSellQtyPcsActionPerformed
         // TODO add your handling code here:
+        if(jLabelItemUnit1.getText().equals("Feet") || jLabelItemUnit1.getText().equals("feet")){
+            Functions.boxAndPcsToBoxAndPcs(txtProductID,jTextFieldItemSellQtyBox,jTextFieldItemSellQtyPcs);
+            Functions.boxAndPcsToFeet(txtProductID,jTextFieldItemSellQtyBox,jTextFieldItemSellQtyPcs,jTextFieldItemSellQtyFeet);
+            
+            //Functions.boxAndPcsToFeet(txtProductID,jTextFieldItemSellQtyBox,jTextFieldItemSellQtyPcs,jTextFieldItemSellQtyFeet);
+            //Functions.feetToBoxAndPcs(txtProductID,jTextFieldItemSellQtyBox,jTextFieldItemSellQtyPcs,jTextFieldItemSellQtyFeet);
+        }else{
+            System.out.println("Inside the else");
+            Functions.boxAndPcsToBoxAndPcs(txtProductID,jTextFieldItemSellQtyBox,jTextFieldItemSellQtyPcs);
+        }
+        
+        setPrice();
     }//GEN-LAST:event_jTextFieldItemSellQtyPcsActionPerformed
 
     private void jTextFieldItemSellPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldItemSellPriceActionPerformed
@@ -901,10 +908,24 @@ public class Sell extends javax.swing.JFrame {
 
     private void jTextFieldItemSellQtyBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldItemSellQtyBoxActionPerformed
         // TODO add your handling code here:
+        if(jLabelItemUnit1.getText().equals("Feet") || jLabelItemUnit1.getText().equals("feet")){
+            Functions.boxAndPcsToBoxAndPcs(txtProductID,jTextFieldItemSellQtyBox,jTextFieldItemSellQtyPcs);
+            Functions.boxAndPcsToFeet(txtProductID,jTextFieldItemSellQtyBox,jTextFieldItemSellQtyPcs,jTextFieldItemSellQtyFeet);
+            
+            //Functions.boxAndPcsToFeet(txtProductID,jTextFieldItemSellQtyBox,jTextFieldItemSellQtyPcs,jTextFieldItemSellQtyFeet);
+            //Functions.feetToBoxAndPcs(txtProductID,jTextFieldItemSellQtyBox,jTextFieldItemSellQtyPcs,jTextFieldItemSellQtyFeet);
+        }else{
+            System.out.println("Inside the else");
+            Functions.boxAndPcsToBoxAndPcs(txtProductID,jTextFieldItemSellQtyBox,jTextFieldItemSellQtyPcs);
+        }
+        
+        setPrice();
     }//GEN-LAST:event_jTextFieldItemSellQtyBoxActionPerformed
 
     private void jTextFieldItemSellQtyFeetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldItemSellQtyFeetActionPerformed
         // TODO add your handling code here:
+         Functions.feetToBoxAndPcs(txtProductID,jTextFieldItemSellQtyBox,jTextFieldItemSellQtyPcs,jTextFieldItemSellQtyFeet);
+         setPrice();
     }//GEN-LAST:event_jTextFieldItemSellQtyFeetActionPerformed
 
     private void jTextFieldTotalPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldTotalPriceActionPerformed
@@ -939,6 +960,13 @@ public class Sell extends javax.swing.JFrame {
 
     private void txtFieldDiscountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldDiscountActionPerformed
         // TODO add your handling code here:
+        Double total = Double.parseDouble(totalPriceNumber.getText());
+        Double discount = Double.parseDouble(txtFieldDiscount.getText());
+        total-= discount;
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setMaximumFractionDigits(2);            
+        nf.setGroupingUsed(false);
+        jLabelPayableNumber.setText(""+nf.format(total));
     }//GEN-LAST:event_txtFieldDiscountActionPerformed
 
     private void txtFieldDiscountFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldDiscountFocusGained
@@ -1015,9 +1043,24 @@ public class Sell extends javax.swing.JFrame {
     }//GEN-LAST:event_txtFieldPhone1ActionPerformed
 
     private void jButtonPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPaymentActionPerformed
-    // TODO add your handling code here:
-        Invoice page = new Invoice();
-        RakibsTraders.bigPopUp(page);
+    // TODO add your handling code here:  
+        if(table.getModel().getRowCount() == 0){
+            NoValue page = new NoValue();
+            page.setCaller(this);
+            RakibsTraders.popUp(page);
+            this.setEnabled(false);
+        }else {
+            String customerID;
+            if(customerInsertFlag==1){
+                customerID = insertCustomer();
+                customerInsertFlag = 0;
+            } else customerID = txtFieldCustomerIDValue.getText();
+            Invoice page = Invoice.getRef();
+            page.setData(txtFieldTimeanddate2.getText(),lblInvoiceIDValue.getText(), customerID, totalPriceNumber.getText(), txtFieldDiscount.getText(), txtFieldLabourCost.getText(), jLabelPayableNumber.getText(), data);
+            page.setCaller(this);
+            RakibsTraders.bigPopUp(page);
+            this.setEnabled(false);
+        }
     }//GEN-LAST:event_jButtonPaymentActionPerformed
 
     private void txtFieldPhone2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldPhone2FocusGained
@@ -1040,69 +1083,29 @@ public class Sell extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFieldPhone2ActionPerformed
 
-    private void jButtonViewProductListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonViewProductListActionPerformed
+    private void jButtonViewStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonViewStockActionPerformed
         // TODO add your handling code here:
-                ProductsTable products = new ProductsTable();
-                RakibsTraders.bigPopUp(products);
+        ViewStock page = new ViewStock();
+        page.setCaller(this);
+        RakibsTraders.bigPopUp(page);
+        this.setEnabled(false);
 
-
-
-    }//GEN-LAST:event_jButtonViewProductListActionPerformed
+    }//GEN-LAST:event_jButtonViewStockActionPerformed
 
     private void jButtonRefresh2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRefresh2ActionPerformed
-        // TODO add your handling code here:
-        //Refresh Button
-        lblInvoiceIDValue.setText("");
-        txtProductModelValue.setText("");
-//        txtFieldLabourCost.setText("0");
-//        jLabelProductName.setText("Product Name");
-        txtProductModelValue.setText("");
-        jLabelCompanyName.setText("Company Name");
-        jLabelItemUnit1.setText("Item Unit");
-        jLabelAvailableQtyValue.setText("0");
-        jTextFieldItemSellPrice.setText("");
-        jTextFieldItemSellQtyBox.setText("");
-        jTextFieldItemSellQtyPcs.setText("");
-        jTextFieldItemSellQtyFeet.setText("");
-        jTextFieldTotalPrice.setText("");
-        txtFieldCustomerIDValue.setText("Enter Customer ID");
-        txtFieldCustomerIDValue.setForeground(new Color(204,204,204));
-        txtFieldCustomerName.setText("Customer Name");
-        txtFieldCustomerName.setForeground(new Color(204,204,204));
-        txtFieldPhone1.setText("Phone 1");
-        txtFieldPhone1.setForeground(new Color(204,204,204));
-        txtFieldPhone2.setText("Phone 2");
-        txtFieldPhone2.setForeground(new Color(204,204,204));
-        txtFieldEmail.setText("Email");
-        txtFieldEmail.setForeground(new Color(204,204,204));
-        txtFieldAddress.setText("Address");
-        txtFieldAddress.setForeground(new Color(204,204,204));
-        jLabelBusinessNumber.setText("0");
-        jLabelTotalItemNumber.setText("0");
-        jLabelTotalItemNumber.setForeground(new Color(112,65,242));
-        totalPriceNumber.setText("0.00");
-        totalPriceNumber.setForeground(new Color(0,153,0));
-        txtFieldDiscount.setText("0");
-        jLabelPayableNumber.setText("0.00");
-        jLabelPayableNumber.setForeground(new Color(255,102,51));
-        txtFieldtotalPaidNumber.setText("0.00"); 
-        txtFieldtotalPaidNumber.setForeground(new Color(28,45,124));
-        jLabelTotalChangeNumber.setText("0.00");
-        jLabelTotalChangeNumber.setForeground(new Color(0,255,255));
-        jLabelTotalDueNumber.setText("0.00");
-        jLabelTotalDueNumber.setForeground(new Color(255,0,51));
-        lblInvoiceIDValue.setText("");
-        txtFieldTimeanddate2.setText("");
-        txtFieldLabourCost.setText("0");
+       clear();
     }//GEN-LAST:event_jButtonRefresh2ActionPerformed
 
     private void btnProductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductsActionPerformed
         // TODO add your handling code here:
-        Products page = Products.getRef();
-        page.setFlagTime();
-        page.setTime();
-        this.setFlagTime();
-        RakibsTraders.changeFrame(this, page);
+        if(this.access == 1 || this.access == 2 || this.access == 3){
+            Products page = Products.getRef();
+            page.setFlagTime();
+            page.setTime();
+            this.setFlagTime();
+            RakibsTraders.changeFrame(this, page);
+        }
+        
     }//GEN-LAST:event_btnProductsActionPerformed
 
     private void txtFieldCustomerNameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldCustomerNameFocusGained
@@ -1111,6 +1114,41 @@ public class Sell extends javax.swing.JFrame {
             txtFieldCustomerName.setText("");
         }
         txtFieldCustomerName.setForeground(Color.black);
+        
+        if(txtFieldCustomerIDValue.getText().equals("Enter Customer ID") || txtFieldCustomerIDValue.getText().equals("")){
+            customerInsertFlag = 1;
+        }else{
+            Connection con = DBConnectionProvider.getDBConnection();
+            String query = "SELECT * FROM customer WHERE customer_ID = ?";
+            String query2= "select count(invoice_ID) as rowcount from invoice_list where customer_ID = ?";
+            try{
+                PreparedStatement pstmt = con.prepareStatement(query);
+                PreparedStatement pstmt2 = con.prepareStatement(query2);
+                String customerID = this.txtFieldCustomerIDValue.getText();
+                pstmt.setString(1,customerID);
+                pstmt2.setString(1,customerID);
+                ResultSet rs = pstmt.executeQuery();
+                ResultSet rs2 = pstmt2.executeQuery();
+                while(rs.next()){
+                  this.txtFieldCustomerName.setText(rs.getString("customer_name"));
+                  this.txtFieldPhone1.setText(rs.getString("phone_number1"));
+                  txtFieldPhone1.setForeground(Color.black);
+                  this.txtFieldPhone2.setText(rs.getString("phone_number2"));
+                  txtFieldPhone2.setForeground(Color.black);
+                  this.txtFieldEmail.setText(rs.getString("mail"));
+                  txtFieldEmail.setForeground(Color.black);
+                  this.txtFieldAddress.setText(rs.getString("address"));
+                  txtFieldAddress.setForeground(Color.black);
+                }
+                while(rs2.next()){
+                    this.jLabelBusinessNumber.setText(""+rs2.getInt("rowcount"));
+                }
+            }catch(Exception ex){
+                System.out.println("Failed to get DBConn:: "+ex.getMessage());
+                NoConnection no = new NoConnection();
+                RakibsTraders.popUp(no);
+            }
+        }
         
     }//GEN-LAST:event_txtFieldCustomerNameFocusGained
 
@@ -1138,11 +1176,13 @@ public class Sell extends javax.swing.JFrame {
 
     private void btnStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStockActionPerformed
         // TODO add your handling code here:
-        Stock page = Stock.getRef();
-        page.setFlagTime();
-        page.setTime();
-        this.setFlagTime();
-        RakibsTraders.changeFrame(this, page);
+        if(this.access == 1 || this.access == 2 || this.access == 3){
+            Stock page = Stock.getRef();
+            page.setFlagTime();
+            page.setTime();
+            this.setFlagTime();
+            RakibsTraders.changeFrame(this, page);
+        }
         
     }//GEN-LAST:event_btnStockActionPerformed
 
@@ -1162,12 +1202,13 @@ public class Sell extends javax.swing.JFrame {
 
     private void btnExpensesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExpensesActionPerformed
         // TODO add your handling code here:
-        Expenses page = Expenses.getRef();
-        page.setFlagTime();
-        page.setTime();
-        this.setFlagTime();
-        //asdd
-        RakibsTraders.changeFrame(this, page);
+        if(this.access == 1 || this.access == 2 || this.access == 3){
+            Expenses page = Expenses.getRef();
+            page.setFlagTime();
+            page.setTime();
+            this.setFlagTime();
+            RakibsTraders.changeFrame(this, page);
+        }
     }//GEN-LAST:event_btnExpensesActionPerformed
 
     private void txtProductIDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtProductIDFocusGained
@@ -1206,47 +1247,70 @@ public class Sell extends javax.swing.JFrame {
         // TODO add your handling code here:
         Calculate page = new Calculate();
         RakibsTraders.popUp(page);
+        this.setEnabled(false);
+        //this.setFocusable(false);
     }//GEN-LAST:event_jButtonCalculateActionPerformed
 
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
         // TODO add your handling code here:
-        Reports page = Reports.getRef();
-        page.setFlagTime();
-        page.setTime();
-        this.setFlagTime();
-        RakibsTraders.changeFrame(this, page);
+        if(this.access == 1 || this.access == 2 || this.access == 3){
+            Reports page = Reports.getRef();
+            page.setFlagTime();
+            page.setTime();
+            this.setFlagTime();
+            RakibsTraders.changeFrame(this, page);
+        }
     }//GEN-LAST:event_btnReportsActionPerformed
-
-    private void txtFieldtotalPaidNumberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldtotalPaidNumberActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFieldtotalPaidNumberActionPerformed
-
-    private void txtFieldtotalPaidNumberFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldtotalPaidNumberFocusLost
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFieldtotalPaidNumberFocusLost
-
-    private void txtFieldtotalPaidNumberFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldtotalPaidNumberFocusGained
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFieldtotalPaidNumberFocusGained
 
     private void jTextFieldItemSellQtyBoxFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldItemSellQtyBoxFocusGained
         // TODO add your handling code here:
-        String feet = jTextFieldItemSellQtyFeet.getText();
-        if( !feet.equals("") ){
-            Double ft = Double.parseDouble(feet);
-            String productId = txtProductID.getText();
-            String boxAndPcs = Functions.feetToBox(ft,productId);
-            String box = boxAndPcs.substring(0,boxAndPcs.indexOf("."));
-            String pcs = boxAndPcs.substring(boxAndPcs.indexOf(":")+1,boxAndPcs.lastIndexOf("."));
-            jTextFieldItemSellQtyBox.setText(box);
-            jTextFieldItemSellQtyPcs.setText(pcs);
-        }
     }//GEN-LAST:event_jTextFieldItemSellQtyBoxFocusGained
 
     private void jTextFieldTotalPriceFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldTotalPriceFocusGained
         // TODO add your handling code here:
-        
+        setPrice();
     }//GEN-LAST:event_jTextFieldTotalPriceFocusGained
+
+    private void jTextFieldItemSellQtyFeetFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldItemSellQtyFeetFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldItemSellQtyFeetFocusGained
+
+    private void jButtonRefreshAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRefreshAddActionPerformed
+        // TODO add your handling code here:
+        if(txtProductID.getText().equals("") || jTextFieldTotalPrice.getText().equals("")){
+            NoValue page = new NoValue();
+            RakibsTraders.popUp(page);
+        } else{
+            initTable();
+            setTotalItemAndTotalPrice();
+            refreshField();
+        }
+    }//GEN-LAST:event_jButtonRefreshAddActionPerformed
+
+    private void txtFieldLabourCostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldLabourCostActionPerformed
+        // TODO add your handling code here:
+        Double total = Double.parseDouble(totalPriceNumber.getText());
+        Double discount = Double.parseDouble(txtFieldDiscount.getText());
+        total-= discount;
+        Double add = Double.parseDouble(txtFieldLabourCost.getText());
+        total += add;
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setMaximumFractionDigits(2);            
+        nf.setGroupingUsed(false);
+        jLabelPayableNumber.setText(""+nf.format(total));
+    }//GEN-LAST:event_txtFieldLabourCostActionPerformed
+
+    private void jButtonRefreshDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRefreshDeleteActionPerformed
+        // TODO add your handling code here:\
+        String productId = this.txtProductID.getText();
+        for(int i=0; i<data.getRowCount(); i++){
+            if(data.getValueAt(i, 0).equals(productId))
+                data.removeRow(i);
+        }
+        setTotalItemAndTotalPrice();
+        refreshField();
+        
+    }//GEN-LAST:event_jButtonRefreshDeleteActionPerformed
 
     
     /**
@@ -1275,21 +1339,7 @@ public class Sell extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Sell.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
+      
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -1314,25 +1364,19 @@ public class Sell extends javax.swing.JFrame {
     private javax.swing.JButton jButtonRefresh2;
     private javax.swing.JButton jButtonRefreshAdd;
     private javax.swing.JButton jButtonRefreshDelete;
-    private javax.swing.JButton jButtonViewProductList;
+    private javax.swing.JButton jButtonViewStock;
     private javax.swing.JLabel jLabel2NumberOfBusinessTime;
     private javax.swing.JLabel jLabelAvailableQtyValue;
     private javax.swing.JLabel jLabelBusinessNumber;
     private javax.swing.JLabel jLabelCompanyName;
     private javax.swing.JLabel jLabelDiscont;
-    private javax.swing.JLabel jLabelDiscountSign;
     private javax.swing.JLabel jLabelItemUnit1;
     private javax.swing.JLabel jLabelPayable;
     private javax.swing.JLabel jLabelPayableNumber;
-    private javax.swing.JLabel jLabelTotalChange;
-    private javax.swing.JLabel jLabelTotalChangeNumber;
-    private javax.swing.JLabel jLabelTotalDue;
-    private javax.swing.JLabel jLabelTotalDueNumber;
     private javax.swing.JLabel jLabelTotalItem;
     private javax.swing.JLabel jLabelTotalItemNumber;
-    private javax.swing.JLabel jLabelTotalPaid;
     private javax.swing.JLabel jLabelTotalPrice;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPaneTable;
     private javax.swing.JTextField jTextFieldItemSellPrice;
     private javax.swing.JTextField jTextFieldItemSellQtyBox;
     private javax.swing.JTextField jTextFieldItemSellQtyFeet;
@@ -1363,6 +1407,7 @@ public class Sell extends javax.swing.JFrame {
     private javax.swing.JLabel lbltaka2;
     private javax.swing.JLabel lbltaka3;
     private javax.swing.JLabel lbltaka6;
+    private javax.swing.JLabel lbltaka7;
     private javax.swing.JLabel totalPriceNumber;
     private javax.swing.JTextField txtFieldAddress;
     private javax.swing.JTextField txtFieldCustomerIDValue;
@@ -1373,21 +1418,29 @@ public class Sell extends javax.swing.JFrame {
     private javax.swing.JTextField txtFieldPhone1;
     private javax.swing.JTextField txtFieldPhone2;
     private javax.swing.JTextField txtFieldTimeanddate2;
-    private javax.swing.JTextField txtFieldtotalPaidNumber;
     private javax.swing.JTextField txtProductID;
     private javax.swing.JTextField txtProductModelValue;
     // End of variables declaration//GEN-END:variables
 
     //custome variables declaration
-     private ArrayList<String> productID = new ArrayList<>();
-      private static Sell ref;
-      private Integer flagTime = 0;
+    private ArrayList<String> productID = new ArrayList<>();
+    private ArrayList<String> customerID = new ArrayList<>();
+    private static Sell ref;
+    private Integer flagTime = 0;
+    private Integer access = 0;
+    private Integer customerInsertFlag = 0;
+    JTable table = new JTable();
+    DefaultTableModel data = new DefaultTableModel(new String[]{"Products ID", "Company Name", "Model", "BOX","PCS","FEET" ,"Unit", "Unit Price", "Total"}, 0);
     //end custom varibles
     
     public static Sell getRef(){
         if(ref==null)
             ref = new Sell();
         return ref;
+    }
+    
+    public void setAcsess(Integer acc){
+        this.access = acc;
     }
      
     public void setFlagTime(){
@@ -1411,10 +1464,11 @@ public class Sell extends javax.swing.JFrame {
                     while(flagTime==1/* && new GregorianCalendar().get(Calendar.SECOND)!=fsec*/){
                         Calendar cal = new GregorianCalendar();
                         sec = cal.get(Calendar.SECOND);
-                        System.out.println(sec);
+                        //System.out.println(sec);
                         hour = cal.get(Calendar.HOUR);
                         min = cal.get(Calendar.MINUTE);
                         am_pm = cal.get(Calendar.AM_PM);
+                        if(hour==0) hour=12;
                         if(am_pm == 0){
                             String time = "Time: " + hour + " : " + min + " : " + sec + " " + "AM" + " Date: " + date;
                             lblTime.setText(time);
@@ -1443,31 +1497,200 @@ public class Sell extends javax.swing.JFrame {
         Functions.setupAutoComplete(txtProductID, productID); 
     }
     
+    private void initComboCustomerID(){
+        customerID = Functions.customerID();
+        Functions.setupAutoComplete(txtFieldCustomerIDValue, customerID); 
+    }
     
-//    private void clearField() {
-//         this.txtFieldCompanyName.setText("");
-//         this.txtFieldDimension.setText("");
-//         this.txtFieldModel.setText("");
-//         this.txtFieldItemUnit.setText("");
-//         this.txtFieldPcsPerBox.setText("");
-//         this.txtFieldPurchasePrice.setText("");
-//         this.txtFieldSellingPrice.setText("");
-//         this.txtAreanotes.setText("");
-//         initComboCompanyName();
-//    }
+    private void setPrice(){
+       Double unit = 0.0;
+       if(jLabelItemUnit1.getText().equals("Box") || jLabelItemUnit1.getText().equals("box")){
+           String box = jTextFieldItemSellQtyBox.getText();
+           String pcs = jTextFieldItemSellQtyPcs.getText();
+           if(box.equals("")) box = "0.0";
+           if(pcs.equals("")) pcs = "0.0";
+           unit = Functions.boxAndPcsToBox(Double.parseDouble(box), Double.parseDouble(pcs), txtProductID.getText());
+           if(unit>Double.parseDouble(jLabelAvailableQtyValue.getText())){
+               NoValue page = new NoValue();
+               page.setCaller(this);
+               this.setEnabled(false);
+               RakibsTraders.popUp(page);
+               unit=0.0;
+           } 
+       }else if(jLabelItemUnit1.getText().equals("Pcs") || jLabelItemUnit1.getText().equals("pcs")){
+           String box = jTextFieldItemSellQtyBox.getText();
+           String pcs = jTextFieldItemSellQtyPcs.getText();
+           if(box.equals("")) box = "0.0";
+           if(pcs.equals("")) pcs = "0.0";
+           //System.out.println(""+pcs);
+           unit = Functions.boxAndPcsToPcs(Double.parseDouble(box), Double.parseDouble(pcs), txtProductID.getText());
+           if(unit>Double.parseDouble(jLabelAvailableQtyValue.getText())){
+               NoValue page = new NoValue();
+               page.setCaller(this);
+               this.setEnabled(false);
+               RakibsTraders.popUp(page);
+               unit=0.0;
+           } 
+       }else if(jLabelItemUnit1.getText().equals("Feet") || jLabelItemUnit1.getText().equals("feet")){
+           unit = Double.parseDouble(jTextFieldItemSellQtyFeet.getText());
+           if(unit>Double.parseDouble(jLabelAvailableQtyValue.getText())){
+               NoValue page = new NoValue();
+               page.setCaller(this);
+               this.setEnabled(false);
+               RakibsTraders.popUp(page);
+               unit=0.0;
+           }  
+       }
+       //System.out.println(""+unit);
+       if(unit>0.0){
+            //System.out.println("Unit: "+unit);
+            Functions.price(jTextFieldItemSellPrice, unit, jTextFieldTotalPrice);
+            jTextFieldTotalPrice.setEditable(false);
+       } else if(unit<=0.0){
+           jTextFieldItemSellQtyBox.setText("");
+           jTextFieldItemSellQtyPcs.setText("");
+           jTextFieldItemSellQtyFeet.setText("");
+       }
+   }
     
-//    private void initComboCompanyName(){
-//        companyName = Functions.companyName();
-//        Functions.setupAutoComplete(txtFieldCompanyName, companyName); 
-//    }
-//    
-//    private void initComboModel(String companyName){
-//        model = Functions.model(companyName);
-//        Functions.setupAutoComplete(txtFieldModel, model);
-//    }
-//    
-//    private void initComboDimension(String companyName, String model){
-//        dimension = Functions.dimension(companyName, model);
-//        Functions.setupAutoComplete(txtFieldDimension, dimension);
-//    }
+     private void initTable(){
+        String productId = this.txtProductID.getText();
+        String companyName = this.jLabelCompanyName.getText();
+        String model = this.txtProductModelValue.getText();
+        String box = this.jTextFieldItemSellQtyBox.getText();
+        String pcs = this.jTextFieldItemSellQtyPcs.getText();
+        String unit = this.jLabelItemUnit1.getText();
+        Double qty = 0.0;
+        
+        if(jLabelItemUnit1.getText().equals("Box") || jLabelItemUnit1.getText().equals("box")){
+           if(box.equals("")) box = "0.0";
+           if(pcs.equals("")) pcs = "0.0";
+           //qty = Functions.boxAndPcsToBox(Double.parseDouble(box), Double.parseDouble(pcs), txtProductID.getText());
+        }else if(jLabelItemUnit1.getText().equals("Pcs") || jLabelItemUnit1.getText().equals("pcs")){
+           if(box.equals("")) box = "0.0";
+           if(pcs.equals("")) pcs = "0.0";
+           //qty = Functions.boxAndPcsToPcs(Double.parseDouble(box), Double.parseDouble(pcs), txtProductID.getText());
+        }else if(jLabelItemUnit1.getText().equals("Feet") || jLabelItemUnit1.getText().equals("feet")){
+           qty = Double.parseDouble(jTextFieldItemSellQtyFeet.getText());
+        }
+        
+        Double unitPrice = Double.parseDouble(this.jTextFieldItemSellPrice.getText());
+        Double total = Double.parseDouble(jTextFieldTotalPrice.getText());
+        data.addRow(new Object[]{productId, companyName, model, box, pcs, qty, unit, unitPrice, total});
+        table.setModel(data);
+        jScrollPaneTable.getViewport().add(table);
+    }
+    
+    private void setTotalItemAndTotalPrice(){
+        Integer items = 0;
+        for(int i=0; i<table.getRowCount(); i++)
+            items++;
+        //System.out.println("rows: "+table.getRowCount());
+        Double total = 0.0;
+        Integer row=0;
+        for(int i=0; i<table.getRowCount(); i++)
+            total += (Double) table.getModel().getValueAt(row++,8);
+        //System.out.println("total: "+total);
+        jLabelTotalItemNumber.setText(""+items);
+        totalPriceNumber.setText(""+total);
+        jLabelPayableNumber.setText(""+total);
+    }
+    
+    private void refreshField(){
+        txtProductID.setText("");
+        txtProductModelValue.setText("");
+        jLabelCompanyName.setText("");
+        jLabelItemUnit1.setText("");
+        jLabelAvailableQtyValue.setText("");
+        jTextFieldItemSellPrice.setText("");
+        jTextFieldItemSellQtyBox.setText("");
+        jTextFieldItemSellQtyPcs.setText("");
+        jTextFieldItemSellQtyFeet.setText("");
+        jTextFieldTotalPrice.setText("");
+    }
+    
+    private String insertCustomer(){
+        Connection con = DBConnectionProvider.getDBConnection();
+        String query = "INSERT INTO `customer` (`customer_ID`, `customer_name`, `phone_number1`, `phone_number2`, `mail`, `address`) VALUES (?, ?, ?, ?, ?, ?)";
+        String customerId = "0";
+        try{
+            PreparedStatement pstmt = con.prepareStatement(query);
+            String customerName = this.txtFieldCustomerName.getText();
+            String phone1 = this.txtFieldPhone1.getText();
+            customerId = Functions.customerIDGenerator(phone1.substring(5,11));//call id generator here
+            
+            //String product_id = "testing1";
+            String address = this.txtFieldAddress.getText();
+            String phone2 = this.txtFieldPhone2.getText();
+            String email = this.txtFieldEmail.getText();
+            pstmt.setString(1, customerId);
+            pstmt.setString(2, customerName);
+            pstmt.setString(3, phone1);
+            pstmt.setString(4, phone2);
+            pstmt.setString(5, email);
+            pstmt.setString(6, address);
+            pstmt.executeUpdate();
+        } catch(Exception ex){
+            System.out.println("Failed to get DBConn:: "+ex.getMessage());
+            NoConnection no = new NoConnection();
+            RakibsTraders.popUp(no);
+        }
+        return customerId;
+    }  
+    
+    public void clear(){
+         // TODO add your handling code here:
+        //Refresh Button
+        lblInvoiceIDValue.setText("");
+        txtProductModelValue.setText("");
+        txtProductID.setText("");
+//        txtFieldLabourCost.setText("0");
+//        jLabelProductName.setText("Product Name");
+        txtProductModelValue.setText("");
+        jLabelCompanyName.setText("Company Name");
+        jLabelItemUnit1.setText("Item Unit");
+        jLabelAvailableQtyValue.setText("0");
+        jTextFieldItemSellPrice.setText("");
+        jTextFieldItemSellQtyBox.setText("");
+        jTextFieldItemSellQtyPcs.setText("");
+        jTextFieldItemSellQtyFeet.setText("");
+        jTextFieldTotalPrice.setText("");
+        txtFieldCustomerIDValue.setText("Enter Customer ID");
+        txtFieldCustomerIDValue.setForeground(new Color(204,204,204));
+        txtFieldCustomerName.setText("Customer Name");
+        txtFieldCustomerName.setForeground(new Color(204,204,204));
+        txtFieldPhone1.setText("Phone 1");
+        txtFieldPhone1.setForeground(new Color(204,204,204));
+        txtFieldPhone2.setText("Phone 2");
+        txtFieldPhone2.setForeground(new Color(204,204,204));
+        txtFieldEmail.setText("Email");
+        txtFieldEmail.setForeground(new Color(204,204,204));
+        txtFieldAddress.setText("Address");
+        txtFieldAddress.setForeground(new Color(204,204,204));
+        jLabelBusinessNumber.setText("0");
+        jLabelTotalItemNumber.setText("0");
+        jLabelTotalItemNumber.setForeground(new Color(112,65,242));
+        totalPriceNumber.setText("0.00");
+        totalPriceNumber.setForeground(new Color(0,153,0));
+        txtFieldDiscount.setText("0");
+        jLabelPayableNumber.setText("0.00");
+        jLabelPayableNumber.setForeground(new Color(255,102,51));
+        lblInvoiceIDValue.setText("");
+        txtFieldTimeanddate2.setText("");
+        txtFieldLabourCost.setText("0");
+        initComboProductID();
+        initComboCustomerID();
+        data.getDataVector().removeAllElements();
+        table.setModel(data);
+        jScrollPaneTable.getViewport().add(table);
+    }
+    
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            Functions.logoutLog();
+            //dispose();
+            RakibsTraders.close();
+        }
+    }
 }

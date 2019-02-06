@@ -6,10 +6,12 @@
 package UI.PopUp;
 
 import Database.DBConnectionProvider;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import rakibs.traders.RakibsTraders;
 
 /**
@@ -35,53 +37,41 @@ public class NoValue extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblNoValue = new javax.swing.JLabel();
-        btnRetry = new javax.swing.JButton();
+        lblNoConnection = new javax.swing.JLabel();
+        btnOkay = new javax.swing.JButton();
+        jLabelBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(510, 250));
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        lblNoValue.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
-        lblNoValue.setForeground(new java.awt.Color(255, 0, 0));
-        lblNoValue.setText("No value !!!");
+        lblNoConnection.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
+        lblNoConnection.setForeground(new java.awt.Color(255, 0, 0));
+        lblNoConnection.setText("No Data is Inserted. Please Insert values");
+        getContentPane().add(lblNoConnection, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 70, 440, -1));
 
-        btnRetry.setText("Retry");
-        btnRetry.addActionListener(new java.awt.event.ActionListener() {
+        btnOkay.setBackground(new java.awt.Color(255, 255, 255));
+        btnOkay.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnOkay.setText("Okay");
+        btnOkay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRetryActionPerformed(evt);
+                btnOkayActionPerformed(evt);
             }
         });
+        getContentPane().add(btnOkay, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 130, 130, 30));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addComponent(lblNoValue, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(101, 101, 101)
-                        .addComponent(btnRetry, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(53, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(lblNoValue)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
-                .addComponent(btnRetry)
-                .addContainerGap())
-        );
+        jLabelBackground.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
+        getContentPane().add(jLabelBackground, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 530, 230));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnRetryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetryActionPerformed
+    private void btnOkayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkayActionPerformed
         // TODO add your handling code here:
-        this.dispose();
-    }//GEN-LAST:event_btnRetryActionPerformed
+        caller.setEnabled(true);
+        dispose();
+    }//GEN-LAST:event_btnOkayActionPerformed
 
     /**
      * @param args the command line arguments
@@ -110,6 +100,8 @@ public class NoValue extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -120,12 +112,30 @@ public class NoValue extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnRetry;
-    private javax.swing.JLabel lblNoValue;
+    private javax.swing.JButton btnOkay;
+    private javax.swing.JLabel jLabelBackground;
+    private javax.swing.JLabel lblNoConnection;
     // End of variables declaration//GEN-END:variables
+    
+    //custom varaibles
+    private JFrame caller;
+    //end Of custom variables
     
     private void setIcon(){
         this.setIconImage(new ImageIcon(getClass().getResource("/Resources/Icons/Icon.png")).getImage());
     }
+    
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            caller.setEnabled(true);
+            dispose();
+        }
+    }
+    
+    
+    public void setCaller(JFrame frame){
+        this.caller = frame;
+    } 
 
 }

@@ -1,10 +1,17 @@
 
 package UI;
 
+import Database.DBConnectionProvider;
+import UI.PopUp.NoConnection;
 import java.awt.Color;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import javax.swing.ImageIcon;
 import rakibs.traders.*;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 /**
  * Login page
  * @author RH Rafi
@@ -147,13 +154,77 @@ public class LoginPage extends javax.swing.JFrame {
         String user = userTextF.getText();
         char[] passArray = userPassF.getPassword();
         String pass = String.valueOf(passArray);
+        this.userName = user;
+        String passCheck = "", userCheck = "";
         //System.out.println(pass);
-        if(user.equals("admin")){
-            if(pass.equals("admin")){
-                Sell page = Sell.getRef();
-                page.setFlagTime();
-                page.setTime();
-                RakibsTraders.changeFrame(this,page);
+//        Connection con = DBConnectionProvider.getDBConnection();
+//        Login_Page L = Login_Page.getRef();
+//
+//        try{
+//            Statement stmt = con.createStatement();
+//            String query = "select * from user_table";
+//            ResultSet rs = stmt.executeQuery(query);
+//            if(L.gettxtUserName().isEmpty() || L.getpassField().isEmpty()){
+//                L.settxtUserName("Enter your user Name and password");
+//            }else{
+//                
+//                String userName = L.gettxtUserName();
+//                String password = L.getpassField();
+//                while(rs.next()){
+//                    String dbUser = rs.getString("User_name");
+//                    String dbPass = rs.getString("Password");
+//                    L.setCurrentuser(dbUser, dbPass);
+//               
+//                   if(userName.equals(dbUser) && password.equals(dbPass)){
+//                        ApplicationFrame ref= ApplicationFrame.getRef();
+//                        ref.remove(Login_Page.getRef());
+//                        ref.add(Menu.getRef(), BorderLayout.CENTER);
+//                        ref.paintAll(ref.getGraphics());
+//                        break;
+//                   }
+//                   else{
+//                       L.settxtUserName("Enter your user Name and password");
+//                       L.setPassField();
+//                   }
+//                
+//                }
+//            }
+        Connection con = DBConnectionProvider.getDBConnection();
+        try{
+            
+            String query = "select * from user_list where user_name = ?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, user);
+            ResultSet rs = pstmt.executeQuery();
+            while(rs.next()){
+                userCheck = rs.getString("user_name");
+                passCheck = rs.getString("user_password");
+                this.userAccess = rs.getString("access_level");
+            }
+                
+        }catch(Exception ex){
+            System.out.println("Failed to get DBConn:: "+ex.getMessage());
+            NoConnection no = new NoConnection();
+            RakibsTraders.popUp(no);
+        }
+        //System.out.println("User db:"+userCheck);
+        //System.out.println("User:"+user);
+        if(user.equals("admin") || user.equals(userCheck) && !userCheck.equals("")){
+            if(pass.equals("admin") || pass.equals(passCheck) && !passCheck.equals("")){
+                try{
+                    insertLog();
+                    this.userPass = pass;
+                    Sell page = Sell.getRef();
+                    page.setFlagTime();
+                    page.setTime();
+                    RakibsTraders.changeFrame(this,page);
+                    RakibsTraders.setAccess();
+                }catch(Exception ex){
+                   System.out.println("Failed to get DBConn:: "+ex.getMessage()); 
+                   NoConnection no = new NoConnection();
+                   RakibsTraders.popUp(no);
+                }
+                
             }else{
                 this.lblPassInvalid.setVisible(true);
                 this.userPassF.setText("");
@@ -225,6 +296,10 @@ public class LoginPage extends javax.swing.JFrame {
     
     //custom variable
     private static LoginPage ref;
+    private String userName = "";
+    private String userPass = "";
+    private String userAccess = "";
+    private int sl;
     //end of custom variable
     
     private void setIcon(){
@@ -243,4 +318,69 @@ public class LoginPage extends javax.swing.JFrame {
         this.userTextF.setText("");
     }
     
+    public String userName(){
+        return this.userName;
+    }
+    
+    public String userPass(){
+        return this.userPass;
+    }
+    
+    public int sl(){
+        return this.sl;
+    }
+    
+    public Integer userAccess(){
+        
+        if(this.userAccess.equals("admin") || this.userPass.equals("admin"))
+            return 1;
+        else if(this.userAccess.equals("Moderator"))
+            return 2;
+        else if(this.userAccess.equals("User"))
+            return 3;
+        else if(this.userAccess.equals("Guest"))
+            return 4;
+        else    
+            return 0;
+        
+        
+    }
+    
+    private void insertLog(){
+        Connection con = DBConnectionProvider.getDBConnection();
+        String query = "insert into user_log ( user_name, log_in, log_out) VALUES (?, ?, ?)";
+        String query2 = "SELECT * FROM user_log ORDER BY SL DESC LIMIT 1";
+        try{
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1, this.userName);
+            pstmt.setObject(2, dateTime());
+            pstmt.setObject(3, dateTime());
+            pstmt.executeUpdate();
+                
+        }catch(Exception ex){
+            System.out.println("Failed to get DBConn:: "+ex.getMessage());
+            NoConnection no = new NoConnection();
+            RakibsTraders.popUp(no);
+        }
+        
+        try{
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query2);
+            while(rs.next())
+                this.sl = rs.getInt("SL");
+            System.out.println(""+this.sl);
+        }catch(Exception ex){
+            System.out.println("Failed to get DBConn:: "+ex.getMessage());
+            NoConnection no = new NoConnection();
+            RakibsTraders.popUp(no);
+        }
+        
+    }
+    
+    private String dateTime(){
+        SimpleDateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date d = new Date();
+        String date = dFormat.format(d);
+        return date;
+    }
 }

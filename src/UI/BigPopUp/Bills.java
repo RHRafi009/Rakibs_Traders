@@ -7,6 +7,7 @@ package UI.BigPopUp;
 
 import Database.DBConnectionProvider;
 import Others.Functions;
+import PDF.createPDF;
 import UI.Buy;
 import UI.PopUp.NoConnection;
 import UI.PopUp.Save;
@@ -14,11 +15,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import rakibs.traders.RakibsTraders;
+import UI.PopUp.AddPayment;
+import UI.PopUp.DeletePayment;
+import UI.PopUp.Updated;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.print.PrintException;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import static jdk.nashorn.internal.objects.NativeString.trim;
 
 /**
  *
@@ -31,6 +41,7 @@ public class Bills extends javax.swing.JFrame {
      */
     public Bills() {
         initComponents();
+        setIcon();
     }
 
     /**
@@ -42,13 +53,11 @@ public class Bills extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabelContactNo = new javax.swing.JLabel();
         jLabelLogo = new javax.swing.JLabel();
-        jLabelPoint2 = new javax.swing.JLabel();
         scrPaneTable = new javax.swing.JScrollPane();
-        jLabelDiscountAmount = new javax.swing.JLabel();
+        jLabelTotalAmount = new javax.swing.JLabel();
         jLabelDiscount = new javax.swing.JLabel();
-        jLabelDiscountPercent = new javax.swing.JLabel();
+        jLabelDiscountAmount = new javax.swing.JLabel();
         jLabelLabour = new javax.swing.JLabel();
         jLabelLabourCost = new javax.swing.JLabel();
         jLabelNetAmount = new javax.swing.JLabel();
@@ -62,7 +71,6 @@ public class Bills extends javax.swing.JFrame {
         jLabelTotal = new javax.swing.JLabel();
         lblBillingIDValue = new javax.swing.JLabel();
         lblVendorNameValue = new javax.swing.JLabel();
-        lblDateandTime = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         lblBillingID1 = new javax.swing.JLabel();
@@ -75,97 +83,88 @@ public class Bills extends javax.swing.JFrame {
         lblPhoneValue = new javax.swing.JLabel();
         lblVendorIDvalue = new javax.swing.JLabel();
         lblVendorID = new javax.swing.JLabel();
+        lblBillID2 = new javax.swing.JLabel();
+        lblBillID = new javax.swing.JLabel();
         lblEmail = new javax.swing.JLabel();
         lblEmailValue = new javax.swing.JLabel();
+        jScrollPanePaymentHistory = new javax.swing.JScrollPane();
+        jButtonAddPayment = new javax.swing.JButton();
+        jButtonDeletePayment = new javax.swing.JButton();
         jLabelBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabelContactNo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelContactNo.setForeground(new java.awt.Color(255, 255, 255));
-        jLabelContactNo.setText("Contact :");
-        getContentPane().add(jLabelContactNo, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 10, 290, 50));
 
         jLabelLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/Logo.png"))); // NOI18N
         getContentPane().add(jLabelLogo, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 10, 130, 60));
+        getContentPane().add(scrPaneTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 160, 670, 220));
 
-        jLabelPoint2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelPoint2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabelPoint2.setText("Lorem Ipsum");
-        getContentPane().add(jLabelPoint2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 10, 560, 80));
-        getContentPane().add(scrPaneTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, 990, 250));
+        jLabelTotalAmount.setForeground(new java.awt.Color(204, 204, 204));
+        jLabelTotalAmount.setText("0.0000");
+        getContentPane().add(jLabelTotalAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 390, 120, 20));
+
+        jLabelDiscount.setForeground(new java.awt.Color(204, 204, 204));
+        jLabelDiscount.setText("Discount( TK ):");
+        getContentPane().add(jLabelDiscount, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 410, 90, 20));
 
         jLabelDiscountAmount.setForeground(new java.awt.Color(204, 204, 204));
         jLabelDiscountAmount.setText("0.0000");
-        getContentPane().add(jLabelDiscountAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 350, 120, 20));
-
-        jLabelDiscount.setForeground(new java.awt.Color(204, 204, 204));
-        jLabelDiscount.setText("Discount(0%):");
-        getContentPane().add(jLabelDiscount, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 370, 80, 20));
-
-        jLabelDiscountPercent.setForeground(new java.awt.Color(204, 204, 204));
-        jLabelDiscountPercent.setText("0.0000");
-        getContentPane().add(jLabelDiscountPercent, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 370, 90, 20));
+        getContentPane().add(jLabelDiscountAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 410, 90, 20));
 
         jLabelLabour.setForeground(new java.awt.Color(204, 204, 204));
         jLabelLabour.setText("Labour:");
-        getContentPane().add(jLabelLabour, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 390, 61, 20));
+        getContentPane().add(jLabelLabour, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 430, 61, 20));
 
         jLabelLabourCost.setForeground(new java.awt.Color(204, 204, 204));
         jLabelLabourCost.setText("0.0000");
-        getContentPane().add(jLabelLabourCost, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 390, 120, 20));
+        getContentPane().add(jLabelLabourCost, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 430, 120, 20));
 
         jLabelNetAmount.setForeground(new java.awt.Color(204, 204, 204));
         jLabelNetAmount.setText("Net Amount:");
-        getContentPane().add(jLabelNetAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 410, -1, 20));
+        getContentPane().add(jLabelNetAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 450, -1, 20));
 
         jLabelNetAmountMoney.setForeground(new java.awt.Color(204, 204, 204));
         jLabelNetAmountMoney.setText("0.0000");
-        getContentPane().add(jLabelNetAmountMoney, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 410, 120, 20));
+        getContentPane().add(jLabelNetAmountMoney, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 450, 120, 20));
 
         jLabelPaid.setForeground(new java.awt.Color(204, 204, 204));
         jLabelPaid.setText("Paid:");
-        getContentPane().add(jLabelPaid, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 430, 61, 20));
+        getContentPane().add(jLabelPaid, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 470, 61, 20));
 
         jLabelPaidAmount.setForeground(new java.awt.Color(204, 204, 204));
         jLabelPaidAmount.setText("0.0000");
-        getContentPane().add(jLabelPaidAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 430, 120, 20));
+        getContentPane().add(jLabelPaidAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 470, 120, 20));
 
         jLabelChangeAmount.setForeground(new java.awt.Color(204, 204, 204));
         jLabelChangeAmount.setText("0.0000");
-        getContentPane().add(jLabelChangeAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 450, 130, 20));
+        getContentPane().add(jLabelChangeAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 490, 130, 20));
 
         jLabelChange.setForeground(new java.awt.Color(204, 204, 204));
         jLabelChange.setText("Change:");
-        getContentPane().add(jLabelChange, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 450, 61, 20));
+        getContentPane().add(jLabelChange, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 490, 61, 20));
 
         jLabelDue.setForeground(new java.awt.Color(204, 204, 204));
         jLabelDue.setText("Due:");
-        getContentPane().add(jLabelDue, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 470, 61, 20));
+        getContentPane().add(jLabelDue, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 510, 61, 20));
 
         jLabelDueAmount.setForeground(new java.awt.Color(204, 204, 204));
         jLabelDueAmount.setText("0.0000");
-        getContentPane().add(jLabelDueAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 470, 110, 20));
+        getContentPane().add(jLabelDueAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 510, 110, 20));
 
         jLabelTotal.setForeground(new java.awt.Color(204, 204, 204));
         jLabelTotal.setText("Total:");
-        getContentPane().add(jLabelTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 350, 61, 20));
+        getContentPane().add(jLabelTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 390, 61, 20));
 
         lblBillingIDValue.setFont(new java.awt.Font("Titillium Web", 0, 28)); // NOI18N
         lblBillingIDValue.setForeground(new java.awt.Color(204, 204, 204));
         lblBillingIDValue.setText("#id");
-        getContentPane().add(lblBillingIDValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 350, 190, -1));
+        getContentPane().add(lblBillingIDValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 10, 190, -1));
 
         lblVendorNameValue.setFont(new java.awt.Font("Titillium Web", 0, 15)); // NOI18N
         lblVendorNameValue.setForeground(new java.awt.Color(204, 204, 204));
-        lblVendorNameValue.setText("#yeasin ");
-        getContentPane().add(lblVendorNameValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 400, 120, -1));
-
-        lblDateandTime.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblDateandTime.setForeground(new java.awt.Color(204, 204, 204));
-        lblDateandTime.setText("Time:");
-        getContentPane().add(lblDateandTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 60, 260, 20));
+        lblVendorNameValue.setText("#Vendor Name");
+        getContentPane().add(lblVendorNameValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 50, 120, -1));
 
         jButton1.setBackground(new java.awt.Color(51, 0, 153));
         jButton1.setFont(new java.awt.Font("Titillium Web", 1, 12)); // NOI18N
@@ -182,67 +181,105 @@ public class Bills extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Titillium Web", 1, 12)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Save & Print");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 510, 150, 30));
 
         lblBillingID1.setFont(new java.awt.Font("Titillium Web", 0, 28)); // NOI18N
         lblBillingID1.setForeground(new java.awt.Color(204, 204, 204));
         lblBillingID1.setText("Billing ID:");
-        getContentPane().add(lblBillingID1, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 350, 130, -1));
+        getContentPane().add(lblBillingID1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 10, 130, -1));
 
         lblVendorName.setFont(new java.awt.Font("Titillium Web", 0, 15)); // NOI18N
         lblVendorName.setForeground(new java.awt.Color(204, 204, 204));
         lblVendorName.setText("Vendor Name: ");
-        getContentPane().add(lblVendorName, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 400, 100, -1));
+        getContentPane().add(lblVendorName, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 50, 100, -1));
 
         lblShopName.setFont(new java.awt.Font("Titillium Web", 0, 15)); // NOI18N
         lblShopName.setForeground(new java.awt.Color(204, 204, 204));
         lblShopName.setText("Shop Name: ");
-        getContentPane().add(lblShopName, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 420, 100, -1));
+        getContentPane().add(lblShopName, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 10, 100, -1));
 
         lblShopNameValue.setFont(new java.awt.Font("Titillium Web", 0, 15)); // NOI18N
         lblShopNameValue.setForeground(new java.awt.Color(204, 204, 204));
-        lblShopNameValue.setText("RK traders");
-        getContentPane().add(lblShopNameValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 420, 190, -1));
+        lblShopNameValue.setText("Shop Name");
+        getContentPane().add(lblShopNameValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 10, 190, -1));
 
         lblDealershipValue.setFont(new java.awt.Font("Titillium Web", 0, 15)); // NOI18N
         lblDealershipValue.setForeground(new java.awt.Color(204, 204, 204));
-        lblDealershipValue.setText("Akij, AK, Lorem");
-        getContentPane().add(lblDealershipValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 440, 350, -1));
+        lblDealershipValue.setText("Dealerships");
+        getContentPane().add(lblDealershipValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 30, 280, 20));
 
         lblDealerShip.setFont(new java.awt.Font("Titillium Web", 0, 15)); // NOI18N
         lblDealerShip.setForeground(new java.awt.Color(204, 204, 204));
         lblDealerShip.setText("Dealerships:");
-        getContentPane().add(lblDealerShip, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 440, 100, -1));
+        getContentPane().add(lblDealerShip, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 30, 100, -1));
 
         lblPhone.setFont(new java.awt.Font("Titillium Web", 0, 15)); // NOI18N
         lblPhone.setForeground(new java.awt.Color(204, 204, 204));
         lblPhone.setText("Phone");
-        getContentPane().add(lblPhone, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 460, 100, -1));
+        getContentPane().add(lblPhone, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 70, 100, -1));
 
         lblPhoneValue.setFont(new java.awt.Font("Titillium Web", 0, 15)); // NOI18N
         lblPhoneValue.setForeground(new java.awt.Color(204, 204, 204));
-        lblPhoneValue.setText("017 - 6360- 3579, 015-1560-6947");
-        getContentPane().add(lblPhoneValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 460, 360, -1));
+        lblPhoneValue.setText("Phone Numbers");
+        getContentPane().add(lblPhoneValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 70, 360, -1));
 
         lblVendorIDvalue.setFont(new java.awt.Font("Titillium Web", 0, 15)); // NOI18N
         lblVendorIDvalue.setForeground(new java.awt.Color(204, 204, 204));
-        lblVendorIDvalue.setText("#yeasin 001");
-        getContentPane().add(lblVendorIDvalue, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 400, 230, -1));
+        lblVendorIDvalue.setText("#Vendor ID");
+        getContentPane().add(lblVendorIDvalue, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 70, 230, -1));
 
         lblVendorID.setFont(new java.awt.Font("Titillium Web", 0, 15)); // NOI18N
         lblVendorID.setForeground(new java.awt.Color(204, 204, 204));
         lblVendorID.setText("ID:");
-        getContentPane().add(lblVendorID, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 400, 60, -1));
+        getContentPane().add(lblVendorID, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 70, 60, -1));
+
+        lblBillID2.setFont(new java.awt.Font("Titillium Web", 0, 18)); // NOI18N
+        lblBillID2.setForeground(new java.awt.Color(67, 196, 114));
+        lblBillID2.setText("Payment History");
+        getContentPane().add(lblBillID2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 130, 170, -1));
+
+        lblBillID.setFont(new java.awt.Font("Titillium Web", 0, 18)); // NOI18N
+        lblBillID.setForeground(new java.awt.Color(67, 196, 114));
+        lblBillID.setText("Product Details");
+        getContentPane().add(lblBillID, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 130, 170, -1));
 
         lblEmail.setFont(new java.awt.Font("Titillium Web", 0, 15)); // NOI18N
         lblEmail.setForeground(new java.awt.Color(204, 204, 204));
         lblEmail.setText("Email");
-        getContentPane().add(lblEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 480, 100, -1));
+        getContentPane().add(lblEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 90, 100, -1));
 
         lblEmailValue.setFont(new java.awt.Font("Titillium Web", 0, 15)); // NOI18N
         lblEmailValue.setForeground(new java.awt.Color(204, 204, 204));
-        lblEmailValue.setText("ryeashin@gmail.com");
-        getContentPane().add(lblEmailValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 480, 210, -1));
+        lblEmailValue.setText("Email");
+        getContentPane().add(lblEmailValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(800, 90, 210, -1));
+        getContentPane().add(jScrollPanePaymentHistory, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 160, 320, 220));
+
+        jButtonAddPayment.setBackground(new java.awt.Color(67, 196, 114));
+        jButtonAddPayment.setFont(new java.awt.Font("Titillium Web", 1, 12)); // NOI18N
+        jButtonAddPayment.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonAddPayment.setText("Add Payment");
+        jButtonAddPayment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddPaymentActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonAddPayment, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 390, 150, 30));
+
+        jButtonDeletePayment.setBackground(new java.awt.Color(255, 0, 0));
+        jButtonDeletePayment.setFont(new java.awt.Font("Titillium Web", 1, 12)); // NOI18N
+        jButtonDeletePayment.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonDeletePayment.setText("Delete payment");
+        jButtonDeletePayment.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonDeletePaymentActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonDeletePayment, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 390, 160, 30));
 
         jLabelBackground.setForeground(new java.awt.Color(255, 255, 255));
         jLabelBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
@@ -251,85 +288,166 @@ public class Bills extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    public boolean AccessSave = false;
+    public void saveBills(){
+        Connection con = DBConnectionProvider.getDBConnection();
+                    String query1 = "insert into bill_list (billing_ID,vendor_ID,time,date,discount,labour_cost,total) VALUES(?,?,?,?,?,?,?)";
+                    String query2 = "insert into bill_products (billing_ID,products_ID,Box, Pcs,feet,price) VALUES (?,?,?,?,?,?)";  
+                    String query3 = "SELECT * FROM stock WHERE products_id = ?";
+                    String query4 = "UPDATE `stock` SET `left` = ? WHERE `stock`.`products_id` = ?";
+                    String query5 = "UPDATE `products` SET `purchase_price` = ? WHERE `products`.`products_id` = ?";
+
+                    String date = timeAndDate.substring(timeAndDate.indexOf("M")+1);
+                    String time = timeAndDate.substring(0, timeAndDate.indexOf("M")+1);
+                    //System.out.println(newdate);
+                    //System.out.println(time);
+                    //Integer row = 0;
+
+                    try{
+                        PreparedStatement pstmt1 = con.prepareStatement(query1);
+                        PreparedStatement pstmt2 = con.prepareStatement(query2);
+                        PreparedStatement pstmt3 = con.prepareStatement(query3);
+                        PreparedStatement pstmt4 = con.prepareStatement(query4);
+                        PreparedStatement pstmt5 = con.prepareStatement(query5);
+                        pstmt1.setString(1,lblBillingIDValue.getText());
+                        pstmt1.setString(2,lblVendorIDvalue.getText());
+                        pstmt1.setString(3,time);
+                        String[] splitDate = date.split("/");
+                        date = trim(splitDate[2]) + "-" + trim(splitDate[1]) + "-" + trim(splitDate[0]);
+                        pstmt1.setString(4,date);
+                        pstmt1.setDouble(5,Double.parseDouble(jLabelDiscountAmount.getText()));
+                        pstmt1.setDouble(6,Double.parseDouble(jLabelLabourCost.getText()));
+                        pstmt1.setDouble(7,Double.parseDouble(jLabelNetAmountMoney.getText()));
+                        pstmt1.executeUpdate();
+
+
+                        Integer row=0;
+                        for( int i=0; i<productTable.getRowCount(); i++ ){
+                            pstmt2.setString(1,lblBillingIDValue.getText());
+                            String productId = (String) productTable.getModel().getValueAt(row,0);
+                            pstmt2.setString(2,productId);
+                            String BuyAmount= "0.0";
+                            if( ( productTable.getModel().getValueAt(row,6).equals("Box")) || (( productTable.getModel().getValueAt(row,6).equals("box"))) ){
+                                String buyAmountBox =  productTable.getModel().getValueAt(row,3)+"";
+                                String buyAmountPcs =  productTable.getModel().getValueAt(row,4)+"";
+                                if(buyAmountBox.equals("")) buyAmountBox = "0";
+                                if(buyAmountPcs.equals("")) buyAmountBox = "0";
+                                BuyAmount = Double.toString(Functions.boxAndPcsToBox(Double.parseDouble(buyAmountBox), Double.parseDouble(buyAmountPcs), productId));
+                                //BuyAmount =  productTable.getModel().getValueAt(row,3) + "";
+                                pstmt2.setString(3, BuyAmount);
+                                pstmt2.setString(4, "--");
+                                pstmt2.setString(5, "--");
+                            }
+                            else if( ( productTable.getModel().getValueAt(row,6).equals("pcs")) || (( productTable.getModel().getValueAt(row,6).equals("Pcs"))) ){
+                                String buyAmountBox =  productTable.getModel().getValueAt(row,3)+"";
+                                String buyAmountPcs =  productTable.getModel().getValueAt(row,4)+"";
+                                if(buyAmountBox.equals("")) buyAmountBox = "0";
+                                if(buyAmountPcs.equals("")) buyAmountBox = "0";
+                                BuyAmount = Double.toString(Functions.boxAndPcsToPcs(Double.parseDouble(buyAmountBox), Double.parseDouble(buyAmountPcs), productId));
+                                //BuyAmount = "" + productTable.getModel().getValueAt(row,4);
+                                pstmt2.setString(3,"--'");
+                                pstmt2.setString(4, BuyAmount);
+                                pstmt2.setString(5, "--");
+                            }
+                            else if( ( productTable.getModel().getValueAt(row,6).equals("feet")) || (( productTable.getModel().getValueAt(row,6).equals("Feet"))) ){
+                                BuyAmount = productTable.getModel().getValueAt(row,5) + "";
+                                pstmt2.setString(3,"--'");
+                                pstmt2.setString(4, "--");
+                                pstmt2.setString(5,BuyAmount);
+                            }
+                            String price = Double.toString( (Double) productTable.getModel().getValueAt(row,8));
+                            
+                            pstmt2.setString(6,price);
+                            pstmt2.executeUpdate();
+                            pstmt3.setString(1, productId);
+                            ResultSet rs = pstmt3.executeQuery();
+                            Double left=0.0;
+                            while(rs.next())
+                                 left = rs.getDouble("left")+ Double.parseDouble(BuyAmount);
+                            pstmt4.setDouble(1, left);
+                            pstmt4.setString(2, productId);
+                            pstmt4.executeUpdate();
+                            Double unitPrice = (Double) productTable.getModel().getValueAt(row,7);
+//                             System.err.println( price + " " + unitPrice);
+                            
+                            pstmt5.setDouble(1, unitPrice);
+                            pstmt5.setString(2, productId);
+                            pstmt5.executeUpdate();
+                            row++;
+                        }
+                        Buy page = Buy.getRef();
+                        page.clearField();
+                        caller.setEnabled(true);
+                        Save sPage = new Save();
+                        RakibsTraders.popUp(sPage);
+                        this.dispose();
+                    }
+                    catch(Exception ex){
+                        System.out.println("Failed to get DBConn:: "+ex.getMessage());
+                        NoConnection no = new NoConnection();
+                        RakibsTraders.popUp(no);
+                    }
+    }
+    
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String billingId = lblBillingIDValue.getText();
-        String vendorId = lblVendorIDvalue.getText();
-        String date = lblDateandTime.getText();
-        String year = date.substring(date.lastIndexOf("/")+1);
-        String month = date.substring(date.indexOf("/")+1, date.lastIndexOf("/"));
-        String date1 = date.substring(date.indexOf("M")+2, date.indexOf("/"));
-        String newdate = year + "-" + month + "-" + date1;
-        String time = date.substring(date.indexOf(":")+2, date.indexOf("M")-2);
-        //System.out.println(newdate);
-        //System.out.println(time);
-        String due = Double.toString(Double.parseDouble(jLabelDueAmount.getText())/table.getRowCount());
-        String productId;
-        String buyAmount;
-        String unitPrice;
-        String total;
-        //Integer row = 0;
-        for(int i=0; i<table.getRowCount(); i++){
-            //System.out.println("inside loop:" +i);
-            productId = (String) table.getModel().getValueAt(i,0);
-            buyAmount = (String) table.getModel().getValueAt(i,3);
-            unitPrice = (String) table.getModel().getValueAt(i,4);
-            total = (String) table.getModel().getValueAt(i,5);
-            
-            Connection con = DBConnectionProvider.getDBConnection();
-            String query1 = "INSERT INTO `bills` (`billing_id`, `products_id`, `vendor_id`, `date`, `time`, `unit_price`, `product_qty`, `total`, `bill_due`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            String query2 = "SELECT * FROM stock WHERE products_id = ?";
-            String query3 = "UPDATE `stock` SET `left` = ? WHERE `stock`.`products_id` = ?";
-            String query4 = "UPDATE `products` SET `purchase_price` = ? WHERE `products`.`products_id` = ?";
-            try{
-                PreparedStatement pstmt1 = con.prepareStatement(query1);
-                PreparedStatement pstmt2 = con.prepareStatement(query2);
-                PreparedStatement pstmt3 = con.prepareStatement(query3);
-                PreparedStatement pstmt4 = con.prepareStatement(query4);
-                pstmt1.setString(1, billingId);
-                pstmt1.setString(2, productId);
-                pstmt1.setString(3, vendorId);
-                pstmt1.setString(4, newdate);
-                pstmt1.setString(5, time);
-                pstmt1.setString(6, unitPrice);
-                pstmt1.setString(7, buyAmount);
-                pstmt1.setString(8, total);
-                pstmt1.setString(9, due);
-                pstmt2.setString(1, productId);
-                ResultSet rs = pstmt2.executeQuery();
-                String left="0";
-                while(rs.next())
-                     left = Integer.toString(rs.getInt("left")+ Integer.parseInt(buyAmount));
-                pstmt3.setString(1, left);
-                pstmt3.setString(2, productId);
-                pstmt4.setString(1, unitPrice);
-                pstmt4.setString(2, productId);
-                pstmt1.executeUpdate();
-                pstmt3.executeUpdate();
-                pstmt4.executeUpdate();
-            } catch(Exception ex){
-                System.out.println("Failed to get DBConn:: "+ex.getMessage());
-                NoConnection no = new NoConnection();
-                RakibsTraders.popUp(no);
-            }
+        if( AccessSave ==false ){
+            saveBills();
         }
-        Connection con = DBConnectionProvider.getDBConnection();
-        String query5 = "UPDATE `vendors` SET `no_of_bus` = `no_of_bus`+1 WHERE `vendors`.`vendor_id` = ?";
-        try {
-            PreparedStatement pstmt5 = con.prepareStatement(query5);
-            pstmt5.setString(1, vendorId);
-            pstmt5.executeUpdate();
-        } catch (SQLException ex) {
-            System.out.println("Failed to get DBConn:: "+ex.getMessage());
-            NoConnection no = new NoConnection();
-            RakibsTraders.popUp(no);
+        else{
+            AccessSave = false;
+            Updated page = new Updated();
+            RakibsTraders.popUp(page);
+            //BillingList Bpage = BillingList.getRef();
+            caller.setEnabled(true);
+            this.dispose();
         }
-        this.dispose();
-        Buy page = Buy.getRef();
-        page.clearField();
-        Save sPage = new Save();
-        RakibsTraders.popUp(sPage);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButtonAddPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddPaymentActionPerformed
+        // TODO add your handling code here:
+        AddPayment page = new AddPayment();
+        page.setValue(lblBillingIDValue.getText(),2);
+        RakibsTraders.popUp(page);
+        page.setCaller(this);
+        this.setEnabled(false);
+    }//GEN-LAST:event_jButtonAddPaymentActionPerformed
+
+    private void jButtonDeletePaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeletePaymentActionPerformed
+        // TODO add your handling code here:
+        DeletePayment page = new DeletePayment();
+        page.setValue(lblBillingIDValue.getText(),jLabelPaidAmount.getText(),2);
+        RakibsTraders.popUp(page);
+        page.setCaller(this);
+        this.setEnabled(false);
+    }//GEN-LAST:event_jButtonDeletePaymentActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        createPDF page = new createPDF();
+        
+        page.setData(timeAndDate, lblBillingIDValue.getText(), lblVendorNameValue.getText(), lblPhoneValue.getText(), lblVendorIDvalue.getText(), productTable2, jLabelTotalAmount.getText(),
+                    jLabelDiscountAmount.getText(),jLabelLabourCost.getText(), jLabelNetAmountMoney.getText(),jLabelPaidAmount.getText(),jLabelChangeAmount.getText(),jLabelDueAmount.getText());
+        page.gen();
+        try {
+                page.printPdf();
+            } catch (PrintException ex) {
+                Logger.getLogger(Invoice.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Invoice.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
+        if( AccessSave == false ) { 
+            
+            saveBills();
+        
+        }
+        this.caller.setEnabled(true);
+        this.dispose();
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -370,13 +488,13 @@ public class Bills extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonAddPayment;
+    private javax.swing.JButton jButtonDeletePayment;
     private javax.swing.JLabel jLabelBackground;
     private javax.swing.JLabel jLabelChange;
     private javax.swing.JLabel jLabelChangeAmount;
-    private javax.swing.JLabel jLabelContactNo;
     private javax.swing.JLabel jLabelDiscount;
     private javax.swing.JLabel jLabelDiscountAmount;
-    private javax.swing.JLabel jLabelDiscountPercent;
     private javax.swing.JLabel jLabelDue;
     private javax.swing.JLabel jLabelDueAmount;
     private javax.swing.JLabel jLabelLabour;
@@ -386,11 +504,13 @@ public class Bills extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelNetAmountMoney;
     private javax.swing.JLabel jLabelPaid;
     private javax.swing.JLabel jLabelPaidAmount;
-    private javax.swing.JLabel jLabelPoint2;
     private javax.swing.JLabel jLabelTotal;
+    private javax.swing.JLabel jLabelTotalAmount;
+    private javax.swing.JScrollPane jScrollPanePaymentHistory;
+    private javax.swing.JLabel lblBillID;
+    private javax.swing.JLabel lblBillID2;
     private javax.swing.JLabel lblBillingID1;
     private javax.swing.JLabel lblBillingIDValue;
-    private javax.swing.JLabel lblDateandTime;
     private javax.swing.JLabel lblDealerShip;
     private javax.swing.JLabel lblDealershipValue;
     private javax.swing.JLabel lblEmail;
@@ -406,28 +526,29 @@ public class Bills extends javax.swing.JFrame {
     private javax.swing.JScrollPane scrPaneTable;
     // End of variables declaration//GEN-END:variables
     
-    //custom varaibles
-    JTable table = new JTable();
-    DefaultTableModel data ;
+    //custome variables
+    private JTable productTable = new JTable();
+    private JTable paymentTable = new JTable();
+    DefaultTableModel paymentData = new DefaultTableModel(new String[]{"Billing ID", "Receipt id", "Date", "Time", "Payment method", "paid Amount"}, 0);
+    private String timeAndDate;
+    private static Bills ref;
+    private JFrame caller;
+    private boolean payment_flag = false; 
+    private JTable productTable2 = new JTable();
     //end of custom variables
     
-    public void setData(String time, DefaultTableModel newData, String billingId, String vendorId, String total, String discount, String labour, String netAmount, String paid, String change, String due){
-        lblDateandTime.setText("Time: "+time);    
-        this.data = newData;
-        table.setModel(data);
-        scrPaneTable.getViewport().add(table);
-        lblBillingIDValue.setText(billingId);
-        jLabelDiscountAmount.setText(total);
-        jLabelDiscount.setText("Discount("+discount+"%)");
-        Double amount = (Double.parseDouble(total)*Double.parseDouble(discount))/100;
-        jLabelDiscountPercent.setText(""+amount);
-        jLabelLabourCost.setText(labour);
-        jLabelNetAmountMoney.setText(netAmount);
-        jLabelPaidAmount.setText(paid);
-        jLabelChangeAmount.setText(change);
-        jLabelDueAmount.setText(due);
-        lblVendorIDvalue.setText(vendorId);
+    
+    public void setData(String timeanddate, String billingID, String vendorID, String Total, String discount, String labourCost, String netpayable,  DefaultTableModel data){
+        this.timeAndDate = timeanddate;
+        this.lblBillingIDValue.setText(billingID);
+        this.lblVendorIDvalue.setText(vendorID);
+        this.productTable.setModel(data);
+        this.jLabelTotalAmount.setText(Total);
+        this.jLabelDiscountAmount.setText(discount);
+        this.jLabelLabourCost.setText(labourCost);
+        this.jLabelNetAmountMoney.setText(netpayable);
         setVendorField();
+        setTables(billingID);
     }
     
     private void setVendorField(){
@@ -453,4 +574,102 @@ public class Bills extends javax.swing.JFrame {
     
     }
     
+    private void updatePriceFields(){
+        Double totalPaid = 0.0;
+        if( paymentTable.getRowCount() > 0 ){
+            Integer row=0;
+            for(int i=0; i<paymentTable.getRowCount(); i++)
+                totalPaid += (Double) paymentTable.getModel().getValueAt(i,5);
+        }
+        Double netPay = Double.parseDouble(jLabelNetAmountMoney.getText());
+        //System.out.println(""+netPay);
+        jLabelPaidAmount.setText("" + String.format("%.4f", totalPaid));
+        Double totalChange = totalPaid - netPay;
+        //System.out.println(""+totalChange);
+        if( totalChange < 0.0 ){ 
+            jLabelChangeAmount.setText("0.00");
+            jLabelDueAmount.setText(String.format("%.4f", (totalChange * (-1.0))));
+        }
+        else if( totalChange > 0.0 ){ 
+            jLabelChangeAmount.setText(String.format("%.4f", totalChange));
+            jLabelDueAmount.setText("0.00");
+        }
+        else if( totalChange == 0.0 ){
+            jLabelChangeAmount.setText("0.00");
+            jLabelDueAmount.setText("0.00");
+        }
+    }
+    
+    
+    
+    public void setTables(String billingID){
+        productTable2 = productTable;
+        scrPaneTable.getViewport().add(productTable);
+        //clear the default invoice_payment to null
+        if (paymentData.getRowCount() > 0) {
+            for (int i = paymentData.getRowCount() - 1; i > -1; i--) {
+                paymentData.removeRow(i);
+            }
+        }
+        
+        Connection con = DBConnectionProvider.getDBConnection();
+        String query = "SELECT * FROM `payment` WHERE ID = ?";
+        String in_ID;
+        Integer rc_ID;
+        String date;
+        String time;
+        String pay_meth;
+        Double paid;
+        try{
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setString(1,billingID);
+            ResultSet rs = pstmt.executeQuery();
+            while(rs.next()){
+              in_ID = rs.getString("ID");
+              rc_ID = rs.getInt("receipt_ID");
+              date = rs.getString("date");
+              time = rs.getString("time");
+              pay_meth = rs.getString("payment_method");
+              paid = rs.getDouble("paid_amount");
+              paymentData.addRow(new Object[]{in_ID, rc_ID, date, time, pay_meth, paid});
+              paymentTable.setModel(paymentData);
+              jScrollPanePaymentHistory.getViewport().add(paymentTable);
+              
+            }
+        }catch(Exception ex){
+            System.out.println("Failed to get DBConn:: "+ex.getMessage());
+            NoConnection no = new NoConnection();
+            RakibsTraders.popUp(no);
+        }
+        updatePriceFields();
+    }
+    
+    private void setIcon(){
+        this.setIconImage(new ImageIcon(getClass().getResource("/Resources/Icons/Icon.png")).getImage());
+    }
+    
+    public static Bills getRef(){
+        if(ref==null)
+            ref = new Bills();
+        return ref;
+    }
+ 
+    public void setCaller(JFrame frame){
+        this.caller = frame;
+    }
+    
+    public void setPaymentFlag(){
+        this.payment_flag = true;
+    }
+    
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            if(!payment_flag){
+                caller.setEnabled(true);
+                dispose();
+            }
+            
+        }
+    }
 }

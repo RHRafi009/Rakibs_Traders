@@ -4,13 +4,15 @@ package UI;
 import Database.DBConnectionProvider;
 import Others.Functions;
 import UI.BigPopUp.AttendenceHistory;
+import UI.BigPopUp.CustomerList;
 import UI.BigPopUp.EditUser;
 import UI.BigPopUp.Employee;
 import UI.BigPopUp.EmployeeList;
 import UI.BigPopUp.ProductsTable;
 import UI.BigPopUp.UsersLog;
 import UI.BigPopUp.ViewStock;
-import UI.PopUp.Delete;
+import UI.PopUp.DeleteProducts;
+import UI.PopUp.EditStockAlert;
 import UI.PopUp.NoConnection;
 import UI.PopUp.Save;
 import UI.PopUp.Updated;
@@ -28,6 +30,9 @@ import java.util.*;
 import javax.annotation.Resources.*;
 import javax.swing.ImageIcon;
 import rakibs.traders.RakibsTraders;
+import UI.BigPopUp.*;
+import UI.PopUp.TakeAttendance;
+import java.awt.event.WindowEvent;
 
 /**
  *
@@ -67,32 +72,17 @@ public class Settings extends javax.swing.JFrame {
         btnReports = new javax.swing.JButton();
         btnSettings = new javax.swing.JButton();
         lblSettings = new javax.swing.JLabel();
-        lblExpenseCategory = new javax.swing.JLabel();
         btnExpenses = new javax.swing.JButton();
-        lblEmployeeName = new javax.swing.JLabel();
-        jButtonAddUser = new javax.swing.JButton();
-        jButtonSubmit = new javax.swing.JButton();
+        jButtonVendorList = new javax.swing.JButton();
+        jButtonTakeAttendance = new javax.swing.JButton();
         jButtonAddendenceHistory = new javax.swing.JButton();
         jButtonUsersLog = new javax.swing.JButton();
-        lblEmployeeID = new javax.swing.JLabel();
-        lblTimeanddate2 = new javax.swing.JLabel();
-        txtFieldTimeanddate2 = new javax.swing.JTextField();
         jButtonEditUsers = new javax.swing.JButton();
-        lblTimeanddate3 = new javax.swing.JLabel();
-        txtFieldTimeanddate3 = new javax.swing.JTextField();
-        txtFieldEmployeeIDValue1 = new javax.swing.JTextField();
-        txtFieldEmployeeNameValue1 = new javax.swing.JTextField();
-        lblEmployeeName1 = new javax.swing.JLabel();
-        lblEmployeeID1 = new javax.swing.JLabel();
-        jButtonSubmit1 = new javax.swing.JButton();
-        lblExpenseCategory1 = new javax.swing.JLabel();
         jButtonAddStockAlertValue = new javax.swing.JButton();
         jButtonEmployeeList = new javax.swing.JButton();
         jButtonEditEmployee = new javax.swing.JButton();
         lblTime = new javax.swing.JLabel();
-        txtFieldEmployeeIDValue = new javax.swing.JTextField();
-        txtFieldEmployeeNameValue = new javax.swing.JTextField();
-        jButtonAddEmployee1 = new javax.swing.JButton();
+        jButtonCustomerList = new javax.swing.JButton();
         Background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -251,11 +241,6 @@ public class Settings extends javax.swing.JFrame {
         lblSettings.setText("Settings");
         getContentPane().add(lblSettings, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 80, 304, 43));
 
-        lblExpenseCategory.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblExpenseCategory.setForeground(new java.awt.Color(67, 196, 114));
-        lblExpenseCategory.setText("Take Attendence");
-        getContentPane().add(lblExpenseCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 300, 130, 23));
-
         btnExpenses.setBackground(new java.awt.Color(204, 204, 204));
         btnExpenses.setForeground(new java.awt.Color(67, 196, 114));
         btnExpenses.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/Expenses.png"))); // NOI18N
@@ -274,34 +259,29 @@ public class Settings extends javax.swing.JFrame {
         });
         getContentPane().add(btnExpenses, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 400, 138, 23));
 
-        lblEmployeeName.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblEmployeeName.setForeground(new java.awt.Color(255, 255, 255));
-        lblEmployeeName.setText("Employee Name:");
-        getContentPane().add(lblEmployeeName, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 390, 120, 23));
-
-        jButtonAddUser.setBackground(new java.awt.Color(0, 51, 153));
-        jButtonAddUser.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
-        jButtonAddUser.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonAddUser.setText("ADD  USER");
-        jButtonAddUser.addActionListener(new java.awt.event.ActionListener() {
+        jButtonVendorList.setBackground(new java.awt.Color(255, 153, 51));
+        jButtonVendorList.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
+        jButtonVendorList.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonVendorList.setText("VENDOR LIST");
+        jButtonVendorList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAddUserActionPerformed(evt);
+                jButtonVendorListActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonAddUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 150, 180, 30));
+        getContentPane().add(jButtonVendorList, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 160, 180, 30));
 
-        jButtonSubmit.setBackground(new java.awt.Color(67, 196, 114));
-        jButtonSubmit.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
-        jButtonSubmit.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonSubmit.setText("SUBMIT");
-        jButtonSubmit.addActionListener(new java.awt.event.ActionListener() {
+        jButtonTakeAttendance.setBackground(new java.awt.Color(255, 51, 0));
+        jButtonTakeAttendance.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
+        jButtonTakeAttendance.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonTakeAttendance.setText("TAKE ATTENDANCE");
+        jButtonTakeAttendance.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonSubmitActionPerformed(evt);
+                jButtonTakeAttendanceActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonSubmit, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 430, 150, 30));
+        getContentPane().add(jButtonTakeAttendance, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 240, 180, 30));
 
-        jButtonAddendenceHistory.setBackground(new java.awt.Color(0, 204, 102));
+        jButtonAddendenceHistory.setBackground(new java.awt.Color(255, 51, 0));
         jButtonAddendenceHistory.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
         jButtonAddendenceHistory.setForeground(new java.awt.Color(255, 255, 255));
         jButtonAddendenceHistory.setText("ATTENDENCE HISTORY");
@@ -310,7 +290,7 @@ public class Settings extends javax.swing.JFrame {
                 jButtonAddendenceHistoryActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonAddendenceHistory, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 150, -1, 30));
+        getContentPane().add(jButtonAddendenceHistory, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 240, 180, 30));
 
         jButtonUsersLog.setBackground(new java.awt.Color(0, 204, 102));
         jButtonUsersLog.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
@@ -321,20 +301,9 @@ public class Settings extends javax.swing.JFrame {
                 jButtonUsersLogActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonUsersLog, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 230, 180, 30));
+        getContentPane().add(jButtonUsersLog, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 200, 180, 30));
 
-        lblEmployeeID.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblEmployeeID.setForeground(new java.awt.Color(255, 255, 255));
-        lblEmployeeID.setText("Employee ID");
-        getContentPane().add(lblEmployeeID, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 360, 130, 23));
-
-        lblTimeanddate2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblTimeanddate2.setForeground(new java.awt.Color(255, 255, 255));
-        lblTimeanddate2.setText("Time & date:");
-        getContentPane().add(lblTimeanddate2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 330, 103, 23));
-        getContentPane().add(txtFieldTimeanddate2, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 330, 150, 23));
-
-        jButtonEditUsers.setBackground(new java.awt.Color(0, 51, 153));
+        jButtonEditUsers.setBackground(new java.awt.Color(0, 204, 102));
         jButtonEditUsers.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
         jButtonEditUsers.setForeground(new java.awt.Color(255, 255, 255));
         jButtonEditUsers.setText("EDIT USERS");
@@ -343,73 +312,7 @@ public class Settings extends javax.swing.JFrame {
                 jButtonEditUsersActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonEditUsers, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 190, 180, 30));
-
-        lblTimeanddate3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblTimeanddate3.setForeground(new java.awt.Color(255, 255, 255));
-        lblTimeanddate3.setText("Time & date:");
-        getContentPane().add(lblTimeanddate3, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 160, 103, 23));
-        getContentPane().add(txtFieldTimeanddate3, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 160, 150, 23));
-
-        txtFieldEmployeeIDValue1.setForeground(new java.awt.Color(204, 204, 204));
-        txtFieldEmployeeIDValue1.setText("Enter Employee ID");
-        txtFieldEmployeeIDValue1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtFieldEmployeeIDValue1FocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtFieldEmployeeIDValue1FocusLost(evt);
-            }
-        });
-        txtFieldEmployeeIDValue1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFieldEmployeeIDValue1ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(txtFieldEmployeeIDValue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 190, 320, 23));
-
-        txtFieldEmployeeNameValue1.setForeground(new java.awt.Color(204, 204, 204));
-        txtFieldEmployeeNameValue1.setText("Employee Name");
-        txtFieldEmployeeNameValue1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtFieldEmployeeNameValue1FocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtFieldEmployeeNameValue1FocusLost(evt);
-            }
-        });
-        txtFieldEmployeeNameValue1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFieldEmployeeNameValue1ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(txtFieldEmployeeNameValue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 220, 320, 23));
-
-        lblEmployeeName1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblEmployeeName1.setForeground(new java.awt.Color(255, 255, 255));
-        lblEmployeeName1.setText("Employee Name:");
-        getContentPane().add(lblEmployeeName1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 220, 120, 23));
-
-        lblEmployeeID1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblEmployeeID1.setForeground(new java.awt.Color(255, 255, 255));
-        lblEmployeeID1.setText("Employee ID");
-        getContentPane().add(lblEmployeeID1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 190, 130, 23));
-
-        jButtonSubmit1.setBackground(new java.awt.Color(255, 51, 0));
-        jButtonSubmit1.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
-        jButtonSubmit1.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonSubmit1.setText("FREEZE");
-        jButtonSubmit1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonSubmit1ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButtonSubmit1, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 260, 150, 30));
-
-        lblExpenseCategory1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblExpenseCategory1.setForeground(new java.awt.Color(67, 196, 114));
-        lblExpenseCategory1.setText("Take Action of Employee");
-        getContentPane().add(lblExpenseCategory1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 130, 190, 23));
+        getContentPane().add(jButtonEditUsers, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 160, 180, 30));
 
         jButtonAddStockAlertValue.setBackground(new java.awt.Color(0, 51, 153));
         jButtonAddStockAlertValue.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
@@ -420,9 +323,9 @@ public class Settings extends javax.swing.JFrame {
                 jButtonAddStockAlertValueActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonAddStockAlertValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 270, 180, 30));
+        getContentPane().add(jButtonAddStockAlertValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 240, 180, 30));
 
-        jButtonEmployeeList.setBackground(new java.awt.Color(0, 204, 102));
+        jButtonEmployeeList.setBackground(new java.awt.Color(0, 51, 153));
         jButtonEmployeeList.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
         jButtonEmployeeList.setForeground(new java.awt.Color(255, 255, 255));
         jButtonEmployeeList.setText("EMPLOYEE LIST");
@@ -431,7 +334,7 @@ public class Settings extends javax.swing.JFrame {
                 jButtonEmployeeListActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonEmployeeList, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 190, 180, 30));
+        getContentPane().add(jButtonEmployeeList, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 200, 180, 30));
 
         jButtonEditEmployee.setBackground(new java.awt.Color(0, 51, 153));
         jButtonEditEmployee.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
@@ -442,60 +345,26 @@ public class Settings extends javax.swing.JFrame {
                 jButtonEditEmployeeActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonEditEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 230, 180, 30));
+        getContentPane().add(jButtonEditEmployee, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 160, 180, 30));
 
         lblTime.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         lblTime.setForeground(new java.awt.Color(255, 255, 255));
         lblTime.setText("Time: ");
         getContentPane().add(lblTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 40, 230, 30));
 
-        txtFieldEmployeeIDValue.setForeground(new java.awt.Color(204, 204, 204));
-        txtFieldEmployeeIDValue.setText("Enter Employee ID");
-        txtFieldEmployeeIDValue.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtFieldEmployeeIDValueFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtFieldEmployeeIDValueFocusLost(evt);
-            }
-        });
-        txtFieldEmployeeIDValue.addActionListener(new java.awt.event.ActionListener() {
+        jButtonCustomerList.setBackground(new java.awt.Color(255, 153, 51));
+        jButtonCustomerList.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
+        jButtonCustomerList.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonCustomerList.setText("CUSTOMER LIST");
+        jButtonCustomerList.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFieldEmployeeIDValueActionPerformed(evt);
+                jButtonCustomerListActionPerformed(evt);
             }
         });
-        getContentPane().add(txtFieldEmployeeIDValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 360, 320, 23));
-
-        txtFieldEmployeeNameValue.setForeground(new java.awt.Color(204, 204, 204));
-        txtFieldEmployeeNameValue.setText("Employee Name");
-        txtFieldEmployeeNameValue.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtFieldEmployeeNameValueFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtFieldEmployeeNameValueFocusLost(evt);
-            }
-        });
-        txtFieldEmployeeNameValue.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFieldEmployeeNameValueActionPerformed(evt);
-            }
-        });
-        getContentPane().add(txtFieldEmployeeNameValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 390, 320, 23));
-
-        jButtonAddEmployee1.setBackground(new java.awt.Color(0, 51, 153));
-        jButtonAddEmployee1.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
-        jButtonAddEmployee1.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonAddEmployee1.setText("ADD EMPLOYEE");
-        jButtonAddEmployee1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAddEmployee1ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButtonAddEmployee1, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 270, 180, 30));
+        getContentPane().add(jButtonCustomerList, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 200, 180, 30));
 
         Background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
-        getContentPane().add(Background, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, 0, 1280, 669));
+        getContentPane().add(Background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1260, 669));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -503,12 +372,16 @@ public class Settings extends javax.swing.JFrame {
     private void lblHomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHomeMouseClicked
         // TODO add your handling code here:
         
-        Dashboard page = new Dashboard();
+        Sell page = Sell.getRef();
+        page.setFlagTime();
+        page.setTime();
+        this.setFlagTime();
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_lblHomeMouseClicked
 
     private void lblAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAdminMouseClicked
         // TODO add your handling code here:
+        Functions.logoutLog();
         LoginPage page = LoginPage.getRef();
         page.clearField();
         RakibsTraders.changeFrame(this, page);
@@ -635,6 +508,9 @@ public class Settings extends javax.swing.JFrame {
     private void btnExpensesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExpensesActionPerformed
         // TODO add your handling code here:
         Expenses page = Expenses.getRef();
+        page.setFlagTime();
+        page.setTime();
+        this.setFlagTime();
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_btnExpensesActionPerformed
 
@@ -661,157 +537,111 @@ public class Settings extends javax.swing.JFrame {
 
     private void btnProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProductsMouseClicked
         // TODO add your handling code here:
-        Products page = Products.getRef();
-        RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_btnProductsMouseClicked
 
-    private void jButtonAddUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddUserActionPerformed
+    private void jButtonVendorListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonVendorListActionPerformed
         // TODO add your handling code here:
-        EditUser page = new EditUser();
-        RakibsTraders.bigPopUp(page);
+        if(this.access == 1 || this.access == 2){
+            VendorList page = new VendorList();
+            page.setCaller(this);
+            RakibsTraders.bigPopUp(page);
+            this.setEnabled(false);
+        }
 
-    }//GEN-LAST:event_jButtonAddUserActionPerformed
+    }//GEN-LAST:event_jButtonVendorListActionPerformed
 
-    private void jButtonSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSubmitActionPerformed
+    private void jButtonTakeAttendanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTakeAttendanceActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonSubmitActionPerformed
+        if(this.access == 1 || this.access == 2){
+            TakeAttendance page = new TakeAttendance();
+            page.setCaller(this);
+            RakibsTraders.popUp(page);
+            this.setEnabled(false);
+        }
+    }//GEN-LAST:event_jButtonTakeAttendanceActionPerformed
 
     private void jButtonAddendenceHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddendenceHistoryActionPerformed
         // TODO add your handling code here:
-        AttendenceHistory page = new AttendenceHistory();
-        RakibsTraders.bigPopUp(page);
+        if(this.access == 1 || this.access == 2){
+            AttendenceHistory page = new AttendenceHistory();
+            page.setCaller(this);
+            RakibsTraders.bigPopUp(page);
+            this.setEnabled(false);
+        }
     }//GEN-LAST:event_jButtonAddendenceHistoryActionPerformed
 
     private void jButtonUsersLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUsersLogActionPerformed
         // TODO add your handling code here:
-        UsersLog page = new UsersLog();
-        RakibsTraders.bigPopUp(page);
+        if(this.access == 1){
+            UsersLog page = new UsersLog();
+            page.setCaller(this);
+            RakibsTraders.bigPopUp(page);
+            this.setEnabled(false);
+        }
     }//GEN-LAST:event_jButtonUsersLogActionPerformed
 
     private void jButtonEditUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditUsersActionPerformed
         // TODO add your handling code here:
-        EditUser page = new EditUser();
-        RakibsTraders.bigPopUp(page);
-    }//GEN-LAST:event_jButtonEditUsersActionPerformed
-
-    private void txtFieldEmployeeIDValue1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldEmployeeIDValue1FocusGained
-        // TODO add your handling code here:
-        if( txtFieldEmployeeIDValue1.getText().equals("Enter Employee ID")){
-              this.txtFieldEmployeeIDValue1.setText("");
-          }
-        this.txtFieldEmployeeIDValue1.setForeground(Color.BLACK);
-    }//GEN-LAST:event_txtFieldEmployeeIDValue1FocusGained
-
-    private void txtFieldEmployeeIDValue1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldEmployeeIDValue1FocusLost
-        // TODO add your handling code here:
-        if(txtFieldEmployeeIDValue1.getText().isEmpty()){
-            txtFieldEmployeeIDValue1.setText("Enter Employee ID");
-            txtFieldEmployeeIDValue1.setForeground(new Color(204,204,204));
+        if(this.access == 1 || this.access == 2){
+            EditUser page = new EditUser();
+            page.setCaller(this);
+            RakibsTraders.bigPopUp(page);
+            this.setEnabled(false);
         }
-    }//GEN-LAST:event_txtFieldEmployeeIDValue1FocusLost
-
-    private void txtFieldEmployeeIDValue1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldEmployeeIDValue1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFieldEmployeeIDValue1ActionPerformed
-
-    private void txtFieldEmployeeNameValue1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldEmployeeNameValue1FocusGained
-        // TODO add your handling code here:
-        if( txtFieldEmployeeNameValue1.getText().equals("Employee Name")){
-              txtFieldEmployeeNameValue1.setText("");
-          }
-       txtFieldEmployeeNameValue1.setForeground(Color.BLACK);
-        
-    }//GEN-LAST:event_txtFieldEmployeeNameValue1FocusGained
-
-    private void txtFieldEmployeeNameValue1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldEmployeeNameValue1FocusLost
-        // TODO add your handling code here:
-        if( txtFieldEmployeeNameValue1.getText().isEmpty()){
-              txtFieldEmployeeNameValue1.setText("Employee Name");
-              txtFieldEmployeeNameValue1.setForeground(new Color(204,204,204));
-          }
-//       txtFieldEmployeeNameValue1.setForeground(Color.BLACK);
-        
-    }//GEN-LAST:event_txtFieldEmployeeNameValue1FocusLost
-
-    private void txtFieldEmployeeNameValue1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldEmployeeNameValue1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFieldEmployeeNameValue1ActionPerformed
+    }//GEN-LAST:event_jButtonEditUsersActionPerformed
 
     private void jButtonAddStockAlertValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddStockAlertValueActionPerformed
         // TODO add your handling code here:
-        Employee page = new Employee();
-        RakibsTraders.bigPopUp(page);
+        if(this.access == 1 || this.access == 2){
+            EditStockAlert page = new EditStockAlert();
+            page.setCaller(this);
+            RakibsTraders.popUp(page);
+            this.setEnabled(false);
+        }
+        
         
     }//GEN-LAST:event_jButtonAddStockAlertValueActionPerformed
 
     private void jButtonEmployeeListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEmployeeListActionPerformed
         // TODO add your handling code here:
-        EmployeeList page = new EmployeeList();
-        RakibsTraders.bigPopUp(page);
+        if(this.access == 1 || this.access == 2){
+            EmployeeList page = new EmployeeList();
+            page.setCaller(this);
+            RakibsTraders.bigPopUp(page);
+            this.setEnabled(false);
+        }
     }//GEN-LAST:event_jButtonEmployeeListActionPerformed
-
-    private void jButtonSubmit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSubmit1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonSubmit1ActionPerformed
 
     private void jButtonEditEmployeeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditEmployeeActionPerformed
         // TODO add your handling code here:
-        Employee page = new Employee();
-        RakibsTraders.bigPopUp(page);
+        if(this.access == 1 || this.access == 2){
+            Employee page = new Employee();
+            page.setCaller(this);
+            RakibsTraders.bigPopUp(page);
+            this.setEnabled(false);
+        }
+        
     }//GEN-LAST:event_jButtonEditEmployeeActionPerformed
 
-    private void txtFieldEmployeeIDValueFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldEmployeeIDValueFocusGained
+    private void jButtonCustomerListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCustomerListActionPerformed
         // TODO add your handling code here:
-        if(txtFieldEmployeeIDValue.getText().equals("Enter Employee ID") ){
-            this.txtFieldEmployeeIDValue.setText("");
+        if(this.access == 1 || this.access == 2){
+            CustomerList page = new CustomerList();
+            page.setCaller(this);
+            RakibsTraders.bigPopUp(page);
+            this.setEnabled(false);
         }
-        this.txtFieldEmployeeIDValue.setForeground(Color.black);
-    }//GEN-LAST:event_txtFieldEmployeeIDValueFocusGained
-
-    private void txtFieldEmployeeIDValueFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldEmployeeIDValueFocusLost
-        // TODO add your handling code here:
-        if(txtFieldEmployeeIDValue.getText().isEmpty()){
-            this.txtFieldEmployeeIDValue.setText("Enter Employee ID");
-            this.txtFieldEmployeeIDValue.setForeground(new Color( 204,204,204 ));
-        }
-    }//GEN-LAST:event_txtFieldEmployeeIDValueFocusLost
-
-    private void txtFieldEmployeeIDValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldEmployeeIDValueActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFieldEmployeeIDValueActionPerformed
-
-    private void txtFieldEmployeeNameValueFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldEmployeeNameValueFocusGained
-        // TODO add your handling code here:
-        if( this.txtFieldEmployeeNameValue.getText().equals("Employee Name") ){
-            this.txtFieldEmployeeNameValue.setText("");
-        }
-        this.txtFieldEmployeeNameValue.setForeground(Color.black);
-        
-    }//GEN-LAST:event_txtFieldEmployeeNameValueFocusGained
-
-    private void txtFieldEmployeeNameValueFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldEmployeeNameValueFocusLost
-        // TODO add your handling code here:
-        if( this.txtFieldEmployeeNameValue.getText().isEmpty() ){
-            this.txtFieldEmployeeNameValue.setText("Employee Name");
-            this.txtFieldEmployeeNameValue.setForeground(new Color(204,204,204));
-        } 
-    }//GEN-LAST:event_txtFieldEmployeeNameValueFocusLost
-
-    private void txtFieldEmployeeNameValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldEmployeeNameValueActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFieldEmployeeNameValueActionPerformed
-
-    private void jButtonAddEmployee1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddEmployee1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonAddEmployee1ActionPerformed
+    }//GEN-LAST:event_jButtonCustomerListActionPerformed
 
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
         // TODO add your handling code here:
-        Reports page = Reports.getRef();
-        page.setFlagTime();
-        page.setTime();
-        this.setFlagTime();
-        RakibsTraders.changeFrame(this, page);
+        if(this.access == 1 || this.access == 2){
+            Reports page = Reports.getRef();
+            page.setFlagTime();
+            page.setTime();
+            this.setFlagTime();
+            RakibsTraders.changeFrame(this, page);
+        }
     }//GEN-LAST:event_btnReportsActionPerformed
 
     
@@ -863,35 +693,20 @@ public class Settings extends javax.swing.JFrame {
     private javax.swing.JButton btnSell;
     private javax.swing.JButton btnSettings;
     private javax.swing.JButton btnStock;
-    private javax.swing.JButton jButtonAddEmployee1;
     private javax.swing.JButton jButtonAddStockAlertValue;
-    private javax.swing.JButton jButtonAddUser;
     private javax.swing.JButton jButtonAddendenceHistory;
+    private javax.swing.JButton jButtonCustomerList;
     private javax.swing.JButton jButtonEditEmployee;
     private javax.swing.JButton jButtonEditUsers;
     private javax.swing.JButton jButtonEmployeeList;
-    private javax.swing.JButton jButtonSubmit;
-    private javax.swing.JButton jButtonSubmit1;
+    private javax.swing.JButton jButtonTakeAttendance;
     private javax.swing.JButton jButtonUsersLog;
+    private javax.swing.JButton jButtonVendorList;
     private javax.swing.JLabel lblAdmin;
-    private javax.swing.JLabel lblEmployeeID;
-    private javax.swing.JLabel lblEmployeeID1;
-    private javax.swing.JLabel lblEmployeeName;
-    private javax.swing.JLabel lblEmployeeName1;
-    private javax.swing.JLabel lblExpenseCategory;
-    private javax.swing.JLabel lblExpenseCategory1;
     private javax.swing.JLabel lblHome;
     private javax.swing.JLabel lblSettings;
     private javax.swing.JLabel lblTime;
-    private javax.swing.JLabel lblTimeanddate2;
-    private javax.swing.JLabel lblTimeanddate3;
     private javax.swing.JLabel lblTitle;
-    private javax.swing.JTextField txtFieldEmployeeIDValue;
-    private javax.swing.JTextField txtFieldEmployeeIDValue1;
-    private javax.swing.JTextField txtFieldEmployeeNameValue;
-    private javax.swing.JTextField txtFieldEmployeeNameValue1;
-    private javax.swing.JTextField txtFieldTimeanddate2;
-    private javax.swing.JTextField txtFieldTimeanddate3;
     // End of variables declaration//GEN-END:variables
 
     //custome variables declaration
@@ -901,12 +716,17 @@ public class Settings extends javax.swing.JFrame {
     private ArrayList<String> dimension = new ArrayList<>();
     private static Settings ref;
     private Integer flagTime = 0;
+    private Integer access = 0;
     //end custom varibles
     
     public static Settings getRef(){
         if(ref==null)
             ref = new Settings();
         return ref;
+    }
+    
+    public void setAcsess(Integer acc){
+        this.access = acc;
     }
     
     private void clearField() {
@@ -947,8 +767,10 @@ public class Settings extends javax.swing.JFrame {
                     while(flagTime==1/* && new GregorianCalendar().get(Calendar.SECOND)!=fsec*/){
                         Calendar cal = new GregorianCalendar();
                         sec = cal.get(Calendar.SECOND);
-                        System.out.println(sec);
+                        //System.out.println(sec);
                         hour = cal.get(Calendar.HOUR);
+                        if(hour==0)
+                            hour=12;
                         min = cal.get(Calendar.MINUTE);
                         am_pm = cal.get(Calendar.AM_PM);
                         if(am_pm == 0){
@@ -988,5 +810,14 @@ public class Settings extends javax.swing.JFrame {
     private void initComboDimension(String companyName, String model){
         dimension = Functions.dimension(companyName, model);
 //        Functions.setupAutoComplete(txtFieldDimension, dimension);
+    }
+    
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            Functions.logoutLog();
+            //dispose();
+            RakibsTraders.close();
+        }
     }
 }

@@ -6,22 +6,27 @@ package rakibs.traders;
  */
 import UI.Sell;
 import UI.*;
+import java.io.IOException;
 import javax.swing.JFrame;
 public class RakibsTraders {
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-   
-        //LoginPage page = LoginPage.getRef();
-        Sell page = Sell.getRef();
-        page.setFlagTime();
-        page.setTime();
+    public static void main(String[] args) throws IOException {
+        
+        Process process = Runtime.getRuntime().exec("C:\\xampp\\mysql\\bin\\mysqld.exe");
+        //Process process = Runtime.getRuntime().exec("C:\\Program Files (x86)\\MySQL\\MySQL Cluster 7.6\\bin\\mysqld.exe");     
+        
+        LoginPage page = LoginPage.getRef();
+        //Sell page = Sell.getRef();
+        //page.setFlagTime();
+        //page.setTime();
         page.setVisible(true);
         page.setSize(1266, 668);
         page.setLocationRelativeTo(null);
         createFrame();
+        //setAccess();
         
     }
     // for change frame
@@ -30,6 +35,7 @@ public class RakibsTraders {
         dest.setLocationRelativeTo(null);
         dest.setVisible(true);
         source.setVisible(false); 
+        //setAccess();
     }
     
     public static void popUp(JFrame pop){
@@ -45,8 +51,8 @@ public class RakibsTraders {
     }
     
     private static void createFrame() {
-        //Sell Sref = Sell.getRef();
-        //Sref.setVisible(false);
+        Sell Sref = Sell.getRef();
+        Sref.setVisible(false);
         Buy Bref = Buy.getRef();
         Bref.setVisible(false);
         Products Pref = Products.getRef();
@@ -59,4 +65,30 @@ public class RakibsTraders {
         Eref.setVisible(false);
     }
     
+    public static void setAccess(){
+        if(LoginPage.getRef().userAccess()==3){
+            Stock.getRef().hideField();
+        }
+        Sell.getRef().setAcsess(LoginPage.getRef().userAccess());
+        Buy.getRef().setAcsess(LoginPage.getRef().userAccess());
+        Settings.getRef().setAcsess(LoginPage.getRef().userAccess());
+        Reports.getRef().setAcsess(LoginPage.getRef().userAccess());
+        Expenses.getRef().setAcsess(LoginPage.getRef().userAccess());
+    }
+    
+    public static void close(){
+        Sell Sref = Sell.getRef();
+        Sref.dispose();
+        Buy Bref = Buy.getRef();
+        Bref.dispose();
+        Products Pref = Products.getRef();
+        Pref.dispose();
+        Stock Stref = Stock.getRef();
+        Stref.dispose();
+        ReturnProducts Rref = ReturnProducts.getRef();
+        Rref.dispose();
+        Expenses Eref = Expenses.getRef();
+        Eref.dispose();
+        System.exit(0);
+    }
 }

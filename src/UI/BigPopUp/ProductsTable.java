@@ -1,14 +1,22 @@
 package UI.BigPopUp;
 
 import Database.DBConnectionProvider;
+import UI.Buy;
 import UI.PopUp.NoConnection;
+import UI.Products;
+import UI.Sell;
+import UI.Stock;
+import com.placeholder.PlaceHolder;
 import java.awt.List;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Objects;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import rakibs.traders.RakibsTraders;
@@ -22,10 +30,13 @@ public class ProductsTable extends javax.swing.JFrame {
     /**
      * Creates new form ProductsTable
      */
+    PlaceHolder place;
+    
     public ProductsTable() {
         initComponents();
         initTable();
         setIcon();
+        place = new PlaceHolder(jTextFieldSearchProduct,"Enter Product ID");
     }
 
     /**
@@ -42,50 +53,161 @@ public class ProductsTable extends javax.swing.JFrame {
 
         scrPaneTable = new javax.swing.JScrollPane();
         lblProductList = new javax.swing.JLabel();
+        jTextFieldSearchProduct = new javax.swing.JTextField();
+        jButtonGO = new javax.swing.JButton();
+        jButtonRefresh = new javax.swing.JButton();
         lblBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        getContentPane().add(scrPaneTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 1017, 440));
+        getContentPane().add(scrPaneTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 1020, 440));
 
         lblProductList.setFont(new java.awt.Font("Titillium", 0, 22)); // NOI18N
         lblProductList.setForeground(new java.awt.Color(67, 196, 114));
         lblProductList.setText("Product List");
         getContentPane().add(lblProductList, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 304, 43));
 
+        jTextFieldSearchProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldSearchProductActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jTextFieldSearchProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 40, 260, 30));
+
+        jButtonGO.setBackground(new java.awt.Color(0, 0, 153));
+        jButtonGO.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jButtonGO.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonGO.setText("GO");
+        jButtonGO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonGOActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonGO, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 40, 60, 30));
+
+        jButtonRefresh.setBackground(new java.awt.Color(0, 0, 153));
+        jButtonRefresh.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButtonRefresh.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonRefresh.setText("REFRESH");
+        jButtonRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRefreshActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonRefresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 40, 110, 30));
+
         lblBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
         getContentPane().add(lblBackground, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -360, 2540, 1380));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    private DefaultTableModel data = new DefaultTableModel(new String[]{"Product ID","MODEL", "Company Name", "Dimension" ,"Pcs Per Box", "Item Unit" ,"Purchase Price","Sell Price"}, 0);
+    
+    private void getTheSearchDone(){
+        String SearchProductID = jTextFieldSearchProduct.getText();
+        
+        if(SearchProductID.startsWith("#")){
+            data.getDataVector().removeAllElements();
+            table.setModel(data);
+            scrPaneTable.getViewport().add(table);
 
-    // for showing table
-    /*
-     Connection con = DBConnectionProvider.getDBConnection();
-        String query= "select * from products";
-        try{
-            Statement stmt = con.createStatement();
-            ResultSet rs= stmt.executeQuery(query);
-            if(rs.next()){
-                do{
-                System.out.println(rs.getString("products_id"));
-                System.out.println(rs.getString("company_name"));
-                System.out.println(rs.getString("model"));
-                System.out.println(rs.getString("dimension"));
-                System.out.println(Integer.toString(rs.getInt("pcs_per_box")));
-                System.out.println(Integer.toString(rs.getInt("item_unit")));
-                System.out.println(Double.toString(rs.getInt("purchase_price")));
-                System.out.println(Double.toString(rs.getInt("selling_price")));
-                System.out.println(rs.getString("notes"));
-                }while(rs.next());
+            
+            Connection con = DBConnectionProvider.getDBConnection();
+            String query = "select * from products where products_id = ?";
+
+            try{
+                PreparedStatement pstmt2 = con.prepareStatement(query);
+                pstmt2.setString(1,SearchProductID );
+                ResultSet rs = pstmt2.executeQuery();
+
+
+                if(rs.next()){
+                    do{ 
+                        String col1 = rs.getString("products_id");
+                        String col2 = rs.getString("model");
+                        String col3 = rs.getString("company_name");
+                        String col4 = rs.getString("dimension");
+                        Integer col5 = rs.getInt("pcs_per_box");
+                        String col6 = rs.getString("item_unit");
+                        String col7 = Double.toString(rs.getDouble("purchase_price"));
+                        String col8 = Double.toString(rs.getDouble("selling_price"));
+                        
+                        data.addRow(new Object[]{col1, col2, col3, col4, col5,col6,col7,col8});
+                    }while(rs.next());
+                    table.setModel(data);
+                    rs.close();
+                }
+
+            }catch(Exception ex){
+                System.out.println("No database connection"+ex);
+                NoConnection no = new NoConnection();
+                RakibsTraders.popUp(no);
             }
+        }
+        else
+        {
+            data.getDataVector().removeAllElements();
+            table.setModel(data);
+            scrPaneTable.getViewport().add(table);
 
-        }catch(Exception ex){
-            System.out.println("No database connection"+ex);
-            /*NoConnection no = new NoConnection();
-            RakibsTraders.popUp(no);*/
-  //      }
-   // */
+            
+            Connection con = DBConnectionProvider.getDBConnection();
+            String query = "select * from products where model = ?";
+
+            try{
+                PreparedStatement pstmt2 = con.prepareStatement(query);
+                pstmt2.setString(1,SearchProductID );
+                ResultSet rs = pstmt2.executeQuery();
+
+
+                if(rs.next()){
+                    do{ 
+                        String col1 = rs.getString("products_id");
+                        String col2 = rs.getString("model");
+                        String col3 = rs.getString("company_name");
+                        String col4 = rs.getString("dimension");
+                        Integer col5 = rs.getInt("pcs_per_box");
+                        String col6 = rs.getString("item_unit");
+                        String col7 = Double.toString(rs.getDouble("purchase_price"));
+                        String col8 = Double.toString(rs.getDouble("selling_price"));
+                        
+                        data.addRow(new Object[]{col1, col2, col3, col4, col5,col6,col7,col8});
+                    }while(rs.next());
+                    table.setModel(data);
+                    rs.close();
+                }
+
+            }catch(Exception ex){
+                System.out.println("No database connection"+ex);
+                NoConnection no = new NoConnection();
+                RakibsTraders.popUp(no);
+            }
+        }
+    }
+    
+    
+    
+    private void jButtonGOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGOActionPerformed
+        // TODO add your handling code here:
+           getTheSearchDone();
+    }//GEN-LAST:event_jButtonGOActionPerformed
+
+    private void jButtonRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRefreshActionPerformed
+        // TODO add your handling code here:
+        data.getDataVector().removeAllElements();
+        table.setModel(data);
+        scrPaneTable.getViewport().add(table);
+        setData();
+    }//GEN-LAST:event_jButtonRefreshActionPerformed
+
+    private void jTextFieldSearchProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSearchProductActionPerformed
+        // TODO add your handling code here:
+        getTheSearchDone();
+        
+    }//GEN-LAST:event_jTextFieldSearchProductActionPerformed
+
+    
     /**
      * @param args the command line arguments
      */
@@ -141,8 +263,8 @@ public class ProductsTable extends javax.swing.JFrame {
                     String col4 = rs.getString("dimension");
                     String col5 = Integer.toString(rs.getInt("pcs_per_box"));
                     String col6 = rs.getString("item_unit");
-                    String col7 = Double.toString(rs.getInt("purchase_price"));
-                    String col8 = Double.toString(rs.getInt("selling_price"));
+                    String col7 = Double.toString(rs.getDouble("purchase_price"));
+                    String col8 = Double.toString(rs.getDouble("selling_price"));
                     data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8});
                 }while(rs.next());
                 table.setModel(data);
@@ -157,10 +279,14 @@ public class ProductsTable extends javax.swing.JFrame {
     }
 
     //custom variable
-    JTable table = new JTable();
+    private JTable table = new JTable();
+    private JFrame caller;
     //end of custom variable
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonGO;
+    private javax.swing.JButton jButtonRefresh;
+    private javax.swing.JTextField jTextFieldSearchProduct;
     private javax.swing.JLabel lblBackground;
     private javax.swing.JLabel lblProductList;
     private javax.swing.JScrollPane scrPaneTable;
@@ -170,4 +296,16 @@ public class ProductsTable extends javax.swing.JFrame {
         this.setIconImage(new ImageIcon(getClass().getResource("/Resources/Icons/Icon.png")).getImage());
     }
 
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            caller.setEnabled(true);
+            dispose();
+        }
+    }
+    
+    
+    public void setCaller(JFrame frame){
+        this.caller = frame;
+    }
 }

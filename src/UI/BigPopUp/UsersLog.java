@@ -3,12 +3,14 @@ package UI.BigPopUp;
 import Database.DBConnectionProvider;
 import UI.PopUp.NoConnection;
 import java.awt.List;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Objects;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import rakibs.traders.RakibsTraders;
@@ -39,10 +41,10 @@ public class UsersLog extends javax.swing.JFrame {
 
         scrPaneTable = new javax.swing.JScrollPane();
         lblExpenseHistory = new javax.swing.JLabel();
-        lblTime = new javax.swing.JLabel();
         lblBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         getContentPane().add(scrPaneTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 1017, 410));
 
@@ -50,11 +52,6 @@ public class UsersLog extends javax.swing.JFrame {
         lblExpenseHistory.setForeground(new java.awt.Color(67, 196, 114));
         lblExpenseHistory.setText("USERS LOGS");
         getContentPane().add(lblExpenseHistory, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 30, 304, 43));
-
-        lblTime.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        lblTime.setForeground(new java.awt.Color(255, 255, 255));
-        lblTime.setText("Time: ");
-        getContentPane().add(lblTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 30, 230, 30));
 
         lblBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
         getContentPane().add(lblBackground, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -360, 2540, 1380));
@@ -145,23 +142,18 @@ public class UsersLog extends javax.swing.JFrame {
     }
     
     private void setData(){
-        DefaultTableModel data = new DefaultTableModel(new String[]{"Products ID", "Company Name", "Model", "Dimension", "Pcs per Box", "Item Unit", "Purchase Price", "Selling price"}, 0);
+        DefaultTableModel data = new DefaultTableModel(new String[]{"User Name", "Log In", "Log Out"}, 0);
         Connection con = DBConnectionProvider.getDBConnection();
-        String query= "select * from products";
+        String query= "select * from user_log order by log_in desc";
         try{
             Statement stmt = con.createStatement();
             ResultSet rs= stmt.executeQuery(query);
             if(rs.next()){
                 do{
-                    String col1 = rs.getString("products_id");
-                    String col2 = rs.getString("company_name");
-                    String col3 = rs.getString("model");
-                    String col4 = rs.getString("dimension");
-                    String col5 = Integer.toString(rs.getInt("pcs_per_box"));
-                    String col6 = rs.getString("item_unit");
-                    String col7 = Double.toString(rs.getInt("purchase_price"));
-                    String col8 = Double.toString(rs.getInt("selling_price"));
-                    data.addRow(new Object[]{col1, col2, col3, col4, col5, col6, col7, col8});
+                    String col1 = rs.getString("user_name");
+                    String col2 = rs.getString("log_in");
+                    String col3 = rs.getString("log_out");
+                    data.addRow(new Object[]{col1, col2, col3});
                 }while(rs.next());
                 table.setModel(data);
                 rs.close();
@@ -175,13 +167,13 @@ public class UsersLog extends javax.swing.JFrame {
     }
 
     //custom variable
-    JTable table = new JTable();
+    private JTable table = new JTable();
+    private JFrame caller;
     //end of custom variable
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblBackground;
     private javax.swing.JLabel lblExpenseHistory;
-    private javax.swing.JLabel lblTime;
     private javax.swing.JScrollPane scrPaneTable;
     // End of variables declaration//GEN-END:variables
    
@@ -189,4 +181,15 @@ public class UsersLog extends javax.swing.JFrame {
         this.setIconImage(new ImageIcon(getClass().getResource("/Resources/Icons/Icon.png")).getImage());
     }
 
+    public void setCaller(JFrame frame){
+        this.caller = frame;
+    }
+    
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+                caller.setEnabled(true);
+                dispose();
+        }
+    }
 }

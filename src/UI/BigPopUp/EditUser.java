@@ -6,13 +6,16 @@ import Others.Functions;
 import UI.BigPopUp.ProductsTable;
 import UI.BigPopUp.ViewStock;
 import UI.Buy;
-import UI.Dashboard;
 import UI.Expenses;
 import UI.LoginPage;
-import UI.PopUp.Delete;
+import UI.PopUp.DataDeleted;
+import UI.PopUp.DeleteProducts;
+import UI.PopUp.InsertUserName;
+import UI.PopUp.NoChangeOfAdmin;
 import UI.PopUp.NoConnection;
 import UI.PopUp.Save;
 import UI.PopUp.Updated;
+import UI.PopUp.WrongPass;
 import UI.ReturnProducts;
 import UI.Sell;
 import UI.Settings;
@@ -25,11 +28,13 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import static java.lang.Thread.sleep;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.annotation.Resources.*;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import rakibs.traders.RakibsTraders;
 
 /**
@@ -44,9 +49,16 @@ public class EditUser extends javax.swing.JFrame {
     public EditUser() {
         initComponents();
         //initComboCompanyName();
-        initComboProductID();
         setIcon();
         //setTime();
+        jLabel1Right.setVisible(false);
+        jLabelEror.setVisible(false);
+        jLabel1Right1.setVisible(false);
+        jLabelEror1.setVisible(false);
+        jLabel1Right2.setVisible(true);
+        jLabel1Right3.setVisible(false);
+        jLabelEror2.setVisible(false);
+        jLabel1Right2.setVisible(false);
     }
     
     //Rafis legendary of reference
@@ -67,7 +79,6 @@ public class EditUser extends javax.swing.JFrame {
         jButtonDelete = new javax.swing.JButton();
         lblStartingDate = new javax.swing.JLabel();
         txtUserNameValue = new javax.swing.JTextField();
-        lblTime = new javax.swing.JLabel();
         userPassF = new javax.swing.JPasswordField();
         btnRefrash1 = new javax.swing.JButton();
         jButtonSubmit1 = new javax.swing.JButton();
@@ -80,6 +91,17 @@ public class EditUser extends javax.swing.JFrame {
         userPassF2 = new javax.swing.JPasswordField();
         jButtonSave = new javax.swing.JButton();
         jButtonUpdate = new javax.swing.JButton();
+        jLabel1Right = new javax.swing.JLabel();
+        jLabelEror = new javax.swing.JLabel();
+        lblStartingDate3 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jLabel1Right1 = new javax.swing.JLabel();
+        jLabel1Right2 = new javax.swing.JLabel();
+        jLabelEror1 = new javax.swing.JLabel();
+        jLabel1Right3 = new javax.swing.JLabel();
+        jLabelEror2 = new javax.swing.JLabel();
+        lblStartingDate4 = new javax.swing.JLabel();
+        jComboBox2 = new javax.swing.JComboBox<>();
         Background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -114,12 +136,12 @@ public class EditUser extends javax.swing.JFrame {
                 jButtonDeleteActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 460, 130, 30));
+        getContentPane().add(jButtonDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 540, 130, 30));
 
         lblStartingDate.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblStartingDate.setForeground(new java.awt.Color(255, 255, 255));
-        lblStartingDate.setText("Password :");
-        getContentPane().add(lblStartingDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 190, 103, 23));
+        lblStartingDate.setText("User Level:");
+        getContentPane().add(lblStartingDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 230, 103, 23));
 
         txtUserNameValue.setForeground(new java.awt.Color(204, 204, 204));
         txtUserNameValue.setText("User Name");
@@ -137,11 +159,6 @@ public class EditUser extends javax.swing.JFrame {
             }
         });
         getContentPane().add(txtUserNameValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 160, 380, 23));
-
-        lblTime.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        lblTime.setForeground(new java.awt.Color(255, 255, 255));
-        lblTime.setText("Time: ");
-        getContentPane().add(lblTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 50, 230, 30));
 
         userPassF.setFont(new java.awt.Font("Titillium", 0, 14)); // NOI18N
         userPassF.setToolTipText("Password");
@@ -187,12 +204,12 @@ public class EditUser extends javax.swing.JFrame {
         lblPageTitle1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         lblPageTitle1.setForeground(new java.awt.Color(67, 196, 114));
         lblPageTitle1.setText("UPDATE / DELETE USER");
-        getContentPane().add(lblPageTitle1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 280, 230, 43));
+        getContentPane().add(lblPageTitle1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 320, 230, 43));
 
         lbUSERNAME1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lbUSERNAME1.setForeground(new java.awt.Color(255, 255, 255));
         lbUSERNAME1.setText("USER NAME");
-        getContentPane().add(lbUSERNAME1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 330, 130, 23));
+        getContentPane().add(lbUSERNAME1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 370, 130, 23));
 
         txtUserNameValue1.setForeground(new java.awt.Color(204, 204, 204));
         txtUserNameValue1.setText("User Name");
@@ -209,7 +226,7 @@ public class EditUser extends javax.swing.JFrame {
                 txtUserNameValue1ActionPerformed(evt);
             }
         });
-        getContentPane().add(txtUserNameValue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 330, 380, 23));
+        getContentPane().add(txtUserNameValue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 370, 380, 23));
 
         userPassF1.setFont(new java.awt.Font("Titillium", 0, 14)); // NOI18N
         userPassF1.setToolTipText("Password");
@@ -231,17 +248,17 @@ public class EditUser extends javax.swing.JFrame {
                 userPassF1KeyPressed(evt);
             }
         });
-        getContentPane().add(userPassF1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 360, 380, 30));
+        getContentPane().add(userPassF1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 400, 380, 30));
 
         lblStartingDate1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblStartingDate1.setForeground(new java.awt.Color(255, 255, 255));
-        lblStartingDate1.setText("NEW Password :");
-        getContentPane().add(lblStartingDate1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 360, 103, 23));
+        lblStartingDate1.setText("OLD Password :");
+        getContentPane().add(lblStartingDate1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 400, 103, 23));
 
         lblStartingDate2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblStartingDate2.setForeground(new java.awt.Color(255, 255, 255));
-        lblStartingDate2.setText("OLD Password :");
-        getContentPane().add(lblStartingDate2, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 400, 103, 23));
+        lblStartingDate2.setText("NEW Password :");
+        getContentPane().add(lblStartingDate2, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 440, 103, 23));
 
         userPassF2.setFont(new java.awt.Font("Titillium", 0, 14)); // NOI18N
         userPassF2.setToolTipText("Password");
@@ -263,7 +280,7 @@ public class EditUser extends javax.swing.JFrame {
                 userPassF2KeyPressed(evt);
             }
         });
-        getContentPane().add(userPassF2, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 400, 380, 30));
+        getContentPane().add(userPassF2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 440, 380, 30));
 
         jButtonSave.setBackground(new java.awt.Color(67, 196, 114));
         jButtonSave.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
@@ -274,7 +291,7 @@ public class EditUser extends javax.swing.JFrame {
                 jButtonSaveActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 240, 130, 30));
+        getContentPane().add(jButtonSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 280, 130, 30));
 
         jButtonUpdate.setBackground(new java.awt.Color(0, 0, 153));
         jButtonUpdate.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
@@ -285,7 +302,54 @@ public class EditUser extends javax.swing.JFrame {
                 jButtonUpdateActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 460, 130, 30));
+        getContentPane().add(jButtonUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 540, 130, 30));
+
+        jLabel1Right.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/verified(1).png"))); // NOI18N
+        getContentPane().add(jLabel1Right, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 150, 70, 40));
+
+        jLabelEror.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/error(1).png"))); // NOI18N
+        getContentPane().add(jLabelEror, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 150, 70, 40));
+
+        lblStartingDate3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblStartingDate3.setForeground(new java.awt.Color(255, 255, 255));
+        lblStartingDate3.setText("Password :");
+        getContentPane().add(lblStartingDate3, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 190, 103, 23));
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Moderator", "User", "Guest"}) );
+        jComboBox1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jComboBox1FocusGained(evt);
+            }
+        });
+        getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 230, 380, 30));
+
+        jLabel1Right1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/verified(1).png"))); // NOI18N
+        getContentPane().add(jLabel1Right1, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 180, 70, 50));
+
+        jLabel1Right2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/verified(1).png"))); // NOI18N
+        getContentPane().add(jLabel1Right2, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 360, 70, 40));
+
+        jLabelEror1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/error(1).png"))); // NOI18N
+        getContentPane().add(jLabelEror1, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 360, 70, 40));
+
+        jLabel1Right3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/verified(1).png"))); // NOI18N
+        getContentPane().add(jLabel1Right3, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 400, 70, 40));
+
+        jLabelEror2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/error(1).png"))); // NOI18N
+        getContentPane().add(jLabelEror2, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 400, 70, 40));
+
+        lblStartingDate4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblStartingDate4.setForeground(new java.awt.Color(255, 255, 255));
+        lblStartingDate4.setText("User Level:");
+        getContentPane().add(lblStartingDate4, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 480, 103, 23));
+
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Moderator", "User", "Guest"}) );
+        jComboBox2.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jComboBox2FocusGained(evt);
+            }
+        });
+        getContentPane().add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 480, 380, 30));
 
         Background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
         getContentPane().add(Background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1280, 669));
@@ -296,17 +360,73 @@ public class EditUser extends javax.swing.JFrame {
     private void lblHomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHomeMouseClicked
         // TODO add your handling code here:
         
-        Dashboard page = new Dashboard();
-        RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_lblHomeMouseClicked
 
     private void jButtonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonDeleteActionPerformed
         // TODO add your handling code here:
+        Connection con = DBConnectionProvider.getDBConnection();
+        String query = "DELETE FROM user_list WHERE user_name = ?";
+        String query2 = "select * from user_list where user_name = ?";
+       
+        char[] passArray1 = userPassF1.getPassword();
+        String pass = String.valueOf(passArray1);
+        
+        if( txtUserNameValue.getText().equals("User Name") ){
+            NoChangeOfAdmin page = new NoChangeOfAdmin();
+            RakibsTraders.popUp(page);
+        }
+        
+        else if( !txtUserNameValue1.getText().equals("") ){
+            
+            try {
+                PreparedStatement pstmt = con.prepareStatement(query2);
+                pstmt.setString(1, txtUserNameValue1.getText());
+                ResultSet rs = pstmt.executeQuery();
+                
+                    String dbPass = "";
+                    while( rs.next() ){
+                        dbPass = rs.getString("user_password");
+                    }
+                    
+                    rs.close();
+                    if( dbPass.equals(pass) ){
+                        try {
+                        pstmt = con.prepareStatement(query);
+                        pstmt.setString(1, txtUserNameValue1.getText() );
+                        pstmt.executeUpdate();
+                        DataDeleted page = new DataDeleted();
+                        page.setMessage("User");
+                        RakibsTraders.popUp(page);
+                        
+                       jLabel1Right2.setVisible(false);
+                       jLabel1Right3.setVisible(false);
+                       txtUserNameValue1.setText("");
+                       userPassF1.setText("");
+                       userPassF2.setText("");
+                        
+
+                    } catch (SQLException ex) {
+                            Logger.getLogger(Functions.class.getName()).log(Level.SEVERE, null, ex);
+                            System.out.println("Failed to get DBConn:: "+ex.getMessage());
+                            NoConnection no = new NoConnection();
+                            RakibsTraders.popUp(no);
+                    }
+
+                    }
+            }
+            catch( Exception ex){
+                Logger.getLogger(Functions.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Failed to get DBConn:: "+ex.getMessage());
+                NoConnection no = new NoConnection();
+                RakibsTraders.popUp(no);
+                
+            }
+        }
     }//GEN-LAST:event_jButtonDeleteActionPerformed
 
     private void txtUserNameValueFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtUserNameValueFocusGained
         // TODO add your handling code here:
-        if( txtUserNameValue.getText().equals("Product ID")){
+        if( txtUserNameValue.getText().equals("User Name")){
             this.txtUserNameValue.setText("");
         }
         this.txtUserNameValue.setForeground(Color.BLACK);
@@ -323,16 +443,68 @@ public class EditUser extends javax.swing.JFrame {
     private void userPassFFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_userPassFFocusGained
         userPassF.setText("");
         userPassF.setForeground(Color.black);
+        jLabel1Right.setVisible(false);
+        jLabelEror.setVisible(false);
+
+        
+        if( !txtUserNameValue.getText().equals("User Name") ){
+            if( checkUserName(txtUserNameValue.getText(),1) ){
+                jLabel1Right.setVisible(true);
+            }
+            else{
+                txtUserNameValue.grabFocus();
+            }
+        }
+        else{
+            txtUserNameValue.grabFocus();
+            jLabelEror.setVisible(false);
+            InsertUserName page = new InsertUserName();
+            RakibsTraders.popUp(page);
+            
+        }
+
+        
 //        lblPassInvalid.setVisible(false);
     }//GEN-LAST:event_userPassFFocusGained
 
     private void userPassFFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_userPassFFocusLost
         userPassF.setForeground(Color.GRAY);
     }//GEN-LAST:event_userPassFFocusLost
-
+    
+    private boolean checkUserName( String testName, int test  ){
+        boolean check = true;
+        Connection con = DBConnectionProvider.getDBConnection();
+        String query = "select * from user_list where user_name = ?"; 
+        
+        PreparedStatement pstmt;
+        try {
+            pstmt = con.prepareStatement( query );
+            pstmt.setString( 1, testName );
+            ResultSet rs = pstmt.executeQuery();
+        
+            if( rs.next() ) {
+                if(test == 1 ) jLabelEror.setVisible(true); // if it is 1 then show it in the right position else no need. This is for me , i will use same method 2 time
+                return check = false;
+            }
+            else{
+                return check = true;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(EditUser.class.getName()).log(Level.SEVERE, null, ex);
+            NoConnection page = new NoConnection();
+            RakibsTraders.popUp(page);
+        }
+        
+        return check;
+    }
+    
+    
     private void userPassFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userPassFActionPerformed
         // TODO add your handling code here:
-//        btnGoActionPerformed(evt);
+        
+       
+
     }//GEN-LAST:event_userPassFActionPerformed
 
     private void userPassFKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_userPassFKeyPressed
@@ -341,16 +513,37 @@ public class EditUser extends javax.swing.JFrame {
 
     private void btnRefrash1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefrash1ActionPerformed
         // TODO add your handling code here:
+        jLabel1Right2.setVisible(false);
+        jLabel1Right3.setVisible(false);
+        txtUserNameValue1.setText("");
+        userPassF1.setText("");
+        userPassF2.setText("");
+        txtUserNameValue.setText("User Name");
+        txtUserNameValue.setForeground(new Color(204,204,204));
+        userPassF.setText("");
+        jLabel1Right.setVisible(false);
+        jLabel1Right1.setVisible(false);
+        
     }//GEN-LAST:event_btnRefrash1ActionPerformed
 
     private void jButtonSubmit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSubmit1ActionPerformed
         // TODO add your handling code here:
         UserList page = new UserList();
+        page.setCaller(this);
         RakibsTraders.bigPopUp(page);
+        this.setEnabled(false);
     }//GEN-LAST:event_jButtonSubmit1ActionPerformed
 
+    
+    
     private void txtUserNameValue1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtUserNameValue1FocusGained
         // TODO add your handling code here:
+        
+        txtUserNameValue1.setText("");
+        txtUserNameValue1.setForeground(Color.black);
+        
+        
+        
     }//GEN-LAST:event_txtUserNameValue1FocusGained
 
     private void txtUserNameValue1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtUserNameValue1FocusLost
@@ -363,6 +556,42 @@ public class EditUser extends javax.swing.JFrame {
 
     private void userPassF1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_userPassF1FocusGained
         // TODO add your handling code here:
+        String user = txtUserNameValue1.getText();
+        Connection con = DBConnectionProvider.getDBConnection();
+        PreparedStatement pstmt;
+        String query = "select * from user_list where user_name = ?";
+        
+        
+        if( !checkUserName(user, 0) ){
+            jLabelEror1.setVisible(false);
+            jLabel1Right2.setVisible(true);
+            
+            try {
+                pstmt = con.prepareStatement(query);
+                pstmt.setString(1, user);
+                ResultSet rs = pstmt.executeQuery();
+                
+                String lev = "";
+                while( rs.next() ){
+                    lev = rs.getString("access_level");
+                }
+                rs.close();
+                jComboBox2.setSelectedItem(lev + "");
+                
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(EditUser.class.getName()).log(Level.SEVERE, null, ex);
+                NoConnection page = new NoConnection();
+                RakibsTraders.popUp(page);
+            }
+            
+            
+        }
+        else{
+            jLabel1Right2.setVisible(false);
+            jLabelEror1.setVisible(true);
+        }
+        
     }//GEN-LAST:event_userPassF1FocusGained
 
     private void userPassF1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_userPassF1FocusLost
@@ -379,6 +608,44 @@ public class EditUser extends javax.swing.JFrame {
 
     private void userPassF2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_userPassF2FocusGained
         // TODO add your handling code here:
+       String user = txtUserNameValue1.getText();
+       char[] passArray = userPassF1.getPassword();
+       String oldPass = String.valueOf(passArray);
+       
+       String query = "select user_password from user_list where user_name = ?";
+       Connection con = DBConnectionProvider.getDBConnection();
+       PreparedStatement pstmt;
+        try {
+            pstmt = con.prepareStatement(query);
+            pstmt.setString(1, user);
+            ResultSet rs = pstmt.executeQuery();
+            
+            if( rs.next() ){
+                String pass = rs.getString("user_password");
+//                System.err.println(pass);
+                if( pass.equals(oldPass) ){
+                    jLabelEror2.setVisible(false);
+                    jLabel1Right3.setVisible(true);
+                }
+                else{
+                    jLabel1Right3.setVisible(false);
+                    jLabelEror2.setVisible(true);
+                }
+            }
+            else{
+                userPassF1.grabFocus();
+                jLabelEror2.setVisible(true);
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(EditUser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+       
+       
+       
+        
+        
     }//GEN-LAST:event_userPassF2FocusGained
 
     private void userPassF2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_userPassF2FocusLost
@@ -395,11 +662,126 @@ public class EditUser extends javax.swing.JFrame {
 
     private void jButtonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveActionPerformed
         // TODO add your handling code here:
+        
+       String user = txtUserNameValue.getText();
+       char[] passArray = userPassF.getPassword();
+       String pass = String.valueOf(passArray);
+       
+       if( !pass.equals("") ){
+            Connection con = DBConnectionProvider.getDBConnection();
+            String query = "insert into user_list values(?,?,?)";
+            
+            PreparedStatement pstmt;
+           try {
+               pstmt = con.prepareStatement(query);
+               pstmt.setString(1, txtUserNameValue.getText());
+               pstmt.setString(2, pass );
+               pstmt.setString(3, "" + (jComboBox1.getSelectedItem()));
+               pstmt.executeUpdate();
+               Updated page = new Updated();
+               RakibsTraders.popUp(page);
+               
+               txtUserNameValue.setText("User Name");
+               txtUserNameValue.setForeground(new Color(204,204,204));
+               userPassF.setText("");
+               jLabel1Right.setVisible(false);
+               jLabel1Right1.setVisible(false);
+               
+           } catch (SQLException ex) {
+               NoConnection page = new NoConnection();
+               RakibsTraders.popUp(page);
+               Logger.getLogger(EditUser.class.getName()).log(Level.SEVERE, null, ex);
+           }
+           
+            
+       }
     }//GEN-LAST:event_jButtonSaveActionPerformed
 
     private void jButtonUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonUpdateActionPerformed
         // TODO add your handling code here:
+        Connection con = DBConnectionProvider.getDBConnection();
+        String query = "update user_list set user_password = ? , access_level = ? where user_name = ?";
+        String query2 = "select * from user_list where user_name = ?";
+        String user = txtUserNameValue1.getText() ;
+        
+        char[] passArray = userPassF1.getPassword();
+        String pass = String.valueOf(passArray);
+        
+        char[] passArray1 = userPassF2.getPassword();
+        String pass2 = String.valueOf(passArray1);
+        
+        if( !user.equals("") && !pass.equals("") ){
+            System.err.println(user + " " + pass );
+            try {
+                PreparedStatement pstmt = con.prepareStatement(query2);
+                pstmt.setString(1, user);
+                ResultSet rs = pstmt.executeQuery();
+                
+                    String dbPass = "";
+                    while( rs.next() ){
+                        dbPass = rs.getString("user_password");
+                    }
+                    
+                    rs.close();
+                    if( dbPass.equals(pass) ){
+                       PreparedStatement pstmt2 = con.prepareStatement(query);
+                       String acc_lev = jComboBox2.getSelectedItem()+"";
+                       
+                       pstmt2.setString(1, pass2);
+                       if( user.equals("admin") ){
+                           acc_lev = "admin"; //so that nobody can not change the power of admin. 
+                       }
+                       
+                       pstmt2.setString(2, acc_lev);
+                       pstmt2.setString(3, user);
+                       pstmt2.executeUpdate();
+                       
+                       Updated page = new Updated();
+                       RakibsTraders.popUp(page);
+                       
+                       jLabel1Right2.setVisible(false);
+                       jLabel1Right3.setVisible(false);
+                       txtUserNameValue1.setText("");
+                       userPassF1.setText("");
+                       userPassF2.setText("");
+                    }
+                    else{
+                        WrongPass page = new WrongPass();
+                        RakibsTraders.popUp(page);
+                    }
+               
+            
+            } catch (SQLException ex) {
+                Logger.getLogger(EditUser.class.getName()).log(Level.SEVERE, null, ex);
+                NoConnection page = new NoConnection();
+                RakibsTraders.popUp(page);
+            }
+            
+            
+        }
+        
+        
+        
     }//GEN-LAST:event_jButtonUpdateActionPerformed
+
+    private void jComboBox1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jComboBox1FocusGained
+        // TODO add your handling code here:
+       String user = txtUserNameValue.getText();
+       char[] passArray = userPassF.getPassword();
+       String pass = String.valueOf(passArray);
+        
+        if( pass.equals("") ){
+            userPassF.grabFocus();
+        }
+        else{
+            jLabel1Right1.setVisible(true);
+        }
+        
+    }//GEN-LAST:event_jComboBox1FocusGained
+
+    private void jComboBox2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jComboBox2FocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox2FocusGained
 
     
     /**
@@ -459,6 +841,15 @@ public class EditUser extends javax.swing.JFrame {
     private javax.swing.JButton jButtonSave;
     private javax.swing.JButton jButtonSubmit1;
     private javax.swing.JButton jButtonUpdate;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JLabel jLabel1Right;
+    private javax.swing.JLabel jLabel1Right1;
+    private javax.swing.JLabel jLabel1Right2;
+    private javax.swing.JLabel jLabel1Right3;
+    private javax.swing.JLabel jLabelEror;
+    private javax.swing.JLabel jLabelEror1;
+    private javax.swing.JLabel jLabelEror2;
     private javax.swing.JLabel lbUSERNAME;
     private javax.swing.JLabel lbUSERNAME1;
     private javax.swing.JLabel lblHome;
@@ -467,7 +858,8 @@ public class EditUser extends javax.swing.JFrame {
     private javax.swing.JLabel lblStartingDate;
     private javax.swing.JLabel lblStartingDate1;
     private javax.swing.JLabel lblStartingDate2;
-    private javax.swing.JLabel lblTime;
+    private javax.swing.JLabel lblStartingDate3;
+    private javax.swing.JLabel lblStartingDate4;
     private javax.swing.JTextField txtUserNameValue;
     private javax.swing.JTextField txtUserNameValue1;
     private javax.swing.JPasswordField userPassF;
@@ -482,6 +874,7 @@ public class EditUser extends javax.swing.JFrame {
     private ArrayList<String> dimension = new ArrayList<>();
     private static EditUser ref;
     private Integer flagTime = 0;
+    private JFrame caller;
     //end custom varibles
     
 //    public static EditUser getRef(){
@@ -490,18 +883,6 @@ public class EditUser extends javax.swing.JFrame {
 //        return ref;
 //    }
     
-    private void clearField() {
-//         this.txtFieldEmployeeIDValue.setText("");
-//         this.txtFieldCompanyName.setText("");
-//         this.txtFieldDimension.setText("");
-//         this.txtFieldStartingDateValue.setText("");
-//         this.txtFieldItemUnit.setText("");
-//         this.txtFieldPcsPerBox.setText("");
-//         this.txtFieldPurchasePrice.setText("");
-//         this.txtFieldSellingPrice.setText("");
-//         this.txtAreanotes.setText("");
-         initComboProductID();
-    }
     
     private void setIcon(){
         this.setIconImage(new ImageIcon(getClass().getResource("/Resources/Icons/Icon.png")).getImage());
@@ -514,60 +895,19 @@ public class EditUser extends javax.swing.JFrame {
             flagTime=0;
     }
      
-     public void setTime(){
-        new Thread(){
-            public void run(){
-                if(flagTime==1){
-                    SimpleDateFormat dFormat = new SimpleDateFormat("dd/MM/yyyy");
-                    Date d = new Date();
-                    String date = dFormat.format(d);
-                    int sec;
-                    int hour;
-                    int min;
-                    int am_pm;
-                    while(flagTime==1/* && new GregorianCalendar().get(Calendar.SECOND)!=fsec*/){
-                        Calendar cal = new GregorianCalendar();
-                        sec = cal.get(Calendar.SECOND);
-                        System.out.println(sec);
-                        hour = cal.get(Calendar.HOUR);
-                        min = cal.get(Calendar.MINUTE);
-                        am_pm = cal.get(Calendar.AM_PM);
-                        if(am_pm == 0){
-                            String time = "Time: " + hour + " : " + min + " : " + sec + " " + "AM" + " Date: " + date;
-                            lblTime.setText(time);
-                        }else {
-                            String time = "Time: " + hour + " : " + min + " : " + sec + " " + "PM" + " Date: " + date;
-                            lblTime.setText(time);
-                               }
-                        try {
-                            sleep(1000);
-                        } catch (InterruptedException ex) {
-                                Logger.getLogger(Sell.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                            
-                    }    
-                }
-            }
-        }.start();
+    
+    
+    
+    
+    public void setCaller(JFrame frame){
+        this.caller = frame;
     }
     
-    private void initComboProductID(){
-        productID = Functions.productID();
-//        Functions.setupAutoComplete(txtFieldEmployeeIDValue, productID); 
-    }
-    
-    private void initComboCompanyName(){
-        companyName = Functions.companyName();
-//        Functions.setupAutoComplete(txtFieldCompanyName, companyName); 
-    }
-    
-    private void initComboModel(String companyName){
-        model = Functions.model(companyName);
-//        Functions.setupAutoComplete(txtFieldStartingDateValue, model);
-    }
-    
-    private void initComboDimension(String companyName, String model){
-        dimension = Functions.dimension(companyName, model);
-//        Functions.setupAutoComplete(txtFieldDimension, dimension);
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+                caller.setEnabled(true);
+                dispose();
+        }
     }
 }

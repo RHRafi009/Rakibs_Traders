@@ -1,7 +1,18 @@
 package UI.PopUp;
 
+import Database.DBConnectionProvider;
 import Others.Functions;
+import UI.BigPopUp.Bills;
+import UI.BigPopUp.Invoice;
+import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import static jdk.nashorn.internal.objects.NativeString.trim;
+import rakibs.traders.RakibsTraders;
 
 /**
  *
@@ -26,14 +37,14 @@ public class AddPayment extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblInvoiceIDValue1 = new javax.swing.JLabel();
-        lblInvoiceID2 = new javax.swing.JLabel();
-        txtFieldTimeanddate2 = new javax.swing.JTextField();
+        lblIDValue = new javax.swing.JLabel();
+        lblID2 = new javax.swing.JLabel();
+        txtFieldTotalPaid = new javax.swing.JTextField();
         lblTimeanddate2 = new javax.swing.JLabel();
-        lblTimeanddate3 = new javax.swing.JLabel();
+        lblReceiptNo = new javax.swing.JLabel();
         lblTimeanddate4 = new javax.swing.JLabel();
         lblTimeanddate5 = new javax.swing.JLabel();
-        txtFieldTimeanddate3 = new javax.swing.JTextField();
+        txtFieldTimeanddateValue = new javax.swing.JTextField();
         jButtonAddPayment = new javax.swing.JButton();
         jComboBoxPaymentMethodValue = new javax.swing.JComboBox<>();
         lblPaymentType = new javax.swing.JLabel();
@@ -42,30 +53,29 @@ public class AddPayment extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setMinimumSize(new java.awt.Dimension(500, 300));
-        setPreferredSize(new java.awt.Dimension(510, 290));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        lblInvoiceIDValue1.setFont(new java.awt.Font("Titillium Web", 0, 24)); // NOI18N
-        lblInvoiceIDValue1.setForeground(new java.awt.Color(204, 204, 204));
-        lblInvoiceIDValue1.setText("#id");
-        getContentPane().add(lblInvoiceIDValue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 20, 240, -1));
+        lblIDValue.setFont(new java.awt.Font("Titillium Web", 0, 24)); // NOI18N
+        lblIDValue.setForeground(new java.awt.Color(204, 204, 204));
+        lblIDValue.setText("#id");
+        getContentPane().add(lblIDValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 20, 240, -1));
 
-        lblInvoiceID2.setFont(new java.awt.Font("Titillium Web", 0, 24)); // NOI18N
-        lblInvoiceID2.setForeground(new java.awt.Color(204, 204, 204));
-        lblInvoiceID2.setText("Invoice ID:");
-        getContentPane().add(lblInvoiceID2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 20, 170, -1));
-        getContentPane().add(txtFieldTimeanddate2, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 160, 180, 23));
+        lblID2.setFont(new java.awt.Font("Titillium Web", 0, 24)); // NOI18N
+        lblID2.setForeground(new java.awt.Color(204, 204, 204));
+        lblID2.setText("ID:");
+        getContentPane().add(lblID2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 20, 170, -1));
+        getContentPane().add(txtFieldTotalPaid, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 160, 180, 23));
 
         lblTimeanddate2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblTimeanddate2.setForeground(new java.awt.Color(255, 255, 255));
         lblTimeanddate2.setText("Total Paid:");
         getContentPane().add(lblTimeanddate2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 160, 103, 23));
 
-        lblTimeanddate3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblTimeanddate3.setForeground(new java.awt.Color(255, 255, 255));
-        lblTimeanddate3.setText("#No. ");
-        getContentPane().add(lblTimeanddate3, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 60, 103, 23));
+        lblReceiptNo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblReceiptNo.setForeground(new java.awt.Color(255, 255, 255));
+        lblReceiptNo.setText("#No. ");
+        getContentPane().add(lblReceiptNo, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 60, 103, 23));
 
         lblTimeanddate4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblTimeanddate4.setForeground(new java.awt.Color(255, 255, 255));
@@ -76,7 +86,7 @@ public class AddPayment extends javax.swing.JFrame {
         lblTimeanddate5.setForeground(new java.awt.Color(255, 255, 255));
         lblTimeanddate5.setText("Time & date:");
         getContentPane().add(lblTimeanddate5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 100, 103, 23));
-        getContentPane().add(txtFieldTimeanddate3, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 100, 180, 23));
+        getContentPane().add(txtFieldTimeanddateValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 100, 180, 23));
 
         jButtonAddPayment.setBackground(new java.awt.Color(67, 196, 114));
         jButtonAddPayment.setFont(new java.awt.Font("Titillium Web", 1, 12)); // NOI18N
@@ -106,6 +116,52 @@ public class AddPayment extends javax.swing.JFrame {
 
     private void jButtonAddPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddPaymentActionPerformed
         // TODO add your handling code here:
+         Connection con = DBConnectionProvider.getDBConnection();
+            String query = "INSERT INTO payment (`ID`, `receipt_ID`, `date`, `time`, `payment_method`, `paid_amount`) VALUES (?, ?, ?, ?, ?, ?)";
+            String dateAndTime = txtFieldTimeanddateValue.getText();     
+            String date = dateAndTime.substring(0,dateAndTime.indexOf(" "));
+            String time = dateAndTime.substring(dateAndTime.indexOf(" ") + 1);
+            
+            try{
+                PreparedStatement pstmt = con.prepareStatement(query);
+                pstmt.setString(1, lblIDValue.getText());
+                pstmt.setString(2, lblReceiptNo.getText());
+                String[] splitDate = date.split("/");
+                date = trim(splitDate[2]) + "-" + trim(splitDate[1]) + "-" + trim(splitDate[0]);
+                pstmt.setString(3, date);
+//                System.err.println( splitDate[0] + " " + splitDate[1] + " " + splitDate[2]);
+                pstmt.setString(4, time);
+                pstmt.setString(5, jComboBoxPaymentMethodValue.getSelectedItem().toString());
+                pstmt.setDouble(6, Double.parseDouble(txtFieldTotalPaid.getText()));
+                
+                if( Double.parseDouble(txtFieldTotalPaid.getText()) == 0.0 || txtFieldTotalPaid.getText().equals("")){
+                    NoValue page = new NoValue();
+                    RakibsTraders.popUp(page);
+                }
+                else if(flag==1){
+                    pstmt.executeUpdate();
+                    Invoice Ipage = Invoice.getRef();
+                    Ipage.setTables(lblIDValue.getText());
+                    Ipage.setPaymentFlag();
+                    caller.setEnabled(true);
+                    this.dispose();
+                }else if(flag==2){
+                    pstmt.executeUpdate();
+                    Bills Bpage = Bills.getRef();
+                    Bpage.setTables(lblIDValue.getText());
+                    Bpage.setPaymentFlag();
+                    caller.setEnabled(true);
+                    this.dispose();
+                }
+            } catch(Exception ex){
+                System.out.println("Failed to get DBConn:: "+ex.getMessage());
+                NoConnection no = new NoConnection();
+                RakibsTraders.popUp(no);
+            }
+        
+        
+        
+        
     }//GEN-LAST:event_jButtonAddPaymentActionPerformed
 
     /**
@@ -148,32 +204,54 @@ public class AddPayment extends javax.swing.JFrame {
     private javax.swing.JButton jButtonAddPayment;
     private javax.swing.JComboBox<String> jComboBoxPaymentMethodValue;
     private javax.swing.JLabel jLabelBackground;
-    private javax.swing.JLabel lblInvoiceID2;
-    private javax.swing.JLabel lblInvoiceIDValue1;
+    private javax.swing.JLabel lblID2;
+    private javax.swing.JLabel lblIDValue;
     private javax.swing.JLabel lblPaymentType;
+    private javax.swing.JLabel lblReceiptNo;
     private javax.swing.JLabel lblTimeanddate2;
-    private javax.swing.JLabel lblTimeanddate3;
     private javax.swing.JLabel lblTimeanddate4;
     private javax.swing.JLabel lblTimeanddate5;
-    private javax.swing.JTextField txtFieldTimeanddate2;
-    private javax.swing.JTextField txtFieldTimeanddate3;
+    private javax.swing.JTextField txtFieldTimeanddateValue;
+    private javax.swing.JTextField txtFieldTotalPaid;
     // End of variables declaration//GEN-END:variables
     
-    //custom variable
-    private String productID;
-    private String companyName;
-    private String model;
-    private String dimension;
-    //end of custom variable
+    //custom varaible
+    private int flag = 0;
+    private JFrame caller;
+    //end of custom varaible
+    
     
     private void setIcon(){
         this.setIconImage(new ImageIcon(getClass().getResource("/Resources/Icons/Icon.png")).getImage());
     }
     
-    public void setValue(String productID, String companyName, String model, String dimension){
-        this.productID = companyName;
-        this.companyName = companyName;
-        this.model = model;
-        this.dimension = dimension;
+    public void setValue(String ID, int flag){
+        this.flag = flag;
+        this.lblIDValue.setText(ID);
+        this.lblReceiptNo.setText(Integer.toString(Functions.receiptIdPayGenerator(ID)));
+        this.txtFieldTimeanddateValue.setText(setDateAndTime());
+        jComboBoxPaymentMethodValue.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cash", "Cheque", "Bank", "others" }));
+        
     }
+    
+    private String setDateAndTime(){
+        SimpleDateFormat dFormat = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+        Date d = new Date();
+        String datetime = dFormat.format(d);
+        return datetime;
+    }
+    
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            caller.setEnabled(true);
+            dispose();
+        }
+    }
+    
+    
+    public void setCaller(JFrame frame){
+        this.caller = frame;
+    }
+    
 }

@@ -6,10 +6,11 @@ import Others.Functions;
 import UI.BigPopUp.ProductsTable;
 import UI.BigPopUp.ViewStock;
 import UI.Buy;
-import UI.Dashboard;
 import UI.Expenses;
 import UI.LoginPage;
-import UI.PopUp.Delete;
+import UI.PopUp.DeleteProducts;
+import UI.PopUp.DeleteEmployee;
+import UI.PopUp.EditExpense;
 import UI.PopUp.NoConnection;
 import UI.PopUp.Save;
 import UI.PopUp.Updated;
@@ -25,11 +26,15 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import static java.lang.Thread.sleep;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.annotation.Resources.*;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import java.lang.Math;
+import static jdk.nashorn.internal.objects.NativeString.trim;
 import rakibs.traders.RakibsTraders;
 
 /**
@@ -44,7 +49,7 @@ public class Employee extends javax.swing.JFrame {
     public Employee() {
         initComponents();
         //initComboCompanyName();
-        initComboProductID();
+        initComboEmployeeID();
         setIcon();
         //setTime();
     }
@@ -67,7 +72,7 @@ public class Employee extends javax.swing.JFrame {
         lblPhone = new javax.swing.JLabel();
         lblAddress = new javax.swing.JLabel();
         lblSalary = new javax.swing.JLabel();
-        lblWorkdays = new javax.swing.JLabel();
+        lblOffDaysPerMonth = new javax.swing.JLabel();
         lblNotes = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtAreaNotes = new javax.swing.JTextArea();
@@ -81,13 +86,13 @@ public class Employee extends javax.swing.JFrame {
         txtFieldPhoneValue = new javax.swing.JTextField();
         txtFieldAddressValue = new javax.swing.JTextField();
         txtFieldSalaryValue = new javax.swing.JTextField();
-        lblTime = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabelNumberOfDaysWorked = new javax.swing.JLabel();
         jLabelMonthsWorked = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         txtFieldEmployeeName = new javax.swing.JTextField();
         txtFieldPhoneValue1 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
         Background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -106,14 +111,14 @@ public class Employee extends javax.swing.JFrame {
         lblEmployeeID.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblEmployeeID.setForeground(new java.awt.Color(255, 255, 255));
         lblEmployeeID.setText("Employee ID: ");
-        getContentPane().add(lblEmployeeID, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 150, 110, 20));
+        getContentPane().add(lblEmployeeID, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 150, 110, 20));
 
         txtFieldEmployeeIDValue.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtFieldEmployeeIDValueActionPerformed(evt);
             }
         });
-        getContentPane().add(txtFieldEmployeeIDValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 150, 170, 20));
+        getContentPane().add(txtFieldEmployeeIDValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 150, 170, 20));
 
         btnRefrash.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/Refresh.png"))); // NOI18N
         btnRefrash.addActionListener(new java.awt.event.ActionListener() {
@@ -148,10 +153,10 @@ public class Employee extends javax.swing.JFrame {
         lblSalary.setText("Salary");
         getContentPane().add(lblSalary, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 330, 130, 23));
 
-        lblWorkdays.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        lblWorkdays.setForeground(new java.awt.Color(255, 255, 255));
-        lblWorkdays.setText("Workdays:");
-        getContentPane().add(lblWorkdays, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 370, 103, 23));
+        lblOffDaysPerMonth.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        lblOffDaysPerMonth.setForeground(new java.awt.Color(255, 255, 255));
+        lblOffDaysPerMonth.setText("Offdays per Month");
+        getContentPane().add(lblOffDaysPerMonth, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 370, 130, 23));
 
         lblNotes.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblNotes.setForeground(new java.awt.Color(255, 255, 255));
@@ -211,7 +216,7 @@ public class Employee extends javax.swing.JFrame {
         getContentPane().add(txtFieldStartingDateValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 210, 380, 30));
 
         txtFieldWorkdaysValue.setForeground(new java.awt.Color(204, 204, 204));
-        txtFieldWorkdaysValue.setText("Workdays");
+        txtFieldWorkdaysValue.setText("Vacation in every month");
         txtFieldWorkdaysValue.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtFieldWorkdaysValueFocusGained(evt);
@@ -278,30 +283,25 @@ public class Employee extends javax.swing.JFrame {
         });
         getContentPane().add(txtFieldSalaryValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 330, 380, 30));
 
-        lblTime.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        lblTime.setForeground(new java.awt.Color(255, 255, 255));
-        lblTime.setText("Time: ");
-        getContentPane().add(lblTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 50, 230, 30));
-
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("NUMBER OF DAYS WORKED:");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 260, 190, 20));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 290, 190, 20));
 
         jLabelNumberOfDaysWorked.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
         jLabelNumberOfDaysWorked.setForeground(new java.awt.Color(255, 255, 255));
         jLabelNumberOfDaysWorked.setText("00");
-        getContentPane().add(jLabelNumberOfDaysWorked, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 250, -1, -1));
+        getContentPane().add(jLabelNumberOfDaysWorked, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 280, -1, -1));
 
         jLabelMonthsWorked.setFont(new java.awt.Font("Tahoma", 0, 30)); // NOI18N
         jLabelMonthsWorked.setForeground(new java.awt.Color(255, 255, 255));
         jLabelMonthsWorked.setText("00");
-        getContentPane().add(jLabelMonthsWorked, new org.netbeans.lib.awtextra.AbsoluteConstraints(890, 280, -1, -1));
+        getContentPane().add(jLabelMonthsWorked, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 310, -1, -1));
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Months WORKED:");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 290, 200, 20));
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 320, 200, 20));
 
         txtFieldEmployeeName.setForeground(new java.awt.Color(204, 204, 204));
         txtFieldEmployeeName.setText("Employee Name");
@@ -337,6 +337,16 @@ public class Employee extends javax.swing.JFrame {
         });
         getContentPane().add(txtFieldPhoneValue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 250, 190, 30));
 
+        jButton1.setBackground(new java.awt.Color(0, 0, 153));
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("GO");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 147, 70, -1));
+
         Background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
         getContentPane().add(Background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1280, 669));
 
@@ -347,92 +357,111 @@ public class Employee extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         Connection con = DBConnectionProvider.getDBConnection();
-        String query = "INSERT INTO `products` (`products_id`, `company_name`, `model`, `dimension`, `pcs_per_box`, `item_unit`, `purchase_price`, `selling_price`, `notes`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String query2 = "INSERT INTO `stock` (`products_id`, `left`) VALUES (?, 0)";
+        String query = "INSERT INTO `employee` (`emp_ID`, `employee_name`, `phone1`, `phone2`, `StartingDate`, `Salary`, `offdays_per_month`, `address`, `notes`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         
         try{
             PreparedStatement pstmt = con.prepareStatement(query);
-            PreparedStatement pstmt2 = con.prepareStatement(query2);
-//            String companyName = this.txtFieldCompanyName.getText();
-//            String model = this.txtFieldStartingDateValue.getText();
-//            String product_id = Functions.productIDGenerator(model);//call id generator here
-            //String product_id = "testing1";
-//            String dimension = this.txtFieldDimension.getText();
-//            String pcsPerbox = this.txtFieldPcsPerBox.getText();
-//            String itemUnit = this.txtFieldItemUnit.getText();
-//            String purchasePrice = this.txtFieldPurchasePrice.getText();
-//            String sellingPrice = this.txtFieldSellingPrice.getText();
-//            String notes = this.txtAreanotes.getText();
-//            pstmt.setString(1, product_id);
-//            pstmt2.setString(1, product_id);
-//            pstmt.setString(2, companyName);
-//            pstmt.setString(3, model);
-//            pstmt.setString(4, dimension);
-//            pstmt.setString(5, pcsPerbox);
-//            pstmt.setString(6, itemUnit);
-//            pstmt.setString(7, purchasePrice);
-//            pstmt.setString(8, sellingPrice);
-//            pstmt.setString(9, notes);
-//            if(product_id.equals("0"))
-//                throw new Exception("product id null");
-//            else{
-//                pstmt.executeUpdate();
-//                pstmt2.executeUpdate();
-//                Save sv = new Save();
-//                RakibsTraders.popUp(sv);
-//                clearField();
-//            }
+            String employee_name = this.txtFieldEmployeeName.getText();
+            String phone1 = this.txtFieldPhoneValue1.getText();
+            String phone2 = this.txtFieldPhoneValue.getText();
+            String StartingDate = this.txtFieldStartingDateValue.getText();
+            
+            Double Salary = Double.parseDouble(this.txtFieldSalaryValue.getText());
+            String address = this.txtFieldAddressValue.getText();
+            String notes = this.txtAreaNotes.getText();
+            String emp_ID = this.txtFieldEmployeeIDValue.getText();
+            Integer offdays_per_month = Integer.parseInt(this.txtFieldWorkdaysValue.getText());
+            
+            pstmt.setString(1, emp_ID);
+            pstmt.setString(2, employee_name);
+            pstmt.setString(3, phone1);
+            pstmt.setString(4, phone2);
+            String[] splitDate = StartingDate.split("/");
+            StartingDate = trim(splitDate[2]) + "-" + trim(splitDate[1]) + "-" + trim(splitDate[0].substring(splitDate[0].indexOf("M")+1)) + " "+ trim(splitDate[0].substring(0, splitDate[0].indexOf("M")+1))  ;
+          //  System.err.println(StartingDate);
+            pstmt.setString(5, StartingDate);
+            pstmt.setDouble(6, Salary);
+            pstmt.setInt(7, offdays_per_month);
+            pstmt.setString(8, address);
+            pstmt.setString(9, notes);
+            
+            if(emp_ID.equals("0"))
+                throw new Exception("product id null");
+            else{
+                pstmt.executeUpdate();
+                Save sv = new Save();
+                RakibsTraders.popUp(sv);
+                clearField();
+            }
+            caller.setEnabled(true);
+            this.dispose();
         } catch(Exception ex){
             System.out.println("Failed to get DBConn:: "+ex.getMessage());
             NoConnection no = new NoConnection();
             RakibsTraders.popUp(no);
         }
     }//GEN-LAST:event_btnSaveActionPerformed
-
+    private boolean checkField(){
+        if( this.txtFieldEmployeeName.getText().equals("") || this.txtFieldPhoneValue1.getText().equals("") ){
+//            System.err.println(this.txtFieldAmountValue.getText() + " EROR ");
+            return true;
+        }
+        else return false;
+    }
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         // TODO add your handling code here:
-        Connection con = DBConnectionProvider.getDBConnection();
-        String query = "UPDATE products SET pcs_per_box = ?,item_unit = ?,purchase_price = ?,selling_price = ?,notes = ?  WHERE company_name = ? and model = ? and dimension = ?";
-        try{
-//            PreparedStatement pstmt = con.prepareStatement(query);
-//            String companyName = this.txtFieldCompanyName.getText();
-//            String model = this.txtFieldStartingDateValue.getText();
-//            String dimension = this.txtFieldDimension.getText();
-//            String pcsPerbox = this.txtFieldPcsPerBox.getText();
-//            String itemUnit = this.txtFieldItemUnit.getText();
-//            String purchasePrice = this.txtFieldPurchasePrice.getText();
-//            String sellingPrice = this.txtFieldSellingPrice.getText();
-//            String notes = this.txtAreanotes.getText();
-//            pstmt.setInt(1,Integer.parseInt(pcsPerbox));
-//            pstmt.setString(2,itemUnit);
-//            pstmt.setString(3,purchasePrice);
-//            pstmt.setString(4,sellingPrice);
-//            pstmt.setString(5,notes);
-//            pstmt.setString(6,companyName);
-//            pstmt.setString(7,model);
-//            pstmt.setString(8,dimension);
-//            pstmt.executeUpdate();
-            clearField();
-            Updated up = new Updated();
-            RakibsTraders.popUp(up);
-        }catch(Exception ex){
-            System.out.println("Failed to get DBConn:: "+ex.getMessage());
-            NoConnection no = new NoConnection();
-            RakibsTraders.popUp(no);
+        if( !checkField() ){
+            Connection con = DBConnectionProvider.getDBConnection();
+            String query = "UPDATE employee SET employee_name = ?,phone1 = ?,phone2 = ?,offdays_per_month = ?,StartingDate = ?, Salary=?,address=?,notes=? WHERE emp_ID = ? ";
+            try{
+                PreparedStatement pstmt = con.prepareStatement(query);
+                String employee_name = this.txtFieldEmployeeName.getText();
+                String phone1 = this.txtFieldPhoneValue1.getText();
+                String phone2 = this.txtFieldPhoneValue.getText();
+                String StartingDate = this.txtFieldStartingDateValue.getText();
+                Double Salary = Double.parseDouble(this.txtFieldSalaryValue.getText());
+                String address = this.txtFieldAddressValue.getText();
+                String notes = this.txtAreaNotes.getText();
+                String emp_ID = this.txtFieldEmployeeIDValue.getText();
+                Integer offdays_per_month = Integer.parseInt(this.txtFieldWorkdaysValue.getText());
+
+                pstmt.setString(1,employee_name);
+                pstmt.setString(2,phone1);
+                pstmt.setString(3,phone2);
+                pstmt.setInt(4,offdays_per_month);
+                //String[] splitDate = StartingDate.split("/");
+                //StartingDate = trim(splitDate[2]) + "-" + trim(splitDate[1]) + "-" + trim(splitDate[0].substring(splitDate[0].indexOf("M")+1)) + " "+ trim(splitDate[0].substring(0, splitDate[0].indexOf("M")+1))  ;
+                pstmt.setString(5, StartingDate);
+                pstmt.setDouble(6,Salary);
+                pstmt.setString(7,address);
+                pstmt.setString(8,notes);
+                pstmt.setString(9,emp_ID);
+                pstmt.executeUpdate();
+                clearField();
+                Updated up = new Updated();
+                RakibsTraders.popUp(up);
+                caller.setEnabled(true);
+                this.dispose();
+                
+            }catch(Exception ex){
+                System.out.println("Failed to get DBConn:: "+ex.getMessage());
+                NoConnection no = new NoConnection();
+                RakibsTraders.popUp(no);
+            }
+            
+        
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
-//        String companyName = this.txtFieldCompanyName.getText();
-//        String productID = this.txtFieldEmployeeIDValue.getText();
-//        String model = this.txtFieldStartingDateValue.getText();
-//        String dimension = this.txtFieldDimension.getText();
-        Delete dlt = new Delete();
+        DeleteEmployee dlt = new DeleteEmployee();
         RakibsTraders.popUp(dlt);
-//        dlt.setValue(productID, companyName, model, dimension);
+        dlt.setValue(txtFieldEmployeeIDValue.getText(), txtFieldEmployeeName.getText());
         clearField();
+        caller.setEnabled(true);
+        this.dispose();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void txtFieldEmployeeIDValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldEmployeeIDValueActionPerformed
@@ -454,7 +483,7 @@ public class Employee extends javax.swing.JFrame {
         txtFieldAddressValue.setForeground(new Color(204,204,204));
         txtFieldSalaryValue.setText("Enter the Salary");
         txtFieldSalaryValue.setForeground(new Color(204,204,204));
-        txtFieldWorkdaysValue.setText("Workdays");
+        txtFieldWorkdaysValue.setText("Vacation in every month");
         txtFieldWorkdaysValue.setForeground(new Color(204,204,204));
         jLabelNumberOfDaysWorked.setText("00");
         jLabelMonthsWorked.setText("00");
@@ -466,12 +495,14 @@ public class Employee extends javax.swing.JFrame {
     private void jButtonSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSubmitActionPerformed
         // TODO add your handling code here:
         EmployeeList page = new EmployeeList();
+        page.setCaller(this);
         RakibsTraders.bigPopUp(page);
+        this.setEnabled(false);
     }//GEN-LAST:event_jButtonSubmitActionPerformed
 
     private void txtFieldWorkdaysValueFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldWorkdaysValueFocusGained
         // TODO add your handling code here:
-        if( txtFieldWorkdaysValue.getText().equals("Workdays")) {
+        if( txtFieldWorkdaysValue.getText().equals("Vacation in every month")) {
             this.txtFieldWorkdaysValue.setText("");
         }
         this.txtFieldWorkdaysValue.setForeground(Color.black);
@@ -481,7 +512,7 @@ public class Employee extends javax.swing.JFrame {
     private void txtFieldWorkdaysValueFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldWorkdaysValueFocusLost
         // TODO add your handling code here:
         if(txtFieldWorkdaysValue.getText().isEmpty()){
-            this.txtFieldWorkdaysValue.setText("Workdays");
+            this.txtFieldWorkdaysValue.setText("Vacation in every month");
             this.txtFieldWorkdaysValue.setForeground(new Color(204,204,204));
         }
     }//GEN-LAST:event_txtFieldWorkdaysValueFocusLost
@@ -555,9 +586,6 @@ public class Employee extends javax.swing.JFrame {
 
     private void lblHomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHomeMouseClicked
         // TODO add your handling code here:
-
-        Dashboard page = new Dashboard();
-        RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_lblHomeMouseClicked
 
     private void txtFieldEmployeeNameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldEmployeeNameFocusGained
@@ -566,6 +594,31 @@ public class Employee extends javax.swing.JFrame {
             this.txtFieldEmployeeName.setText("");
         }
         this.txtFieldEmployeeName.setForeground(Color.BLACK);
+        
+        if( this.txtFieldEmployeeIDValue.getText().equals("") ){
+                SimpleDateFormat dFormat = new SimpleDateFormat("dd/MM/yyyy");
+                Date d = new Date();
+                String date = dFormat.format(d);
+
+                if(txtFieldStartingDateValue.getText().equals("")){
+                    Calendar cal = new GregorianCalendar();
+                    Integer sec = cal.get(Calendar.SECOND);
+                    Integer hour = cal.get(Calendar.HOUR);
+                    if(hour==0)
+                        hour=12;
+                    Integer min = cal.get(Calendar.MINUTE);
+                    Integer am_pm = cal.get(Calendar.AM_PM);
+                    if(am_pm == 0){
+                        String timeAndDate = hour + ":" + min + ":" + sec + " " + "AM" + " " + date;
+                        txtFieldStartingDateValue.setText(timeAndDate);
+                    }else {
+                        String timeAndDate = hour + ":" + min + ":" + sec + " " + "PM" + " " + date;
+                        txtFieldStartingDateValue.setText(timeAndDate);
+                    }
+                }
+                String id = Functions.empIDGenerator(date);
+                txtFieldEmployeeIDValue.setText(id);
+        }
     }//GEN-LAST:event_txtFieldEmployeeNameFocusGained
 
     private void txtFieldEmployeeNameFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldEmployeeNameFocusLost
@@ -600,6 +653,55 @@ public class Employee extends javax.swing.JFrame {
     private void txtFieldPhoneValue1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldPhoneValue1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFieldPhoneValue1ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        
+        String searchID = txtFieldEmployeeIDValue.getText();
+        
+        if( !searchID.equals("") && searchID.startsWith("EMP#")){
+                clearField();
+                Connection con = DBConnectionProvider.getDBConnection();
+                String query = "select * from employee where emp_ID = ?";
+                String query2 = "SELECT count(`Emp_ID`) as dayworked FROM `emp_attendance` where `emp_attendance`.`Status` = 'Present' and `emp_attendance`.`Emp_ID` = ?";
+                try {
+                    PreparedStatement pstmt = con.prepareStatement(query);
+                    PreparedStatement pstmt2 = con.prepareStatement(query2);
+                    PreparedStatement pstmt3 = con.prepareStatement(query);
+                    pstmt.setString(1, searchID);
+                    ResultSet rs = pstmt.executeQuery();
+                    
+
+                    while( rs.next() ){
+//                        System.err.println(searchID);
+                        this.txtFieldEmployeeIDValue.setText(searchID);
+                        this.txtFieldEmployeeName.setText(rs.getString("employee_name"));
+                        this.txtFieldStartingDateValue.setText(rs.getString("StartingDate"));
+                        this.txtFieldPhoneValue1.setText(rs.getString("phone1"));
+                        this.txtFieldPhoneValue.setText(rs.getString("phone2"));
+                        this.txtFieldAddressValue.setText(rs.getString("address"));
+                        this.txtFieldSalaryValue.setText(String.format("%.4f",rs.getDouble("Salary")));
+                        this.txtFieldWorkdaysValue.setText(Integer.toString(rs.getInt("offdays_per_month")));
+                        this.txtAreaNotes.setText(rs.getString("notes"));
+                    }
+                    makeBlackText();
+                    pstmt2.setString(1, searchID);
+                    ResultSet rs2 = pstmt2.executeQuery();
+                    while(rs2.next()){
+                        Integer days = rs2.getInt("dayworked");
+                        this.jLabelNumberOfDaysWorked.setText(""+days);
+                        Double months = days/30.0;
+                        this.jLabelMonthsWorked.setText(String.format("%.2f", months));
+                    }
+                        
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(Employee.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            else clearField();
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     
     /**
@@ -650,6 +752,7 @@ public class Employee extends javax.swing.JFrame {
     private javax.swing.JButton btnRefrash;
     private javax.swing.JButton btnSave;
     private javax.swing.JButton btnUpdate;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButtonSubmit;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
@@ -661,12 +764,11 @@ public class Employee extends javax.swing.JFrame {
     private javax.swing.JLabel lblEmployeeID;
     private javax.swing.JLabel lblHome;
     private javax.swing.JLabel lblNotes;
+    private javax.swing.JLabel lblOffDaysPerMonth;
     private javax.swing.JLabel lblPageTitle;
     private javax.swing.JLabel lblPhone;
     private javax.swing.JLabel lblSalary;
     private javax.swing.JLabel lblStartingDate;
-    private javax.swing.JLabel lblTime;
-    private javax.swing.JLabel lblWorkdays;
     private javax.swing.JTextArea txtAreaNotes;
     private javax.swing.JTextField txtFieldAddressValue;
     private javax.swing.JTextField txtFieldEmployeeIDValue;
@@ -679,24 +781,36 @@ public class Employee extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     //custome variables declaration
-    private ArrayList<String> productID = new ArrayList<>();
-    private ArrayList<String> companyName = new ArrayList<>();
-    private ArrayList<String> model = new ArrayList<>();
-    private ArrayList<String> dimension = new ArrayList<>();
+    private ArrayList<String> employeeID = new ArrayList<>();
     private static Employee ref;
     private Integer flagTime = 0;
+    private JFrame caller;
+    //end of custom variables
     
     private void clearField() {
-//         this.txtFieldEmployeeIDValue.setText("");
-//         this.txtFieldCompanyName.setText("");
-//         this.txtFieldDimension.setText("");
-//         this.txtFieldStartingDateValue.setText("");
-//         this.txtFieldItemUnit.setText("");
-//         this.txtFieldPcsPerBox.setText("");
-//         this.txtFieldPurchasePrice.setText("");
-//         this.txtFieldSellingPrice.setText("");
-//         this.txtAreanotes.setText("");
-         initComboProductID();
+         this.txtFieldEmployeeIDValue.setText("");
+         this.txtFieldEmployeeName.setText("");
+         this.txtFieldStartingDateValue.setText("");
+         this.txtFieldPhoneValue1.setText("");
+         this.txtFieldPhoneValue.setText("");
+         this.txtFieldAddressValue.setText("");
+         this.txtFieldSalaryValue.setText("");
+         this.txtFieldWorkdaysValue.setText("");
+         this.txtAreaNotes.setText("");
+//         initComboProductID();
+    }
+    
+     private void makeBlackText() {
+         this.txtFieldEmployeeIDValue.setForeground(Color.BLACK);
+         this.txtFieldEmployeeName.setForeground(Color.BLACK);
+         this.txtFieldStartingDateValue.setForeground(Color.BLACK);
+         this.txtFieldPhoneValue1.setForeground(Color.BLACK);
+         this.txtFieldPhoneValue.setForeground(Color.BLACK);
+         this.txtFieldAddressValue.setForeground(Color.BLACK);
+         this.txtFieldSalaryValue.setForeground(Color.BLACK);
+         this.txtFieldWorkdaysValue.setForeground(Color.BLACK);
+         this.txtAreaNotes.setForeground(Color.BLACK);
+//         initComboProductID();
     }
     
     private void setIcon(){
@@ -709,61 +823,21 @@ public class Employee extends javax.swing.JFrame {
         else
             flagTime=0;
     }
-     
-     public void setTime(){
-        new Thread(){
-            public void run(){
-                if(flagTime==1){
-                    SimpleDateFormat dFormat = new SimpleDateFormat("dd/MM/yyyy");
-                    Date d = new Date();
-                    String date = dFormat.format(d);
-                    int sec;
-                    int hour;
-                    int min;
-                    int am_pm;
-                    while(flagTime==1/* && new GregorianCalendar().get(Calendar.SECOND)!=fsec*/){
-                        Calendar cal = new GregorianCalendar();
-                        sec = cal.get(Calendar.SECOND);
-                        System.out.println(sec);
-                        hour = cal.get(Calendar.HOUR);
-                        min = cal.get(Calendar.MINUTE);
-                        am_pm = cal.get(Calendar.AM_PM);
-                        if(am_pm == 0){
-                            String time = "Time: " + hour + " : " + min + " : " + sec + " " + "AM" + " Date: " + date;
-                            lblTime.setText(time);
-                        }else {
-                            String time = "Time: " + hour + " : " + min + " : " + sec + " " + "PM" + " Date: " + date;
-                            lblTime.setText(time);
-                               }
-                        try {
-                            sleep(1000);
-                        } catch (InterruptedException ex) {
-                                Logger.getLogger(Sell.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                            
-                    }    
-                }
-            }
-        }.start();
+
+    private void initComboEmployeeID(){
+        employeeID = Functions.employeeID();
+        Functions.setupAutoComplete(txtFieldEmployeeIDValue, employeeID); 
     }
     
-    private void initComboProductID(){
-        productID = Functions.productID();
-        Functions.setupAutoComplete(txtFieldEmployeeIDValue, productID); 
+    public void setCaller(JFrame frame){
+        this.caller = frame;
     }
     
-    private void initComboCompanyName(){
-        companyName = Functions.companyName();
-//        Functions.setupAutoComplete(txtFieldCompanyName, companyName); 
-    }
-    
-    private void initComboModel(String companyName){
-        model = Functions.model(companyName);
-        Functions.setupAutoComplete(txtFieldStartingDateValue, model);
-    }
-    
-    private void initComboDimension(String companyName, String model){
-        dimension = Functions.dimension(companyName, model);
-//        Functions.setupAutoComplete(txtFieldDimension, dimension);
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+                caller.setEnabled(true);
+                dispose();
+        }
     }
 }

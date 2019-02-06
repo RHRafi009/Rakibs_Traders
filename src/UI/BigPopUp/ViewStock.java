@@ -7,12 +7,18 @@
 package UI.BigPopUp;
 
 import Database.DBConnectionProvider;
+import UI.Buy;
 import UI.PopUp.NoConnection;
+import UI.Products;
+import UI.ReturnProducts;
+import com.placeholder.PlaceHolder;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import rakibs.traders.RakibsTraders;
@@ -23,11 +29,14 @@ import rakibs.traders.RakibsTraders;
  */
 public class ViewStock extends javax.swing.JFrame {
 
-    /** Creates new form Viewstock */
+    /** Creates new form ViewaStock */
+    
     public ViewStock() {
         initComponents();
         setIcon();
         initTable();
+        PlaceHolder p1 = new PlaceHolder(jTextFieldSearchProduct,"Enter Product ID");
+        
     }
 
     /** This method is called from within the constructor to
@@ -41,22 +50,170 @@ public class ViewStock extends javax.swing.JFrame {
 
         lblStock = new javax.swing.JLabel();
         scrPaneTable = new javax.swing.JScrollPane();
+        jTextFieldSearchProduct = new javax.swing.JTextField();
+        jButtonGO = new javax.swing.JButton();
+        jButtonRefresh = new javax.swing.JButton();
         background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        lblStock.setFont(new java.awt.Font("Titillium Web", 1, 18)); // NOI18N
+        lblStock.setFont(new java.awt.Font("Titillium Web", 1, 22)); // NOI18N
         lblStock.setForeground(new java.awt.Color(73, 180, 121));
         lblStock.setText("Stock");
-        getContentPane().add(lblStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 40, 130, -1));
-        getContentPane().add(scrPaneTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 80, 940, 470));
+        getContentPane().add(lblStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 24, 170, 40));
+        getContentPane().add(scrPaneTable, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 80, 960, 470));
+
+        jTextFieldSearchProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldSearchProductActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jTextFieldSearchProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 40, 210, 30));
+
+        jButtonGO.setBackground(new java.awt.Color(0, 0, 153));
+        jButtonGO.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jButtonGO.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonGO.setText("GO");
+        jButtonGO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonGOActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonGO, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 40, 60, 30));
+
+        jButtonRefresh.setBackground(new java.awt.Color(0, 0, 153));
+        jButtonRefresh.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jButtonRefresh.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonRefresh.setText("REFRESH");
+        jButtonRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRefreshActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonRefresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 40, 110, 30));
 
         background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
         getContentPane().add(background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButtonGOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGOActionPerformed
+        getTheSearchDone();
+    }//GEN-LAST:event_jButtonGOActionPerformed
+    
+    private DefaultTableModel data = new DefaultTableModel(new String[]{"SL", "Product ID","MODEL", "Company Name", "Dimension" , "Item Unit", "Available"}, 0);
+    private void getTheSearchDone(){
+                String SearchProductID = jTextFieldSearchProduct.getText();
+
+                if(SearchProductID.startsWith("#")){
+                    data.getDataVector().removeAllElements();
+                    table.setModel(data);
+                    scrPaneTable.getViewport().add(table);
+
+
+                    Connection con = DBConnectionProvider.getDBConnection();
+                    String query = "select * from products where products_id = ?";
+                    String query2 = "select * from stock where products_id= ?";     
+                    try{
+                        PreparedStatement pstmt2 = con.prepareStatement(query);
+                        pstmt2.setString(1,SearchProductID );
+                        ResultSet rs = pstmt2.executeQuery();
+                        
+                        Integer cunter=1;
+                            
+                        if(rs.next()){
+                            do{ 
+                                String col1 = rs.getString("products_id");
+                                String col2 = rs.getString("model");
+                                String col3 = rs.getString("company_name");
+                                String col4 = rs.getString("dimension");                             
+                                String col5 = rs.getString("item_unit");
+                                Double col6 = 0.0 ;
+
+                                PreparedStatement pstmt = con.prepareStatement(query2);
+                                pstmt.setString(1,SearchProductID );
+                                ResultSet rs2 = pstmt.executeQuery();
+                                if( rs2.next() ){
+                                    col6 = rs2.getDouble("left");
+                                }
+                                
+                                data.addRow(new Object[]{cunter++,col1, col2, col3, col4, col5,String.format("%.4f",col6 )});
+                            }while(rs.next());
+                            table.setModel(data);
+                            rs.close();
+                        }
+
+                    }catch(Exception ex){
+                        System.out.println("No database connection"+ex);
+                        NoConnection no = new NoConnection();
+                        RakibsTraders.popUp(no);
+                    }
+                }
+                else
+                {
+                    data.getDataVector().removeAllElements();
+                    table.setModel(data);
+                    scrPaneTable.getViewport().add(table);
+
+                    Connection con = DBConnectionProvider.getDBConnection();
+                    String query = "select * from products where model = ?";
+                    String query2 = "select * from stock where products_id = ? ";
+                    
+                    try{
+                        PreparedStatement pstmt2 = con.prepareStatement(query);
+                        pstmt2.setString(1,SearchProductID );
+                        ResultSet rs = pstmt2.executeQuery();
+                        Integer cunter=1;
+                        
+                        if(rs.next()){
+//                            System.err.println(SearchProductID);
+                            do{ 
+                                String col1 = rs.getString("products_id");
+                                String col2 = rs.getString("model");
+                                String col3 = rs.getString("company_name");
+                                String col4 = rs.getString("dimension");                             
+                                String col5 = rs.getString("item_unit");
+                                Double col6 = 0.0 ;
+//                                System.err.println(col1);
+                                
+                                PreparedStatement pstmt = con.prepareStatement(query2);
+                                pstmt.setString(1,col1);
+//                                System.err.println(col6);
+                                ResultSet rs2 = pstmt.executeQuery();
+                                
+                                if( rs2.next() ){
+                                    col6 = rs2.getDouble("left");
+                                }
+                                
+                                data.addRow(new Object[]{cunter++,col1, col2, col3, col4, col5,String.format("%.4f",col6 )});
+                            }while(rs.next());
+                            table.setModel(data);
+                            rs.close();
+                        }
+
+                    }catch(Exception ex){
+                        System.out.println("No database connection"+ex);
+                        NoConnection no = new NoConnection();
+                        RakibsTraders.popUp(no);
+                    }
+                }
+            }
+    
+    private void jTextFieldSearchProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldSearchProductActionPerformed
+        // TODO add your handling code here:
+        getTheSearchDone();
+    }//GEN-LAST:event_jTextFieldSearchProductActionPerformed
+
+    private void jButtonRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRefreshActionPerformed
+        // TODO add your handling code here:
+        data.getDataVector().removeAllElements();
+        table.setModel(data);
+        scrPaneTable.getViewport().add(table);
+        setData();
+    }//GEN-LAST:event_jButtonRefreshActionPerformed
 
     /**
      * @param args the command line arguments
@@ -98,12 +255,16 @@ public class ViewStock extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel background;
+    private javax.swing.JButton jButtonGO;
+    private javax.swing.JButton jButtonRefresh;
+    private javax.swing.JTextField jTextFieldSearchProduct;
     private javax.swing.JLabel lblStock;
     private javax.swing.JScrollPane scrPaneTable;
     // End of variables declaration//GEN-END:variables
 
     //custom variable
-    JTable table = new JTable();
+    private JTable table = new JTable();
+    private JFrame caller;
     //end of custom variable
     
     private void initTable(){
@@ -112,27 +273,31 @@ public class ViewStock extends javax.swing.JFrame {
     }
     
     private void setData(){
-        DefaultTableModel data = new DefaultTableModel(new String[]{"Products ID", "Company Name", "Model", "Dimension", "Available"}, 0);
+        DefaultTableModel data = new DefaultTableModel(new String[]{"SL","Products ID", "Company Name", "Model", "Dimension", "Item Unit", "Available"}, 0);
         Connection con = DBConnectionProvider.getDBConnection();
         String query= "select * from products";
         String query2 = "select * from stock where products_id = ?";
+        int rownum = 0;
         try{
             Statement stmt = con.createStatement();
             PreparedStatement pstmt = con.prepareStatement(query2);
             ResultSet rs= stmt.executeQuery(query);
             if(rs.next()){
                 do{
+                    rownum++;
                     String col1 = rs.getString("products_id");
                     String col2 = rs.getString("company_name");
                     String col3 = rs.getString("model");
                     String col4 = rs.getString("dimension");
+                    String col5 = rs.getString("item_unit");
                     pstmt.setString(1,col1);
                     ResultSet rs2= pstmt.executeQuery();
-                    String col5="---";
+                    Double col6 = 0.0;
+                    
                     while(rs2.next()){
-                        col5 = Integer.toString(rs2.getInt("left"));
+                        col6 = rs2.getDouble("left");
                     }
-                    data.addRow(new Object[]{col1, col2, col3, col4, col5});
+                    data.addRow(new Object[]{rownum,col1, col2, col3, col4, col5, String.format("%.4f",col6)});
                 }while(rs.next());
                 table.setModel(data);
                 rs.close();
@@ -149,4 +314,16 @@ public class ViewStock extends javax.swing.JFrame {
         this.setIconImage(new ImageIcon(getClass().getResource("/Resources/Icons/Icon.png")).getImage());
     }
     
+     @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            caller.setEnabled(true);
+            dispose();
+        }
+    }
+    
+    
+    public void setCaller(JFrame frame){
+        this.caller = frame;
+    }
 }

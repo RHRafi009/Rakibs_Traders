@@ -1,7 +1,16 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package UI.PopUp;
 
+import Database.DBConnectionProvider;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import javax.swing.ImageIcon;
+import rakibs.traders.RakibsTraders;
 
 /**
  *
@@ -10,7 +19,7 @@ import javax.swing.ImageIcon;
 public class Save extends javax.swing.JFrame {
 
     /**
-     * Creates new form Save
+     * Creates new form NoConnection
      */
     public Save() {
         initComponents();
@@ -26,44 +35,32 @@ public class Save extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lblSave = new javax.swing.JLabel();
+        lblNoConnection = new javax.swing.JLabel();
         btnOk = new javax.swing.JButton();
+        jLabelBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(510, 250));
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        lblSave.setFont(new java.awt.Font("Trebuchet MS", 1, 18)); // NOI18N
-        lblSave.setForeground(new java.awt.Color(0, 153, 0));
-        lblSave.setText("Saved succesfully. ");
+        lblNoConnection.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
+        lblNoConnection.setForeground(new java.awt.Color(0, 204, 51));
+        lblNoConnection.setText("Congo! Saved Successfully");
+        getContentPane().add(lblNoConnection, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 70, 310, -1));
 
+        btnOk.setBackground(new java.awt.Color(255, 255, 255));
+        btnOk.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnOk.setText("OK");
         btnOk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnOkActionPerformed(evt);
             }
         });
+        getContentPane().add(btnOk, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 120, 140, 30));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(79, Short.MAX_VALUE)
-                .addComponent(lblSave, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(120, 120, 120)
-                .addComponent(btnOk)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblSave, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnOk)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jLabelBackground.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
+        getContentPane().add(jLabelBackground, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 530, 230));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -99,6 +96,21 @@ public class Save extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Save.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -110,11 +122,12 @@ public class Save extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnOk;
-    private javax.swing.JLabel lblSave;
+    private javax.swing.JLabel jLabelBackground;
+    private javax.swing.JLabel lblNoConnection;
     // End of variables declaration//GEN-END:variables
     
     private void setIcon(){
         this.setIconImage(new ImageIcon(getClass().getResource("/Resources/Icons/Icon.png")).getImage());
     }
-    
+
 }

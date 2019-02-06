@@ -4,12 +4,18 @@ package UI;
 import Database.DBConnectionProvider;
 import Others.Functions;
 import UI.BigPopUp.EmployeeList;
+import UI.BigPopUp.CustomerList;
+import UI.BigPopUp.HistoryOfReturns;
 import UI.BigPopUp.Invoice;
+import UI.BigPopUp.InvoiceList;
 import UI.BigPopUp.ProductsTable;
 import UI.BigPopUp.UsersLog;
 import UI.BigPopUp.ViewStock;
-import UI.PopUp.Delete;
+import UI.PopUp.DeleteProducts;
+import UI.PopUp.EnterInvoiceID;
+import UI.PopUp.GreaterValue;
 import UI.PopUp.NoConnection;
+import UI.PopUp.PressCalculateButtonFirst;
 import UI.PopUp.Save;
 import UI.PopUp.Updated;
 import java.sql.Connection;
@@ -20,11 +26,16 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import static java.lang.Thread.sleep;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.annotation.Resources.*;
 import javax.swing.ImageIcon;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import jdk.nashorn.internal.objects.NativeString;
 import rakibs.traders.RakibsTraders;
 
 /**
@@ -43,6 +54,9 @@ public class ReturnProducts extends javax.swing.JFrame {
         setIcon();
 //        initComboCompanyName();
     }
+    private boolean isCalBtnPrsd = false;
+    private boolean isGoBtnPrsd = false;
+    private double originalCashback = 0.0;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -73,12 +87,11 @@ public class ReturnProducts extends javax.swing.JFrame {
         jLabelAddressValue = new javax.swing.JLabel();
         jLabelCustomerNameValue = new javax.swing.JLabel();
         jLabelPhoneValue = new javax.swing.JLabel();
-        lblInvoiceIDValue = new javax.swing.JLabel();
         lblTime = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
+        jLabel1 = new javax.swing.JLabel();
         lblInvoiceID = new javax.swing.JLabel();
         lbBillingAmountValue = new javax.swing.JLabel();
-        lblInvoiceID1 = new javax.swing.JLabel();
         jLabelItemUnit1 = new javax.swing.JLabel();
         lbCustomerID = new javax.swing.JLabel();
         lblDateValue = new javax.swing.JLabel();
@@ -94,6 +107,15 @@ public class ReturnProducts extends javax.swing.JFrame {
         jButtonViewStock = new javax.swing.JButton();
         btnExpenses = new javax.swing.JButton();
         jButtonSave = new javax.swing.JButton();
+        jButtonRefresh = new javax.swing.JButton();
+        jButtonGO = new javax.swing.JButton();
+        lblDue = new javax.swing.JLabel();
+        lblDueValue = new javax.swing.JLabel();
+        lblDue1 = new javax.swing.JLabel();
+        lblChangeValue = new javax.swing.JLabel();
+        jScrollPaneReturnedValues = new javax.swing.JScrollPane();
+        jButton1 = new javax.swing.JButton();
+        jButtonViewStock2 = new javax.swing.JButton();
         Background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -272,20 +294,20 @@ public class ReturnProducts extends javax.swing.JFrame {
         lblPhone.setFont(new java.awt.Font("Titillium", 0, 12)); // NOI18N
         lblPhone.setForeground(new java.awt.Color(255, 255, 255));
         lblPhone.setText("Phone:");
-        getContentPane().add(lblPhone, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 190, 140, 23));
+        getContentPane().add(lblPhone, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 190, 80, 23));
 
         lblEmail.setFont(new java.awt.Font("Titillium", 0, 12)); // NOI18N
         lblEmail.setForeground(new java.awt.Color(255, 255, 255));
         lblEmail.setText("Email:");
-        getContentPane().add(lblEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 190, 140, 23));
+        getContentPane().add(lblEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 190, 40, 23));
 
         lblAddress.setFont(new java.awt.Font("Titillium", 0, 12)); // NOI18N
         lblAddress.setForeground(new java.awt.Color(255, 255, 255));
         lblAddress.setText("Address:");
-        getContentPane().add(lblAddress, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 210, 140, 23));
+        getContentPane().add(lblAddress, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 210, 90, 23));
 
         txtFieldInvoiceIDValue.setForeground(new java.awt.Color(204, 204, 204));
-        txtFieldInvoiceIDValue.setText("Enter Invoice ID, amount, date");
+        txtFieldInvoiceIDValue.setText("Enter Invoice ID");
         txtFieldInvoiceIDValue.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtFieldInvoiceIDValueFocusGained(evt);
@@ -299,12 +321,12 @@ public class ReturnProducts extends javax.swing.JFrame {
                 txtFieldInvoiceIDValueActionPerformed(evt);
             }
         });
-        getContentPane().add(txtFieldInvoiceIDValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 120, 290, 23));
+        getContentPane().add(txtFieldInvoiceIDValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 115, 290, 30));
 
         jLabelAddressValue.setFont(new java.awt.Font("Titillium", 0, 12)); // NOI18N
         jLabelAddressValue.setForeground(new java.awt.Color(255, 255, 255));
         jLabelAddressValue.setText("Address");
-        getContentPane().add(jLabelAddressValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 210, 260, 20));
+        getContentPane().add(jLabelAddressValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 210, 420, 20));
 
         jLabelCustomerNameValue.setFont(new java.awt.Font("Titillium", 0, 12)); // NOI18N
         jLabelCustomerNameValue.setForeground(new java.awt.Color(255, 255, 255));
@@ -316,15 +338,14 @@ public class ReturnProducts extends javax.swing.JFrame {
         jLabelPhoneValue.setText("Phone");
         getContentPane().add(jLabelPhoneValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 190, 130, 20));
 
-        lblInvoiceIDValue.setFont(new java.awt.Font("Titillium Web", 1, 16)); // NOI18N
-        lblInvoiceIDValue.setForeground(new java.awt.Color(255, 255, 255));
-        getContentPane().add(lblInvoiceIDValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(650, 240, 140, 23));
-
         lblTime.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         lblTime.setForeground(new java.awt.Color(255, 255, 255));
         lblTime.setText("Time: ");
         getContentPane().add(lblTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 40, 230, 30));
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 280, 960, 220));
+
+        jScrollPane1.setViewportView(jLabel1);
+
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 280, 610, 220));
 
         lblInvoiceID.setFont(new java.awt.Font("Titillium", 0, 14)); // NOI18N
         lblInvoiceID.setForeground(new java.awt.Color(255, 255, 255));
@@ -332,14 +353,9 @@ public class ReturnProducts extends javax.swing.JFrame {
         getContentPane().add(lblInvoiceID, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 120, 103, 23));
 
         lbBillingAmountValue.setFont(new java.awt.Font("Titillium Web", 1, 16)); // NOI18N
-        lbBillingAmountValue.setForeground(new java.awt.Color(255, 255, 255));
+        lbBillingAmountValue.setForeground(new java.awt.Color(51, 153, 0));
         lbBillingAmountValue.setText("00000.00000 TK");
-        getContentPane().add(lbBillingAmountValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(1060, 240, 140, 23));
-
-        lblInvoiceID1.setFont(new java.awt.Font("Titillium Web", 1, 16)); // NOI18N
-        lblInvoiceID1.setForeground(new java.awt.Color(255, 255, 255));
-        lblInvoiceID1.setText("Invoice ID:");
-        getContentPane().add(lblInvoiceID1, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 240, 90, 23));
+        getContentPane().add(lbBillingAmountValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 240, 140, 23));
 
         jLabelItemUnit1.setFont(new java.awt.Font("Titillium", 0, 12)); // NOI18N
         jLabelItemUnit1.setForeground(new java.awt.Color(255, 255, 255));
@@ -364,8 +380,9 @@ public class ReturnProducts extends javax.swing.JFrame {
         lblBillingAmount.setFont(new java.awt.Font("Titillium Web", 1, 16)); // NOI18N
         lblBillingAmount.setForeground(new java.awt.Color(255, 255, 255));
         lblBillingAmount.setText("Billing Amount:");
-        getContentPane().add(lblBillingAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(920, 240, 140, 23));
+        getContentPane().add(lblBillingAmount, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 240, 130, 23));
 
+        txtFieldDeduction.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         txtFieldDeduction.setText("5");
         txtFieldDeduction.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -380,26 +397,26 @@ public class ReturnProducts extends javax.swing.JFrame {
                 txtFieldDeductionActionPerformed(evt);
             }
         });
-        getContentPane().add(txtFieldDeduction, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 510, 60, -1));
+        getContentPane().add(txtFieldDeduction, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 510, 80, 30));
 
-        jLabelDeduction.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabelDeduction.setFont(new java.awt.Font("Titillium", 0, 16)); // NOI18N
         jLabelDeduction.setForeground(new java.awt.Color(204, 204, 204));
         jLabelDeduction.setText("Deduction:");
-        getContentPane().add(jLabelDeduction, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 510, 70, 20));
+        getContentPane().add(jLabelDeduction, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 510, 90, 30));
 
         jLabelDiscountSign.setForeground(new java.awt.Color(204, 204, 204));
         jLabelDiscountSign.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/percent.png"))); // NOI18N
-        getContentPane().add(jLabelDiscountSign, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 510, -1, 20));
+        getContentPane().add(jLabelDiscountSign, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 510, 60, 30));
 
         jLabelTotalCashBackValue.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabelTotalCashBackValue.setForeground(new java.awt.Color(255, 0, 51));
         jLabelTotalCashBackValue.setText("00000.00");
-        getContentPane().add(jLabelTotalCashBackValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 510, 200, 20));
+        getContentPane().add(jLabelTotalCashBackValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(1120, 510, 200, 20));
 
         jLabelTotalCashBack.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabelTotalCashBack.setForeground(new java.awt.Color(204, 204, 204));
         jLabelTotalCashBack.setText("Total Cash Back:");
-        getContentPane().add(jLabelTotalCashBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 510, 150, 20));
+        getContentPane().add(jLabelTotalCashBack, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 510, 150, 20));
 
         jButtonHistoryOfReturns.setBackground(new java.awt.Color(0, 51, 153));
         jButtonHistoryOfReturns.setForeground(new java.awt.Color(255, 255, 255));
@@ -419,17 +436,17 @@ public class ReturnProducts extends javax.swing.JFrame {
                 jButtonSaveAndPrintActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonSaveAndPrint, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 590, 170, 30));
+        getContentPane().add(jButtonSaveAndPrint, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 580, 170, 30));
 
         jButtonViewStock.setBackground(new java.awt.Color(0, 51, 153));
         jButtonViewStock.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonViewStock.setText("View Stock");
+        jButtonViewStock.setText("Invoice List");
         jButtonViewStock.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonViewStockActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonViewStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 100, 160, 30));
+        getContentPane().add(jButtonViewStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 140, 160, 30));
 
         btnExpenses.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/Expenses.png"))); // NOI18N
         btnExpenses.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -455,10 +472,73 @@ public class ReturnProducts extends javax.swing.JFrame {
                 jButtonSaveActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 590, 170, 30));
+        getContentPane().add(jButtonSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 580, 170, 30));
+
+        jButtonRefresh.setBackground(new java.awt.Color(0, 51, 153));
+        jButtonRefresh.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonRefresh.setText("Refresh");
+        jButtonRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRefreshActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonRefresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 100, 160, 30));
+
+        jButtonGO.setBackground(new java.awt.Color(0, 51, 153));
+        jButtonGO.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jButtonGO.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonGO.setText("GO");
+        jButtonGO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonGOActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonGO, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 115, 60, 30));
+
+        lblDue.setFont(new java.awt.Font("Titillium Web", 1, 16)); // NOI18N
+        lblDue.setForeground(new java.awt.Color(255, 255, 255));
+        lblDue.setText("Due:");
+        getContentPane().add(lblDue, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 240, 50, 23));
+
+        lblDueValue.setFont(new java.awt.Font("Titillium Web", 1, 16)); // NOI18N
+        lblDueValue.setForeground(new java.awt.Color(204, 51, 0));
+        lblDueValue.setText("00000.00000 TK");
+        getContentPane().add(lblDueValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(850, 240, 140, 23));
+
+        lblDue1.setFont(new java.awt.Font("Titillium Web", 1, 16)); // NOI18N
+        lblDue1.setForeground(new java.awt.Color(255, 255, 255));
+        lblDue1.setText("Change:");
+        getContentPane().add(lblDue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 240, 80, 23));
+
+        lblChangeValue.setFont(new java.awt.Font("Titillium Web", 1, 16)); // NOI18N
+        lblChangeValue.setForeground(new java.awt.Color(0, 204, 204));
+        lblChangeValue.setText("00000.00000 TK");
+        getContentPane().add(lblChangeValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(1100, 240, 140, 23));
+        getContentPane().add(jScrollPaneReturnedValues, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 280, 380, 220));
+
+        jButton1.setBackground(new java.awt.Color(67, 196, 114));
+        jButton1.setFont(new java.awt.Font("Titillium", 0, 14)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("calculate");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 510, -1, 30));
+
+        jButtonViewStock2.setBackground(new java.awt.Color(0, 51, 153));
+        jButtonViewStock2.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonViewStock2.setText("View Stock");
+        jButtonViewStock2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonViewStock2ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonViewStock2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1020, 100, 160, 30));
 
         Background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
-        getContentPane().add(Background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 1270, 680));
+        getContentPane().add(Background, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 1290, 690));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -466,12 +546,16 @@ public class ReturnProducts extends javax.swing.JFrame {
     private void lblHomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHomeMouseClicked
         // TODO add your handling code here:
 
-        Dashboard page = new Dashboard();
+        Sell page = Sell.getRef();
+        page.setFlagTime();
+        page.setTime();
+        this.setFlagTime();
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_lblHomeMouseClicked
 
     private void lblAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAdminMouseClicked
         // TODO add your handling code here:
+        Functions.logoutLog();
         LoginPage page = LoginPage.getRef();
         page.clearField();
         RakibsTraders.changeFrame(this, page);
@@ -567,14 +651,165 @@ public class ReturnProducts extends javax.swing.JFrame {
          btnProducts.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/Products.png")));
     }//GEN-LAST:event_btnProductsMouseExited
 
+     public void getItDone( String SearchInvoiceID ){ // I put it on the function so that enter key can work by accecssing the same method
+        
+        Integer rowSerial = 1;
+        data.getDataVector().removeAllElements();
+            table.setModel(data);
+            jScrollPane1.getViewport().add(table);
+//            jScrollPanel.setEditable(disable);
+            
+            data2.getDataVector().removeAllElements();
+            table2.setModel(data2);
+            jScrollPaneReturnedValues.getViewport().add(table2);
+
+            
+            Connection con = DBConnectionProvider.getDBConnection();
+            String query = "select * from invoice_list where invoice_ID = ?";
+            String query2 = "select sum(paid_amount) as total_paid_amount from payment where ID = ?";
+            String customerID = "", Date = "";
+
+            PreparedStatement pstmt;
+            try {
+                pstmt = con.prepareStatement(query);
+                pstmt.setString(1, SearchInvoiceID);
+                ResultSet rs = pstmt.executeQuery();
+                Double totalBill = 0.0, totalPaid = 0.0, totalDue = 0.0, totalChange = 0.0;
+
+                while( rs.next() ){
+                    totalBill = rs.getDouble("total"); lbBillingAmountValue.setText( String.format("%.4f", totalBill) + " TK" );
+                    customerID = rs.getString("customer_ID");
+                    Date = rs.getString("date");
+                    pstmt = con.prepareStatement(query2);
+                    pstmt.setString(1, SearchInvoiceID);
+                    ResultSet rs2 = pstmt.executeQuery();
+
+                    while( rs2.next() ){
+                        totalPaid += rs2.getDouble("total_paid_amount");
+                    }
+                }
+
+                totalDue = totalBill - totalPaid;
+//                System.err.println( totalBill  + " " + totalPaid );
+                
+                if( totalDue <= 0 ){
+                    totalDue = 0.0;
+                    totalChange = totalPaid - totalBill;
+                }
+                else  totalChange = 0.0;
+
+    //            System.err.println( totalBill + " " + totalPaid + " " + totalDue + " " + totalChange);
+                 lblDueValue.setText( String.format("%.4f",totalDue) + " TK" );
+                 lblChangeValue.setText( String.format("%.4f",totalChange) + " TK");
+                 lblDateValue.setText( Date );
+
+            } catch (SQLException ex) {
+                Logger.getLogger(ReturnProducts.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            String query3 = "select * from customer where customer_ID = ?";
+            PreparedStatement pstmt2;
+
+            System.err.println(customerID);
+
+            try {
+                pstmt2 = con.prepareStatement(query3);
+                pstmt2.setString(1,customerID);
+                ResultSet rs = pstmt2.executeQuery();
+
+                while( rs.next() ){
+                    lblCustomerIDValue.setText(customerID);
+                    jLabelCustomerNameValue.setText(rs.getString("customer_name"));
+                    jLabelPhoneValue.setText(rs.getString("phone_number1"));
+                    jLabelItemUnit1.setText(rs.getString("mail"));
+                    jLabelAddressValue.setText(rs.getString("address"));
+                }
+                rs.close();
+
+            } catch (SQLException ex) {
+                Logger.getLogger(ReturnProducts.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+
+           String query4 = "Select * from products where products_ID = ?";
+           String query5 = "Select * from invoice_products where invoice_ID = ?";
+           PreparedStatement pstmt3,pstmt4;
+
+//            System.err.println(SearchInvoiceID);
+
+            String ProductID = "", companyName="", ItemUnit = "",model = "", buyAmount = "",Dimension = "";
+            Double unitPrice=0.0, TotalForSingleRow = 0.0 ;
+            
+            try {
+                pstmt3 = con.prepareStatement(query5);
+                pstmt3.setString(1,SearchInvoiceID);
+                ResultSet rs = pstmt3.executeQuery();
+                pstmt4 = con.prepareStatement(query4);
+                Double returnAmount = 0.0;
+                
+                
+                
+                while( rs.next() ){
+                       ProductID = rs.getString("product_ID");
+                       TotalForSingleRow = rs.getDouble("price");
+
+                       pstmt4.setString(1,ProductID);
+                       ResultSet rs2 = pstmt4.executeQuery();
+
+                       while( rs2.next() ) {
+                           companyName = rs2.getString("company_name");
+                           model = rs2.getString("model");
+                           ItemUnit = rs2.getString("item_unit");
+                           Dimension = rs2.getString("dimension");
+                           
+                       }
+                       
+                       if( ItemUnit.equals("Pcs") || ItemUnit.equals("pcs") || ItemUnit.equals("PCS") )
+                            buyAmount = rs.getString("Pcs");
+                       else if( ItemUnit.equals("Box") || ItemUnit.equals("box") || ItemUnit.equals("BOX") ) 
+                           buyAmount = rs.getString("Box");
+                       else 
+                           buyAmount = rs.getString("feet");
+                           
+                       if( Double.parseDouble( buyAmount )  > 0 ){
+                            unitPrice = TotalForSingleRow/(Double.parseDouble(buyAmount) );
+                        }
+                       String modify = String.format("%.4f",unitPrice ); // Truncating the value
+                       unitPrice = Double.parseDouble(modify);
+                       
+                       data.addRow(new Object[]{rowSerial,ProductID,model,Dimension,buyAmount,ItemUnit,unitPrice, String.format( "%.4f",TotalForSingleRow)});
+                       
+                       /// Work of return amount is strating from here
+                       
+                       returnAmount = 0.0;
+                       storeUnitPrices.add( unitPrice ); //Storing all unit prices
+                       data2.addRow(new Object[]{rowSerial,returnAmount,ItemUnit,unitPrice, String.format( "%.4f",0.0)});
+                       rowSerial++;
+                }
+
+            } catch (SQLException ex) {
+    //            Logger.getLogger(InvoiceList.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("No database connection"+ex);
+                NoConnection no = new NoConnection();
+                RakibsTraders.popUp(no);
+            }
+    
+    }
+    
+    
     private void txtFieldInvoiceIDValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldInvoiceIDValueActionPerformed
         // TODO add your handling code here:
+        String SearchInvoiceID = txtFieldInvoiceIDValue.getText();
+        if( SearchInvoiceID.startsWith("INV#") ){
+            isGoButtonPressed();
+            getItDone(SearchInvoiceID);
+        }
     }//GEN-LAST:event_txtFieldInvoiceIDValueActionPerformed
 
     private void txtFieldInvoiceIDValueFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldInvoiceIDValueFocusGained
         // TODO add your handling code here:
           //
-          if( txtFieldInvoiceIDValue.getText().equals("Enter Invoice ID, amount, date")){
+          if( txtFieldInvoiceIDValue.getText().equals("Enter Invoice ID")){
               this.txtFieldInvoiceIDValue.setText("");
           }
           this.txtFieldInvoiceIDValue.setForeground(Color.BLACK);
@@ -585,13 +820,17 @@ public class ReturnProducts extends javax.swing.JFrame {
         // TODO add your handling code here:
                if (txtFieldInvoiceIDValue.getText().isEmpty()) {
                 txtFieldInvoiceIDValue.setForeground(new Color(204,204,204));
-                txtFieldInvoiceIDValue.setText("Enter Invoice ID, amount, date");
+                txtFieldInvoiceIDValue.setText("Enter Invoice ID");
                 }
     }//GEN-LAST:event_txtFieldInvoiceIDValueFocusLost
 
     private void jButtonHistoryOfReturnsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonHistoryOfReturnsActionPerformed
     // TODO add your handling code here:
-
+        HistoryOfReturns page = new HistoryOfReturns();
+        page.setCaller(this);
+        page.setCustomerID(lblCustomerIDValue.getText());
+        RakibsTraders.bigPopUp(page);
+        this.setEnabled(false);
     }//GEN-LAST:event_jButtonHistoryOfReturnsActionPerformed
 
     private void btnProductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProductsActionPerformed
@@ -624,8 +863,7 @@ public class ReturnProducts extends javax.swing.JFrame {
 
     private void btnSellMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSellMouseClicked
         // TODO add your handling code here:
-        Sell page = new Sell();
-        RakibsTraders.changeFrame(this, page);
+        
     }//GEN-LAST:event_btnSellMouseClicked
 
     private void txtFieldDeductionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldDeductionActionPerformed
@@ -653,7 +891,9 @@ public class ReturnProducts extends javax.swing.JFrame {
 
     private void jButtonViewStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonViewStockActionPerformed
         // TODO add your handling code here:
-         ViewStock page = new ViewStock();
+        InvoiceList page = new InvoiceList();
+        page.setCaller(this);
+        this.setEnabled(false);
         RakibsTraders.bigPopUp(page);
     }//GEN-LAST:event_jButtonViewStockActionPerformed
 
@@ -697,9 +937,248 @@ public class ReturnProducts extends javax.swing.JFrame {
         this.setFlagTime();
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_btnExpensesActionPerformed
-
+    public String getTime( ){
+        String time = "";
+        Calendar cal = new GregorianCalendar();
+        Integer sec = cal.get(Calendar.SECOND);
+        Integer hour = cal.get(Calendar.HOUR);
+        if(hour==0)
+            hour=12;
+        Integer min = cal.get(Calendar.MINUTE);
+        Integer am_pm = cal.get(Calendar.AM_PM);
+        if(am_pm == 0){
+            time = hour + ":" + min + ":" + sec + " " + "AM";
+        }else {
+            time = hour + ":" + min + ":" + sec + " " + "PM";
+        }
+        return time;
+    }
+    
+    
+    
     private void jButtonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSaveActionPerformed
         // TODO add your handling code here:
+        Connection con = DBConnectionProvider.getDBConnection();
+        
+        if( isCalBtnPrsd ){
+                    String unit = data2.getValueAt(0,2) + "";
+                    String ProductID = "";
+
+                    con = DBConnectionProvider.getDBConnection();
+                    String query1 = "update stock set `left` = `left` + ? where products_id = ?"; // Dont know why that works for tilda sign! 
+                    String query2 = "insert into returned_list (invoice_ID,date,time,total_cashBack,Deduction,original_total) VALUES( ?,?,?,?,?,? )";
+                    String query3 = "insert into returned_products ( invoice_ID, product_ID, feet, pcs, box, total_price, ItemUnit,date,time ) VALUES( ?,?,?,?,?,? ,?,?,? )";
+
+                    // Saving datas to the returned list
+                    SimpleDateFormat dFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    Date d = new Date();
+                    String date = dFormat.format(d), time;
+                    System.err.println("Return date " + date);
+                    time = getTime();
+
+                    Double totalCashBack = Double.parseDouble(jLabelTotalCashBackValue.getText());
+                    String invoiceID = txtFieldInvoiceIDValue.getText();
+
+                    try {
+                        PreparedStatement pstmt = con.prepareStatement(query2);
+                            pstmt.setString(1,invoiceID);
+                            pstmt.setString(2, date);
+                            pstmt.setString(3, time);
+                            pstmt.setDouble(4, totalCashBack);
+                            pstmt.setDouble(5, (Double.parseDouble(txtFieldDeduction.getText())));
+                            pstmt.setDouble(6, (originalCashback));
+//                            System.err.println( originalCashback);
+                            pstmt.executeUpdate();
+
+                } catch (SQLException ex) {
+                    Logger.getLogger(ReturnProducts.class.getName()).log(Level.SEVERE, null, ex);
+                    NoConnection page = new NoConnection();
+                    RakibsTraders.popUp(page);
+                }
+
+                //Adding data to the returned_products Database
+                for( int i=0; i<data.getRowCount(); i++ ){
+                    ProductID = "" + data.getValueAt(i,1);
+                    String unit2 = data2.getValueAt(i,2) + "";
+                    Double returnedQTY = Double.parseDouble( data2.getValueAt(i,1) + "" );
+                    Double totalPriceSROW = Double.parseDouble( data2.getValueAt(i,4) + "" );
+
+                    try {
+                        PreparedStatement pstmt = con.prepareStatement(query3);
+                        pstmt.setString(1,invoiceID);
+                        pstmt.setString(2, ProductID);
+                        
+                        if( table2.getModel().getValueAt(i,2).equals("Feet") || table2.getModel().getValueAt(i,2).equals("feet") || table2.getModel().getValueAt(i,2).equals("FEET")) {
+                            pstmt.setDouble(3, (returnedQTY));
+                            pstmt.setString(4, "--");
+                            pstmt.setString(5, "--");
+                        }
+                        else if( table2.getModel().getValueAt(i,2).equals("Pcs") || table2.getModel().getValueAt(i,2).equals("pcs") || table2.getModel().getValueAt(i,2).equals("PCS") ){
+                            pstmt.setDouble(3,0.0 );
+                            pstmt.setString(4, Double.toString(returnedQTY));
+                            pstmt.setString(5, "--");
+                        }
+                        else if( table2.getModel().getValueAt(i,2).equals("Box") || table2.getModel().getValueAt(i,2).equals("box") || table2.getModel().getValueAt(i,2).equals("BOX") ){
+                            pstmt.setDouble(3, 0.0 );
+                            pstmt.setString(4, "--");
+                            pstmt.setString(5, Double.toString(returnedQTY));
+                        }
+//                        System.err.println( unit2 );
+                        
+                        pstmt.setString(7, unit);
+                        pstmt.setString(8, (date));
+                        pstmt.setString(9, (time));
+                        pstmt.setDouble(6, totalPriceSROW); // total price for single row
+                        pstmt.executeUpdate();
+
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ReturnProducts.class.getName()).log(Level.SEVERE, null, ex);
+                        NoConnection page = new NoConnection();
+                        RakibsTraders.popUp(page);
+                        
+                    }
+                }
+
+                // Adding the returned products to the stock section
+                for( int i=0; i<data.getRowCount(); i++ ){
+                    ProductID = "" + data.getValueAt(i,1);
+                    Double returnedQTY = Double.parseDouble( data2.getValueAt(i,1) + "" );
+
+                    try {
+                        PreparedStatement pstmt = con.prepareStatement(query1);
+                        pstmt.setString( 1, returnedQTY + "" );
+                        pstmt.setString( 2, ProductID );
+                        pstmt.executeUpdate();
+
+                    } catch (SQLException ex) {
+                        Logger.getLogger(ReturnProducts.class.getName()).log(Level.SEVERE, null, ex);
+                        NoConnection page = new NoConnection();
+                        RakibsTraders.popUp(page);
+                    }
+                }
+
+                Updated page = new Updated(); 
+                RakibsTraders.popUp(page);
+                
+                // Adding a value to the payment as a negative cashback. I will do it by just adding negative sign
+                String query4 = "insert into payment (ID, receipt_ID, date, time, payment_method, paid_amount ) VALUES( ?,?,?,?,?,? )";
+                String query5 = "select count(receipt_ID) as rowcount from payment where ID = ?";
+                
+                
+                try {
+                
+                int receiptID = 0;
+                PreparedStatement pstmt1 = con.prepareStatement(query5);
+                pstmt1.setString(1, invoiceID);
+                ResultSet rs = pstmt1.executeQuery();
+                while( rs.next() ){
+                    receiptID = rs.getInt("rowcount");
+                }
+                rs.close();
+                
+                receiptID += 1; // theoritically there should be no conflict with reciept ID.
+
+                PreparedStatement pstmt2 = con.prepareStatement(query4);
+                pstmt2.setString(1, invoiceID);
+                pstmt2.setInt(2, receiptID);
+                pstmt2.setString(3, date);
+                pstmt2.setString(4, time);
+                pstmt2.setString(5, "Cashback");
+                pstmt2.setDouble(6, Double.parseDouble(jLabelTotalCashBackValue.getText()) * (-1.00 )); // For cashback this remains as negative value
+                
+                pstmt2.executeUpdate();
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(ReturnProducts.class.getName()).log(Level.SEVERE, null, ex);
+                RakibsTraders.popUp(page);
+            }
+            
+            // updating the quatity value from invoice Products
+            String query6 = "update invoice_products set feet = ?, Pcs = ? , Box = ?, price = ?, profit = ? where product_ID = ? and invoice_ID = ?"; 
+            String query7 = "update invoice_list set total = ? where invoice_ID = ?"; 
+            String query8 = "SELECT purchase_price FROM products WHERE products_id = ?";
+            String query9 = "SELECT discount FROM invoice_list WHERE invoice_ID = ?";
+            try {
+                PreparedStatement pstmt3 = con.prepareStatement(query6);
+                PreparedStatement pstmt8 = con.prepareStatement(query8);
+                PreparedStatement pstmt9 = con.prepareStatement(query9);
+                for( int i=0; i<data.getRowCount(); i++ ){
+                    String productID = data.getValueAt(i,1) + ""; // last empty string makes the string to string
+                    Double returnedQTY = Double.parseDouble( data.getValueAt(i,4) + "" ) - Double.parseDouble( data2.getValueAt(i,1) + "" );
+                    pstmt9.setString(1,invoiceID);
+                    ResultSet rs9 = pstmt9.executeQuery();
+                    Double discountPerProduct = 0.0;
+                    while(rs9.next())
+                        discountPerProduct = rs9.getDouble("discount") / data.getRowCount();
+                    
+                    if( table2.getModel().getValueAt(i,2).equals("Feet") || table2.getModel().getValueAt(i,2).equals("feet") || table2.getModel().getValueAt(i,2).equals("FEET")) {
+                            pstmt3.setString(1, (returnedQTY)+"");
+                            pstmt3.setString(2, "--");
+                            pstmt3.setString(3, "--");
+                        }
+                        else if( table2.getModel().getValueAt(i,2).equals("Pcs") || table2.getModel().getValueAt(i,2).equals("pcs") || table2.getModel().getValueAt(i,2).equals("PCS") ){
+                            pstmt3.setString(1,"--");
+                            pstmt3.setString(2, Double.toString(returnedQTY));
+                            pstmt3.setString(3, "--");
+                        }
+                        else if( table2.getModel().getValueAt(i,2).equals("Box") || table2.getModel().getValueAt(i,2).equals("box") || table2.getModel().getValueAt(i,2).equals("BOX") ){
+                            pstmt3.setString(1, "--" );
+                            pstmt3.setString(2, "--");
+                            pstmt3.setString(3, Double.toString(returnedQTY));
+                        }
+                    
+                    Double updateTotalRowPrice = Double.parseDouble( data.getValueAt(i,7) + "" ) - Double.parseDouble( data2.getValueAt(i,4) + "" );
+                    pstmt8.setString(1,productID);
+                    ResultSet rs5 = pstmt8.executeQuery();
+                    Double buyPrice = 0.0;
+                    while(rs5.next())
+                        buyPrice = rs5.getDouble("purchase_price");
+                    Double profit = updateTotalRowPrice - (buyPrice*returnedQTY) - discountPerProduct;
+                    NumberFormat nf = NumberFormat.getInstance();
+                    nf.setMaximumFractionDigits(2);            
+                    nf.setGroupingUsed(false);
+                    profit = Double.parseDouble(nf.format(profit));
+//                    System.err.println( updateTotalRowPrice); 
+                    pstmt3.setDouble(4, updateTotalRowPrice);
+                    pstmt3.setDouble(5, profit);
+                    pstmt3.setString(6, productID);
+                    pstmt3.setString(7, invoiceID);
+                    pstmt3.executeUpdate();
+                    
+                }
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(ReturnProducts.class.getName()).log(Level.SEVERE, null, ex);
+                RakibsTraders.popUp(page);
+            }
+            //Updating invoice_list total value against the invoice
+            
+            double old_invoice_total = Double.parseDouble(lbBillingAmountValue.getText().substring(0,lbBillingAmountValue.getText().indexOf("T")));
+            
+            
+            
+            Double updateTotalInvoicePrice = old_invoice_total - Double.parseDouble(jLabelTotalCashBackValue.getText() );
+               
+            System.err.println(" yhuglhb " + updateTotalInvoicePrice);
+            PreparedStatement pstmt4;
+            try {
+                pstmt4 = con.prepareStatement(query7);
+                pstmt4.setDouble(1, updateTotalInvoicePrice);
+                pstmt4.setString(2, invoiceID);
+                pstmt4.executeUpdate();
+            } catch (SQLException ex) {
+                Logger.getLogger(ReturnProducts.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            clearField();
+                
+        }
+        else{
+            PressCalculateButtonFirst page = new PressCalculateButtonFirst();
+            RakibsTraders.popUp(page );
+        }
+        
+
+        
     }//GEN-LAST:event_jButtonSaveActionPerformed
 
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
@@ -710,6 +1189,84 @@ public class ReturnProducts extends javax.swing.JFrame {
         this.setFlagTime();
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_btnReportsActionPerformed
+
+    private void jButtonRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRefreshActionPerformed
+        // TODO add your handling code here:
+        clearField();
+    }//GEN-LAST:event_jButtonRefreshActionPerformed
+    private DefaultTableModel data = new DefaultTableModel(new String[]{"SL.","PRODUCT ID", "MODEL", "DIMENSION", "QTY" ,"UNIT", "UNIT PRICE","TOTAL"}, 0);
+    JTable table = new JTable(){ // Setting editable off using constructor
+        public boolean isCellEditable(int row, int column){
+        return false;
+    }};
+    
+    private DefaultTableModel data2 = new DefaultTableModel(new String[]{"SL.","QTY" ,"UNIT", "UNIT PRICE","TOTAL"}, 0);
+    JTable table2 = new JTable();
+    ArrayList<Double> storeUnitPrices = new ArrayList<Double>();
+    
+    
+  
+    
+    private void jButtonGOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGOActionPerformed
+            // TODO add your handling code here:
+
+        String SearchInvoiceID = txtFieldInvoiceIDValue.getText();
+        if( SearchInvoiceID.startsWith("INV#") ){
+            isGoButtonPressed();
+            getItDone(SearchInvoiceID);
+        }
+        
+    }//GEN-LAST:event_jButtonGOActionPerformed
+    
+    private void isCalculateButtonPressed(){
+        isCalBtnPrsd = true;
+    }
+    
+    private void isGoButtonPressed(){
+        isGoBtnPrsd = true;
+    }
+    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        
+        if( isGoBtnPrsd ){
+            Integer row = 0;
+            Double totalCashBack = 0.0;
+            for( int i=0; i<data2.getRowCount(); i++ ){
+                Double returnedItemVal = Double.parseDouble("" + data2.getValueAt(row, 1));
+                Double soldQty = Double.parseDouble( data.getValueAt(row,4) + "" );
+                System.err.println(returnedItemVal);
+                if( returnedItemVal > soldQty ) {
+                    GreaterValue page = new GreaterValue();
+                    page.setData( row+1 );
+                    RakibsTraders.popUp(page);
+                }
+                if( returnedItemVal == 0.0 ){ row++; continue; }
+
+               data2.setValueAt( String.format("%.4f", (returnedItemVal  * storeUnitPrices.get(row))), row, 4 ); 
+               totalCashBack += Double.parseDouble( "" + data2.getValueAt(row, 4));
+                row++;
+            }
+            Double percentValue = Double.parseDouble(txtFieldDeduction.getText());
+            originalCashback = totalCashBack;
+            totalCashBack -= ( percentValue / 100.00) * totalCashBack ;
+            jLabelTotalCashBackValue.setText(String.format("%.2f",totalCashBack));
+            isCalculateButtonPressed();
+            
+        } else{
+            EnterInvoiceID page = new EnterInvoiceID();
+            RakibsTraders.popUp(page);
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButtonViewStock2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonViewStock2ActionPerformed
+        // TODO add your handling code here:
+        ViewStock page = new ViewStock();
+        page.setCaller(this);
+        RakibsTraders.bigPopUp(page);
+        this.setEnabled(false);
+    }//GEN-LAST:event_jButtonViewStock2ActionPerformed
 
 
     /**
@@ -738,38 +1295,7 @@ public class ReturnProducts extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(ReturnProducts.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -788,10 +1314,15 @@ public class ReturnProducts extends javax.swing.JFrame {
     private javax.swing.JButton btnSell;
     private javax.swing.JButton btnSettings;
     private javax.swing.JButton btnStock;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonGO;
     private javax.swing.JButton jButtonHistoryOfReturns;
+    private javax.swing.JButton jButtonRefresh;
     private javax.swing.JButton jButtonSave;
     private javax.swing.JButton jButtonSaveAndPrint;
     private javax.swing.JButton jButtonViewStock;
+    private javax.swing.JButton jButtonViewStock2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelAddressValue;
     private javax.swing.JLabel jLabelCustomerNameValue;
     private javax.swing.JLabel jLabelDeduction;
@@ -801,20 +1332,23 @@ public class ReturnProducts extends javax.swing.JFrame {
     private javax.swing.JLabel jLabelTotalCashBack;
     private javax.swing.JLabel jLabelTotalCashBackValue;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPaneReturnedValues;
     private javax.swing.JLabel lbBillingAmountValue;
     private javax.swing.JLabel lbCustomerID;
     private javax.swing.JLabel lblAddress;
     private javax.swing.JLabel lblAdmin;
     private javax.swing.JLabel lblBillingAmount;
+    private javax.swing.JLabel lblChangeValue;
     private javax.swing.JLabel lblCustomerID3;
     private javax.swing.JLabel lblCustomerIDValue;
     private javax.swing.JLabel lblCustomerName;
     private javax.swing.JLabel lblDateValue;
+    private javax.swing.JLabel lblDue;
+    private javax.swing.JLabel lblDue1;
+    private javax.swing.JLabel lblDueValue;
     private javax.swing.JLabel lblEmail;
     private javax.swing.JLabel lblHome;
     private javax.swing.JLabel lblInvoiceID;
-    private javax.swing.JLabel lblInvoiceID1;
-    private javax.swing.JLabel lblInvoiceIDValue;
     private javax.swing.JLabel lblPageTitle;
     private javax.swing.JLabel lblPhone;
     private javax.swing.JLabel lblTime;
@@ -856,8 +1390,10 @@ public class ReturnProducts extends javax.swing.JFrame {
                     while(flagTime==1/* && new GregorianCalendar().get(Calendar.SECOND)!=fsec*/){
                         Calendar cal = new GregorianCalendar();
                         sec = cal.get(Calendar.SECOND);
-                        System.out.println(sec);
+                        //System.out.println(sec);
                         hour = cal.get(Calendar.HOUR);
+                        if(hour==0)
+                            hour=12;
                         min = cal.get(Calendar.MINUTE);
                         am_pm = cal.get(Calendar.AM_PM);
                         if(am_pm == 0){
@@ -889,30 +1425,31 @@ public class ReturnProducts extends javax.swing.JFrame {
 //    }
 
 
-//    private void clearField() {
-//         this.txtFieldCompanyName.setText("");
-//         this.txtFieldDimension.setText("");
-//         this.txtFieldModel.setText("");
-//         this.txtFieldItemUnit.setText("");
-//         this.txtFieldPcsPerBox.setText("");
-//         this.txtFieldPurchasePrice.setText("");
-//         this.txtFieldSellingPrice.setText("");
-//         this.txtAreanotes.setText("");
+    private void clearField() {
+         this.txtFieldInvoiceIDValue.setText("");
+         this.lblCustomerIDValue.setText("Customer ID");
+         this.jLabelCustomerNameValue.setText("Customer Name");
+         this.jLabelPhoneValue.setText("Phone");
+         this.jLabelItemUnit1.setText("Email");
+         this.jLabelAddressValue.setText("Address");
+         this.lblDateValue.setText("DD/MM/YEAR");
+         this.lbBillingAmountValue.setText("0000.0000 TK");
+         this.lblDueValue.setText("00000.00000 TK");
+         this.lblChangeValue.setText("0000.0000 TK");
+         this.jLabelTotalCashBackValue.setText("0000.0000 TK");
+         data2.getDataVector().removeAllElements();
+         table.setModel(data2);
+         data.getDataVector().removeAllElements();
+         table2.setModel(data);
 //         initComboCompanyName();
-//    }
-
-//    private void initComboCompanyName(){
-//        companyName = Functions.companyName();
-//        Functions.setupAutoComplete(txtFieldCompanyName, companyName);
-//    }
-//
-//    private void initComboModel(String companyName){
-//        model = Functions.model(companyName);
-//        Functions.setupAutoComplete(txtFieldModel, model);
-//    }
-//
-//    private void initComboDimension(String companyName, String model){
-//        dimension = Functions.dimension(companyName, model);
-//        Functions.setupAutoComplete(txtFieldDimension, dimension);
-//    }
+    }
+    
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            Functions.logoutLog();
+            //dispose();
+            RakibsTraders.close();
+        }
+    }
 }

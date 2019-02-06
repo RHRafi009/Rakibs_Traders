@@ -7,10 +7,14 @@ import UI.BigPopUp.ExpenseHistory;
 import UI.BigPopUp.ProductsTable;
 import UI.BigPopUp.TodaysExpense;
 import UI.BigPopUp.ViewStock;
-import UI.PopUp.Delete;
+import UI.PopUp.DeleteProducts;
+import UI.PopUp.EditExpense;
+import UI.PopUp.EmployeeSalary;
 import UI.PopUp.NoConnection;
+import UI.PopUp.NoValue;
 import UI.PopUp.Save;
 import UI.PopUp.Updated;
+import com.placeholder.PlaceHolder;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,11 +23,13 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import static java.lang.Thread.sleep;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.annotation.Resources.*;
 import javax.swing.ImageIcon;
+import static jdk.nashorn.internal.objects.NativeString.trim;
 import rakibs.traders.RakibsTraders;
 
 /**
@@ -40,8 +46,18 @@ public class Expenses extends javax.swing.JFrame {
         //initComboCompanyName();
         initComboProductID();
         setIcon();
+        PlaceHolder place = new PlaceHolder(txtFieldExpenseCategory,"Enter Expense Category");
+        PlaceHolder place1 = new PlaceHolder(txtFieldExpenseCategoryOptional,"Enter Optional Expense");
+        PlaceHolder place3 = new PlaceHolder(txtFieldAccountValue1," Enter Account Number ");
+        PlaceHolder place4 = new PlaceHolder(txtFieldAmountValue," Enter the amount ");
+        PlaceHolder place5 = new PlaceHolder(txtFieldNotesValue," External Notes ");
+//        setData();
+        
         //setTime();
     }
+    
+   
+    
     
 
     /**
@@ -65,27 +81,27 @@ public class Expenses extends javax.swing.JFrame {
         btnSettings = new javax.swing.JButton();
         lblExpenses = new javax.swing.JLabel();
         lblExpenseCategory = new javax.swing.JLabel();
-        btnDelete = new javax.swing.JButton();
-        btnUpdate = new javax.swing.JButton();
-        btnSave = new javax.swing.JButton();
         btnExpenses = new javax.swing.JButton();
         txtFieldExpenseCategoryOptional = new javax.swing.JTextField();
         lblExpenseID = new javax.swing.JLabel();
-        txtFieldExpenseIDValue = new javax.swing.JTextField();
         txtFieldExpenseCategory = new javax.swing.JTextField();
         lblPaymentType = new javax.swing.JLabel();
-        txtFieldPaymentTypeValue = new javax.swing.JTextField();
         txtFieldAmountValue = new javax.swing.JTextField();
         lblAccount1 = new javax.swing.JLabel();
         txtFieldAccountValue1 = new javax.swing.JTextField();
         lblAccount = new javax.swing.JLabel();
         txtFieldNotesValue = new javax.swing.JTextField();
         lbNotes = new javax.swing.JLabel();
-        jButtonTodaysExpense = new javax.swing.JButton();
+        jButtonEmployeeSalary = new javax.swing.JButton();
         lblDate = new javax.swing.JLabel();
         txtFieldDateValue = new javax.swing.JTextField();
         jButtonExpenseHistory = new javax.swing.JButton();
         lblTime = new javax.swing.JLabel();
+        jTextFieldExpenseID = new javax.swing.JTextField();
+        jComboBoxPaymentMethodValue = new javax.swing.JComboBox<>();
+        btnSave = new javax.swing.JButton();
+        jButtonTodaysExpense = new javax.swing.JButton();
+        jButtonEditExpense = new javax.swing.JButton();
         Background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -245,36 +261,7 @@ public class Expenses extends javax.swing.JFrame {
         lblExpenseCategory.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblExpenseCategory.setForeground(new java.awt.Color(255, 255, 255));
         lblExpenseCategory.setText("Expense Category :");
-        getContentPane().add(lblExpenseCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 180, 130, 23));
-
-        btnDelete.setBackground(new java.awt.Color(0, 0, 0));
-        btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/Delete.png"))); // NOI18N
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 430, 70, 20));
-
-        btnUpdate.setBackground(new java.awt.Color(11, 66, 169));
-        btnUpdate.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
-        btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
-        btnUpdate.setText("UDPATE");
-        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUpdateActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnUpdate, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 430, 70, 20));
-
-        btnSave.setBackground(new java.awt.Color(0, 0, 0));
-        btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/save.png"))); // NOI18N
-        btnSave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 430, 70, 20));
+        getContentPane().add(lblExpenseCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 200, 130, 23));
 
         btnExpenses.setBackground(new java.awt.Color(67, 196, 114));
         btnExpenses.setForeground(new java.awt.Color(67, 196, 114));
@@ -295,7 +282,6 @@ public class Expenses extends javax.swing.JFrame {
         getContentPane().add(btnExpenses, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 400, 138, 23));
 
         txtFieldExpenseCategoryOptional.setForeground(new java.awt.Color(204, 204, 204));
-        txtFieldExpenseCategoryOptional.setText("Enter Optional Expense");
         txtFieldExpenseCategoryOptional.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtFieldExpenseCategoryOptionalFocusGained(evt);
@@ -309,37 +295,14 @@ public class Expenses extends javax.swing.JFrame {
                 txtFieldExpenseCategoryOptionalActionPerformed(evt);
             }
         });
-        getContentPane().add(txtFieldExpenseCategoryOptional, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 210, 370, 23));
+        getContentPane().add(txtFieldExpenseCategoryOptional, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 230, 370, 23));
 
         lblExpenseID.setFont(new java.awt.Font("Titillium Web", 1, 16)); // NOI18N
         lblExpenseID.setForeground(new java.awt.Color(255, 255, 255));
         lblExpenseID.setText("Expense ID:");
         getContentPane().add(lblExpenseID, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 140, 110, 23));
 
-        txtFieldExpenseIDValue.setForeground(new java.awt.Color(204, 204, 204));
-        txtFieldExpenseIDValue.setText("Enter expense ID");
-        txtFieldExpenseIDValue.addContainerListener(new java.awt.event.ContainerAdapter() {
-            public void componentAdded(java.awt.event.ContainerEvent evt) {
-                txtFieldExpenseIDValueComponentAdded(evt);
-            }
-        });
-        txtFieldExpenseIDValue.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtFieldExpenseIDValueFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtFieldExpenseIDValueFocusLost(evt);
-            }
-        });
-        txtFieldExpenseIDValue.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFieldExpenseIDValueActionPerformed(evt);
-            }
-        });
-        getContentPane().add(txtFieldExpenseIDValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 140, 170, 23));
-
         txtFieldExpenseCategory.setForeground(new java.awt.Color(204, 204, 204));
-        txtFieldExpenseCategory.setText("Select Expense Category");
         txtFieldExpenseCategory.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtFieldExpenseCategoryFocusGained(evt);
@@ -353,32 +316,15 @@ public class Expenses extends javax.swing.JFrame {
                 txtFieldExpenseCategoryActionPerformed(evt);
             }
         });
-        getContentPane().add(txtFieldExpenseCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 180, 370, 23));
+        getContentPane().add(txtFieldExpenseCategory, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 200, 370, 23));
 
         lblPaymentType.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblPaymentType.setForeground(new java.awt.Color(255, 255, 255));
         lblPaymentType.setText("Payment Type:");
-        getContentPane().add(lblPaymentType, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 240, 103, 23));
+        getContentPane().add(lblPaymentType, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 260, 103, 23));
 
-        txtFieldPaymentTypeValue.setForeground(new java.awt.Color(204, 204, 204));
-        txtFieldPaymentTypeValue.setText("Cash/Account");
-        txtFieldPaymentTypeValue.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtFieldPaymentTypeValueFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txtFieldPaymentTypeValueFocusLost(evt);
-            }
-        });
-        txtFieldPaymentTypeValue.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFieldPaymentTypeValueActionPerformed(evt);
-            }
-        });
-        getContentPane().add(txtFieldPaymentTypeValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 240, 370, 23));
-
-        txtFieldAmountValue.setForeground(new java.awt.Color(204, 204, 204));
-        txtFieldAmountValue.setText("Enter the amount");
+        txtFieldAmountValue.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        txtFieldAmountValue.setForeground(new java.awt.Color(255, 102, 0));
         txtFieldAmountValue.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtFieldAmountValueFocusGained(evt);
@@ -392,15 +338,14 @@ public class Expenses extends javax.swing.JFrame {
                 txtFieldAmountValueActionPerformed(evt);
             }
         });
-        getContentPane().add(txtFieldAmountValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 300, 370, 23));
+        getContentPane().add(txtFieldAmountValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 320, 370, 40));
 
         lblAccount1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblAccount1.setForeground(new java.awt.Color(255, 102, 0));
         lblAccount1.setText("Amount:");
-        getContentPane().add(lblAccount1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 300, 103, 23));
+        getContentPane().add(lblAccount1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 320, 103, 40));
 
         txtFieldAccountValue1.setForeground(new java.awt.Color(204, 204, 204));
-        txtFieldAccountValue1.setText("Enter Account Number");
         txtFieldAccountValue1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtFieldAccountValue1FocusGained(evt);
@@ -414,15 +359,14 @@ public class Expenses extends javax.swing.JFrame {
                 txtFieldAccountValue1ActionPerformed(evt);
             }
         });
-        getContentPane().add(txtFieldAccountValue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 270, 370, 23));
+        getContentPane().add(txtFieldAccountValue1, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 290, 370, 23));
 
         lblAccount.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblAccount.setForeground(new java.awt.Color(255, 255, 255));
         lblAccount.setText("Account:");
-        getContentPane().add(lblAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 270, 103, 23));
+        getContentPane().add(lblAccount, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 290, 103, 23));
 
         txtFieldNotesValue.setForeground(new java.awt.Color(204, 204, 204));
-        txtFieldNotesValue.setText("Enter optional notes");
         txtFieldNotesValue.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtFieldNotesValueFocusGained(evt);
@@ -436,31 +380,29 @@ public class Expenses extends javax.swing.JFrame {
                 txtFieldNotesValueActionPerformed(evt);
             }
         });
-        getContentPane().add(txtFieldNotesValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 330, 370, 60));
+        getContentPane().add(txtFieldNotesValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 370, 370, 60));
 
         lbNotes.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lbNotes.setForeground(new java.awt.Color(255, 255, 255));
         lbNotes.setText("Notes:");
-        getContentPane().add(lbNotes, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 330, 103, 23));
+        getContentPane().add(lbNotes, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 380, 103, 23));
 
-        jButtonTodaysExpense.setBackground(new java.awt.Color(0, 51, 153));
-        jButtonTodaysExpense.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
-        jButtonTodaysExpense.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonTodaysExpense.setText("TODAYS EXPENSE");
-        jButtonTodaysExpense.addActionListener(new java.awt.event.ActionListener() {
+        jButtonEmployeeSalary.setBackground(new java.awt.Color(153, 153, 0));
+        jButtonEmployeeSalary.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
+        jButtonEmployeeSalary.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonEmployeeSalary.setText("EMPLOYEE SALARY");
+        jButtonEmployeeSalary.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonTodaysExpenseActionPerformed(evt);
+                jButtonEmployeeSalaryActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonTodaysExpense, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 180, 170, 30));
+        getContentPane().add(jButtonEmployeeSalary, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 260, 170, 30));
 
         lblDate.setFont(new java.awt.Font("Titillium Web", 1, 16)); // NOI18N
         lblDate.setForeground(new java.awt.Color(255, 255, 255));
         lblDate.setText("Date:");
         getContentPane().add(lblDate, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 140, 110, 23));
 
-        txtFieldDateValue.setForeground(new java.awt.Color(204, 204, 204));
-        txtFieldDateValue.setText("DD/MM/YEAR");
         txtFieldDateValue.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txtFieldDateValueFocusGained(evt);
@@ -492,6 +434,45 @@ public class Expenses extends javax.swing.JFrame {
         lblTime.setText("Time: ");
         getContentPane().add(lblTime, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 40, 230, 30));
 
+        jTextFieldExpenseID.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        getContentPane().add(jTextFieldExpenseID, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 140, 220, -1));
+
+        jComboBoxPaymentMethodValue.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cash", "Cheque", "Bank", "Others" }));
+        getContentPane().add(jComboBoxPaymentMethodValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 260, 370, -1));
+
+        btnSave.setBackground(new java.awt.Color(67, 196, 114));
+        btnSave.setFont(new java.awt.Font("Titillium", 1, 14)); // NOI18N
+        btnSave.setForeground(new java.awt.Color(255, 255, 255));
+        btnSave.setText("SAVE");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(643, 453, 120, 30));
+
+        jButtonTodaysExpense.setBackground(new java.awt.Color(0, 51, 153));
+        jButtonTodaysExpense.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
+        jButtonTodaysExpense.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonTodaysExpense.setText("TODAYS EXPENSE");
+        jButtonTodaysExpense.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonTodaysExpenseActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonTodaysExpense, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 180, 170, 30));
+
+        jButtonEditExpense.setBackground(new java.awt.Color(0, 51, 153));
+        jButtonEditExpense.setFont(new java.awt.Font("Titillium", 1, 13)); // NOI18N
+        jButtonEditExpense.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonEditExpense.setText("EDIT EXPENSE");
+        jButtonEditExpense.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEditExpenseActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButtonEditExpense, new org.netbeans.lib.awtextra.AbsoluteConstraints(930, 220, 170, 30));
+
         Background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
         getContentPane().add(Background, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, 0, 1280, 669));
 
@@ -501,12 +482,16 @@ public class Expenses extends javax.swing.JFrame {
     private void lblHomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHomeMouseClicked
         // TODO add your handling code here:
         
-        Dashboard page = new Dashboard();
+        Sell page = Sell.getRef();
+        page.setFlagTime();
+        page.setTime();
+        this.setFlagTime();
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_lblHomeMouseClicked
 
     private void lblAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAdminMouseClicked
         // TODO add your handling code here:
+        Functions.logoutLog();
         LoginPage page = LoginPage.getRef();
         page.clearField();
         RakibsTraders.changeFrame(this, page);
@@ -598,98 +583,6 @@ public class Expenses extends javax.swing.JFrame {
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_btnReturnProductsActionPerformed
 
-    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        // TODO add your handling code here:
-        
-//        Connection con = DBConnectionProvider.getDBConnection();
-//        String query = "INSERT INTO `products` (`products_id`, `company_name`, `model`, `dimension`, `pcs_per_box`, `item_unit`, `purchase_price`, `selling_price`, `notes`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-//        String query2 = "INSERT INTO `stock` (`products_id`, `left`) VALUES (?, 0)";
-//        
-//        
-//        try{
-//            PreparedStatement pstmt = con.prepareStatement(query);
-//            PreparedStatement pstmt2 = con.prepareStatement(query2);
-//            String companyName = this.txtFieldCompanyName.getText();
-//            String model = this.txtFieldModel.getText();
-//            String product_id = Functions.productIDGenerator(model);//call id generator here
-//            //String product_id = "testing1";
-//            String dimension = this.txtFieldDimension.getText();
-//            String pcsPerbox = this.txtFieldPcsPerBox.getText();
-//            String itemUnit = this.txtFieldItemUnit.getText();
-//            String purchasePrice = this.txtFieldPurchasePrice.getText();
-//            String sellingPrice = this.txtFieldSellingPrice.getText();
-//            String notes = this.txtAreanotes.getText();
-//            pstmt.setString(1, product_id);
-//            pstmt2.setString(1, product_id);
-//            pstmt.setString(2, companyName);
-//            pstmt.setString(3, model);
-//            pstmt.setString(4, dimension);
-//            pstmt.setString(5, pcsPerbox);
-//            pstmt.setString(6, itemUnit);
-//            pstmt.setString(7, purchasePrice);
-//            pstmt.setString(8, sellingPrice);
-//            pstmt.setString(9, notes);
-//            if(product_id.equals("0"))
-//                throw new Exception("product id null");
-//            else{
-//                pstmt.executeUpdate();
-//                pstmt2.executeUpdate();
-//                Save sv = new Save();
-//                RakibsTraders.popUp(sv);
-//                clearField();
-//            }
-//        } catch(Exception ex){
-//            System.out.println("Failed to get DBConn:: "+ex.getMessage());
-//            NoConnection no = new NoConnection();
-//            RakibsTraders.popUp(no);
-//        }
-    }//GEN-LAST:event_btnSaveActionPerformed
-
-    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-//        // TODO add your handling code here:
-//        Connection con = DBConnectionProvider.getDBConnection();
-//        String query = "UPDATE products SET pcs_per_box = ?,item_unit = ?,purchase_price = ?,selling_price = ?,notes = ?  WHERE company_name = ? and model = ? and dimension = ?";
-//        try{
-//            PreparedStatement pstmt = con.prepareStatement(query);
-//            String companyName = this.txtFieldCompanyName.getText();
-//            String model = this.txtFieldModel.getText();
-//            String dimension = this.txtFieldDimension.getText();
-//            String pcsPerbox = this.txtFieldPcsPerBox.getText();
-//            String itemUnit = this.txtFieldItemUnit.getText();
-//            String purchasePrice = this.txtFieldPurchasePrice.getText();
-//            String sellingPrice = this.txtFieldSellingPrice.getText();
-//            String notes = this.txtAreanotes.getText();
-//            pstmt.setInt(1,Integer.parseInt(pcsPerbox));
-//            pstmt.setString(2,itemUnit);
-//            pstmt.setString(3,purchasePrice);
-//            pstmt.setString(4,sellingPrice);
-//            pstmt.setString(5,notes);
-//            pstmt.setString(6,companyName);
-//            pstmt.setString(7,model);
-//            pstmt.setString(8,dimension);
-//            pstmt.executeUpdate();
-//            clearField();
-//            Updated up = new Updated();
-//            RakibsTraders.popUp(up);
-//        }catch(Exception ex){
-//            System.out.println("Failed to get DBConn:: "+ex.getMessage());
-//            NoConnection no = new NoConnection();
-//            RakibsTraders.popUp(no);
-//        }
-    }//GEN-LAST:event_btnUpdateActionPerformed
-
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
-//        String companyName = this.txtFieldCompanyName.getText();
-////        String productID = this.txtFieldProductID.getText();
-//        String model = this.txtFieldModel.getText();
-//        String dimension = this.txtFieldDimension.getText();
-//        Delete dlt = new Delete();
-//        RakibsTraders.popUp(dlt);
-////        dlt.setValue(productID, companyName, model, dimension);
-//        clearField();
-    }//GEN-LAST:event_btnDeleteActionPerformed
-
     private void btnSellActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSellActionPerformed
         // TODO add your handling code here:
         Sell page = Sell.getRef();
@@ -737,7 +630,14 @@ public class Expenses extends javax.swing.JFrame {
          btnProducts.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/Products_G.png")));
         
     }//GEN-LAST:event_btnProductsMouseEntered
-
+    private boolean checkField(){
+        
+        if(this.txtFieldExpenseCategory.getText().equals("") || this.txtFieldAmountValue.getText().equals("") ){
+//            System.err.println(this.txtFieldAmountValue.getText() + " EROR ");
+            return true;
+        }
+        else return false;
+    }
     private void btnProductsMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProductsMouseExited
         // TODO add your handling code here:
           btnProducts.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/Products.png")));
@@ -755,106 +655,70 @@ public class Expenses extends javax.swing.JFrame {
     private void btnProductsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProductsMouseClicked
         // TODO add your handling code here:
         Products page = Products.getRef();
+        page.setFlagTime();
+        page.setTime();
+        this.setFlagTime();
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_btnProductsMouseClicked
 
     private void txtFieldExpenseCategoryOptionalFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldExpenseCategoryOptionalFocusGained
         // TODO add your handling code here:
-        //
-        if( txtFieldExpenseCategoryOptional.getText().equals("Enter Optional Expense")){
-            this.txtFieldExpenseCategoryOptional.setText("");
-        }
-        this.txtFieldExpenseCategoryOptional.setForeground(Color.BLACK);
+        
     }//GEN-LAST:event_txtFieldExpenseCategoryOptionalFocusGained
 
     private void txtFieldExpenseCategoryOptionalFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldExpenseCategoryOptionalFocusLost
         // TODO add your handling code here:
-        if (txtFieldExpenseCategoryOptional.getText().isEmpty()) {
-            txtFieldExpenseCategoryOptional.setForeground(new Color(204,204,204));
-            txtFieldExpenseCategoryOptional.setText("Enter Optional Expense");
-        }
+       
     }//GEN-LAST:event_txtFieldExpenseCategoryOptionalFocusLost
 
     private void txtFieldExpenseCategoryOptionalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldExpenseCategoryOptionalActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFieldExpenseCategoryOptionalActionPerformed
 
-    private void txtFieldExpenseIDValueFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldExpenseIDValueFocusGained
-        // TODO add your handling code here:
-        if( txtFieldExpenseIDValue.getText().equals("Enter expense ID")){
-              this.txtFieldExpenseIDValue.setText("");
-          }
-        this.txtFieldExpenseIDValue.setForeground(Color.BLACK);
-    }//GEN-LAST:event_txtFieldExpenseIDValueFocusGained
-
-    private void txtFieldExpenseIDValueFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldExpenseIDValueFocusLost
-        // TODO add your handling code here:
-        if (txtFieldExpenseIDValue.getText().isEmpty()) {
-                txtFieldExpenseIDValue.setForeground(new Color(204,204,204));
-                txtFieldExpenseIDValue.setText("Enter expense ID");
-            }
-    }//GEN-LAST:event_txtFieldExpenseIDValueFocusLost
-
-    private void txtFieldExpenseIDValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldExpenseIDValueActionPerformed
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_txtFieldExpenseIDValueActionPerformed
-
     private void txtFieldExpenseCategoryFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldExpenseCategoryFocusGained
         // TODO add your handling code here:
-        if( txtFieldExpenseCategory.getText().equals("Select Expense Category")){
-              this.txtFieldExpenseCategory.setText("");
-          }
-        this.txtFieldExpenseCategory.setForeground(Color.BLACK);
+        SimpleDateFormat dFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date d = new Date();
+        String date = dFormat.format(d);
+        
+        if(txtFieldDateValue.getText().equals("")){
+            Calendar cal = new GregorianCalendar();
+            Integer sec = cal.get(Calendar.SECOND);
+            Integer hour = cal.get(Calendar.HOUR);
+            if(hour==0)
+                hour=12;
+            Integer min = cal.get(Calendar.MINUTE);
+            Integer am_pm = cal.get(Calendar.AM_PM);
+            if(am_pm == 0){
+                String timeAndDate = hour + ":" + min + ":" + sec + " " + "AM" + " " + date;
+                txtFieldDateValue.setText(timeAndDate);
+            }else {
+                String timeAndDate = hour + ":" + min + ":" + sec + " " + "PM" + " " + date;
+                txtFieldDateValue.setText(timeAndDate);
+            }
+        }
+        String id = Functions.expIDGenerator(date);
+        jTextFieldExpenseID.setText(id);
+        
     }//GEN-LAST:event_txtFieldExpenseCategoryFocusGained
 
     private void txtFieldExpenseCategoryFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldExpenseCategoryFocusLost
-        // TODO add your handling code here:
-        if (txtFieldExpenseCategory.getText().isEmpty()) {
-                txtFieldExpenseCategory.setForeground(new Color(204,204,204));
-                txtFieldExpenseCategory.setText("Select Expense Category");
-            }
+        
     }//GEN-LAST:event_txtFieldExpenseCategoryFocusLost
 
     private void txtFieldExpenseCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldExpenseCategoryActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFieldExpenseCategoryActionPerformed
 
-    private void txtFieldPaymentTypeValueFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldPaymentTypeValueFocusGained
-        // TODO add your handling code here:
-        if( txtFieldPaymentTypeValue.getText().equals("Cash/Account")){
-              this.txtFieldPaymentTypeValue.setText("");
-          }
-        this.txtFieldPaymentTypeValue.setForeground(Color.BLACK);
-    }//GEN-LAST:event_txtFieldPaymentTypeValueFocusGained
-
-    private void txtFieldPaymentTypeValueFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldPaymentTypeValueFocusLost
-        // TODO add your handling code here:
-        if (txtFieldPaymentTypeValue.getText().isEmpty()) {
-                txtFieldPaymentTypeValue.setForeground(new Color(204,204,204));
-                txtFieldPaymentTypeValue.setText("Cash/Account");
-            }
-    }//GEN-LAST:event_txtFieldPaymentTypeValueFocusLost
-
-    private void txtFieldPaymentTypeValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldPaymentTypeValueActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFieldPaymentTypeValueActionPerformed
-
     private void txtFieldAmountValueFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldAmountValueFocusGained
         // TODO add your handling code here:
-        if( txtFieldAmountValue.getText().equals("Enter the amount")){
-              txtFieldAmountValue.setText("");
-          }
-        txtFieldAmountValue.setForeground(Color.BLACK);
+        
         
     }//GEN-LAST:event_txtFieldAmountValueFocusGained
 
     private void txtFieldAmountValueFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldAmountValueFocusLost
         // TODO add your handling code here:
-        if (txtFieldAmountValue.getText().isEmpty()) {
-                txtFieldAmountValue.setForeground(new Color(204,204,204));
-                txtFieldAmountValue.setText("Enter the amount");
-            }
+      
     }//GEN-LAST:event_txtFieldAmountValueFocusLost
 
     private void txtFieldAmountValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldAmountValueActionPerformed
@@ -863,18 +727,12 @@ public class Expenses extends javax.swing.JFrame {
 
     private void txtFieldAccountValue1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldAccountValue1FocusGained
         // TODO add your handling code here:
-        if( txtFieldAccountValue1.getText().equals("Enter Account Number")){
-              txtFieldAccountValue1.setText("");
-          }
-        txtFieldAccountValue1.setForeground(Color.BLACK);
+       
     }//GEN-LAST:event_txtFieldAccountValue1FocusGained
 
     private void txtFieldAccountValue1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldAccountValue1FocusLost
         // TODO add your handling code here:
-        if (txtFieldAccountValue1.getText().isEmpty()) {
-                txtFieldAccountValue1.setText("Enter Account Number");
-                txtFieldAccountValue1.setForeground(new Color(204,204,204));
-        }
+       
     }//GEN-LAST:event_txtFieldAccountValue1FocusLost
 
     private void txtFieldAccountValue1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldAccountValue1ActionPerformed
@@ -883,18 +741,12 @@ public class Expenses extends javax.swing.JFrame {
 
     private void txtFieldNotesValueFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldNotesValueFocusGained
         // TODO add your handling code here:
-        if( txtFieldNotesValue.getText().equals("Enter optional notes")){
-              this.txtFieldNotesValue.setText("");
-          }
-        this.txtFieldNotesValue.setForeground(Color.BLACK);
+        
     }//GEN-LAST:event_txtFieldNotesValueFocusGained
 
     private void txtFieldNotesValueFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldNotesValueFocusLost
         // TODO add your handling code here:
-        if (txtFieldNotesValue.getText().isEmpty()) {
-                txtFieldNotesValue.setForeground(new Color(204,204,204));
-                txtFieldNotesValue.setText("Enter optional notes");
-            }
+        
     }//GEN-LAST:event_txtFieldNotesValueFocusLost
 
     private void txtFieldNotesValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldNotesValueActionPerformed
@@ -902,28 +754,26 @@ public class Expenses extends javax.swing.JFrame {
         
     }//GEN-LAST:event_txtFieldNotesValueActionPerformed
 
-    private void jButtonTodaysExpenseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTodaysExpenseActionPerformed
+    private void jButtonEmployeeSalaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEmployeeSalaryActionPerformed
         // TODO add your handling code here:
-       TodaysExpense page = new TodaysExpense();
-       RakibsTraders.bigPopUp(page);
-        
+       if(this.access == 1 || this.access == 2){
+            EmployeeSalary page = new EmployeeSalary();
+            page.setCaller(this);
+            RakibsTraders.popUp(page);
+            this.setEnabled(false); 
+       }
+       
 
-    }//GEN-LAST:event_jButtonTodaysExpenseActionPerformed
+    }//GEN-LAST:event_jButtonEmployeeSalaryActionPerformed
 
     private void txtFieldDateValueFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldDateValueFocusGained
         // TODO add your handling code here:
-        if( txtFieldDateValue.getText().equals("DD/MM/YEAR")){
-              this.txtFieldDateValue.setText("");
-          }
-        this.txtFieldDateValue.setForeground(Color.BLACK);
+       
     }//GEN-LAST:event_txtFieldDateValueFocusGained
 
     private void txtFieldDateValueFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldDateValueFocusLost
         // TODO add your handling code here:
-            if (txtFieldDateValue.getText().isEmpty()) {
-                txtFieldDateValue.setForeground(new Color(204,204,204));
-                txtFieldDateValue.setText("DD/MM/YEAR");
-            }
+      
     }//GEN-LAST:event_txtFieldDateValueFocusLost
 
     private void txtFieldDateValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldDateValueActionPerformed
@@ -934,18 +784,79 @@ public class Expenses extends javax.swing.JFrame {
         // TODO add your handling code here:
         // Add all expense history with Expense ID, date, and with other attributes.
         ExpenseHistory page = new ExpenseHistory();
+        page.setCaller(this);
         RakibsTraders.bigPopUp(page);
+        this.setEnabled(false);
     }//GEN-LAST:event_jButtonExpenseHistoryActionPerformed
-
-    private void txtFieldExpenseIDValueComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_txtFieldExpenseIDValueComponentAdded
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFieldExpenseIDValueComponentAdded
 
     private void btnReportsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportsActionPerformed
         // TODO add your handling code here:
         Reports page = Reports.getRef();
+        page.setFlagTime();
+        page.setTime();
+        this.setFlagTime();
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_btnReportsActionPerformed
+
+    private void jButtonTodaysExpenseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonTodaysExpenseActionPerformed
+        // TODO add your handling code here:
+        TodaysExpense page = new TodaysExpense();
+        page.setCaller(this);
+        RakibsTraders.bigPopUp(page);
+        this.setEnabled(false);
+    }//GEN-LAST:event_jButtonTodaysExpenseActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        // TODO add your handling code here:
+        if(checkField()){
+            NoValue page = new NoValue();
+            RakibsTraders.popUp(page);
+        }else {
+            Connection con = DBConnectionProvider.getDBConnection();
+            String query = "INSERT INTO `expenses` (`exp_ID`, `date`, `time`, `category`, `optional_category`, `amount`, `payment_type`, `account`, `notes`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            //            System.err.println("testme");
+            String dateAndTime = txtFieldDateValue.getText();
+            String time = dateAndTime.substring(0,dateAndTime.indexOf(" ")+3);
+            String date = dateAndTime.substring(dateAndTime.indexOf(" ") + 4);
+            Double amount = Double.parseDouble(this.txtFieldAmountValue.getText());
+
+            try{
+                PreparedStatement pstmt = con.prepareStatement(query);
+                pstmt.setString(1, jTextFieldExpenseID.getText());
+                String[] splitDate = date.split("/");
+                date = trim(splitDate[2]) + "-" + trim(splitDate[1]) + "-" + trim(splitDate[0]);
+                pstmt.setString(2, date);
+                pstmt.setString(3, time);
+                pstmt.setString(4, txtFieldExpenseCategory.getText());
+                pstmt.setString(5, txtFieldExpenseCategoryOptional.getText());
+                pstmt.setDouble(6, amount);
+                pstmt.setString(7, jComboBoxPaymentMethodValue.getSelectedItem().toString());
+                pstmt.setString(8, txtFieldAccountValue1.getText());
+                pstmt.setString(9, txtFieldNotesValue.getText());
+
+                if(jTextFieldExpenseID.getText().equals("0"))
+                throw new Exception("Expense ID null");
+                else{
+                    pstmt.executeUpdate();
+                    Save sv = new Save();
+                    RakibsTraders.popUp(sv);
+                    clearField();
+                }
+            } catch(Exception ex){
+                System.out.println("Failed to get DBConn:: "+ex.getMessage());
+                NoConnection no = new NoConnection();
+                RakibsTraders.popUp(no);
+            }
+        }
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void jButtonEditExpenseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditExpenseActionPerformed
+        // TODO add your handling code here:
+        EditExpense page = new EditExpense();
+        page.setCaller(this);
+        RakibsTraders.popUp(page);
+        this.setEnabled(false);
+    }//GEN-LAST:event_jButtonEditExpenseActionPerformed
 
     
     /**
@@ -987,7 +898,6 @@ public class Expenses extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Background;
     private javax.swing.JButton btnBuy;
-    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExpenses;
     private javax.swing.JButton btnProducts;
     private javax.swing.JButton btnReports;
@@ -996,9 +906,12 @@ public class Expenses extends javax.swing.JFrame {
     private javax.swing.JButton btnSell;
     private javax.swing.JButton btnSettings;
     private javax.swing.JButton btnStock;
-    private javax.swing.JButton btnUpdate;
+    private javax.swing.JButton jButtonEditExpense;
+    private javax.swing.JButton jButtonEmployeeSalary;
     private javax.swing.JButton jButtonExpenseHistory;
     private javax.swing.JButton jButtonTodaysExpense;
+    private javax.swing.JComboBox<String> jComboBoxPaymentMethodValue;
+    private javax.swing.JTextField jTextFieldExpenseID;
     private javax.swing.JLabel lbNotes;
     private javax.swing.JLabel lblAccount;
     private javax.swing.JLabel lblAccount1;
@@ -1016,9 +929,7 @@ public class Expenses extends javax.swing.JFrame {
     private javax.swing.JTextField txtFieldDateValue;
     private javax.swing.JTextField txtFieldExpenseCategory;
     private javax.swing.JTextField txtFieldExpenseCategoryOptional;
-    private javax.swing.JTextField txtFieldExpenseIDValue;
     private javax.swing.JTextField txtFieldNotesValue;
-    private javax.swing.JTextField txtFieldPaymentTypeValue;
     // End of variables declaration//GEN-END:variables
 
     //custome variables declaration
@@ -1028,6 +939,7 @@ public class Expenses extends javax.swing.JFrame {
     private ArrayList<String> dimension = new ArrayList<>();
     private static Expenses ref;
     private Integer flagTime = 0;
+    private Integer access = 0;
     //end custom varibles
     
     public static Expenses getRef(){
@@ -1036,16 +948,18 @@ public class Expenses extends javax.swing.JFrame {
         return ref;
     }
     
+    public void setAcsess(Integer acc){
+        this.access = acc;
+    }
+    
     private void clearField() {
-//         this.txtFieldProductID.setText("");
-//         this.txtFieldCompanyName.setText("");
-//         this.txtFieldDimension.setText("");
-//         this.txtFieldModel.setText("");
-//         this.txtFieldItemUnit.setText("");
-//         this.txtFieldPcsPerBox.setText("");
-//         this.txtFieldPurchasePrice.setText("");
-//         this.txtFieldSellingPrice.setText("");
-//         this.txtAreanotes.setText("");
+         this.txtFieldDateValue.setText("");
+         this.jTextFieldExpenseID.setText("");
+         this.txtFieldExpenseCategory.setText("");
+         this.txtFieldExpenseCategoryOptional.setText("");
+         this.txtFieldAccountValue1.setText("");
+         this.txtFieldAmountValue.setText("");
+         this.txtFieldNotesValue.setText("");
 //         initComboProductID();
     }
     
@@ -1074,8 +988,10 @@ public class Expenses extends javax.swing.JFrame {
                     while(flagTime==1/* && new GregorianCalendar().get(Calendar.SECOND)!=fsec*/){
                         Calendar cal = new GregorianCalendar();
                         sec = cal.get(Calendar.SECOND);
-                        System.out.println(sec);
+                        //System.out.println(sec);
                         hour = cal.get(Calendar.HOUR);
+                        if(hour==0)
+                            hour=12;
                         min = cal.get(Calendar.MINUTE);
                         am_pm = cal.get(Calendar.AM_PM);
                         if(am_pm == 0){
@@ -1115,5 +1031,14 @@ public class Expenses extends javax.swing.JFrame {
     private void initComboDimension(String companyName, String model){
         dimension = Functions.dimension(companyName, model);
 //        Functions.setupAutoComplete(txtFieldDimension, dimension);
+    }
+    
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            Functions.logoutLog();
+            //dispose();
+            RakibsTraders.close();
+        }
     }
 }

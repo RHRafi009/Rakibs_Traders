@@ -37,59 +37,37 @@ public class NoConnection extends javax.swing.JFrame {
 
         lblNoConnection = new javax.swing.JLabel();
         btnRetry = new javax.swing.JButton();
+        jLabelBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(510, 250));
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblNoConnection.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
         lblNoConnection.setForeground(new java.awt.Color(255, 0, 0));
-        lblNoConnection.setText("No Connection !!!");
+        lblNoConnection.setText("Looks Like Connection is not available");
+        getContentPane().add(lblNoConnection, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 70, 410, -1));
 
+        btnRetry.setBackground(new java.awt.Color(255, 255, 255));
+        btnRetry.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnRetry.setText("Retry");
         btnRetry.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRetryActionPerformed(evt);
             }
         });
+        getContentPane().add(btnRetry, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 130, 130, 30));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addComponent(lblNoConnection, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(101, 101, 101)
-                        .addComponent(btnRetry, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(53, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(lblNoConnection)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
-                .addComponent(btnRetry)
-                .addContainerGap())
-        );
+        jLabelBackground.setForeground(new java.awt.Color(255, 255, 255));
+        jLabelBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
+        getContentPane().add(jLabelBackground, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 530, 230));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRetryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRetryActionPerformed
         // TODO add your handling code here:
-        Connection con = DBConnectionProvider.getDBConnection();
-        String query= "select products_id from products";
-        try{
-            Statement stmt = con.createStatement();
-            ResultSet rs= stmt.executeQuery(query);
             this.dispose();
-        }catch(Exception ex){
-            NoConnection no = new NoConnection();
-            RakibsTraders.popUp(no);
-        }
     }//GEN-LAST:event_btnRetryActionPerformed
 
     /**
@@ -129,6 +107,7 @@ public class NoConnection extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnRetry;
+    private javax.swing.JLabel jLabelBackground;
     private javax.swing.JLabel lblNoConnection;
     // End of variables declaration//GEN-END:variables
     

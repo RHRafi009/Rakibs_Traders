@@ -5,8 +5,11 @@ import Database.DBConnectionProvider;
 import Others.Functions;
 import UI.BigPopUp.Invoice;
 import UI.BigPopUp.ProductsTable;
-import UI.PopUp.Delete;
+import UI.BigPopUp.RecentlyAdded;
+import UI.BigPopUp.StockAlert;
+import UI.PopUp.DeleteProducts;
 import UI.PopUp.NoConnection;
+import UI.PopUp.NoValue;
 import UI.PopUp.Save;
 import UI.PopUp.Updated;
 import java.sql.Connection;
@@ -17,11 +20,15 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import static java.lang.Thread.sleep;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.annotation.Resources.*;
 import javax.swing.ImageIcon;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import rakibs.traders.RakibsTraders;
 
 /**
@@ -36,6 +43,7 @@ public class Stock extends javax.swing.JFrame {
     public Stock() {
         initComponents();
         //setTime();
+        
         initComboProductID();
         setIcon();
 //        initComboCompanyName();
@@ -62,28 +70,26 @@ public class Stock extends javax.swing.JFrame {
         btnSettings = new javax.swing.JButton();
         lblPageTitle = new javax.swing.JLabel();
         lblProductID = new javax.swing.JLabel();
-        lblProductName = new javax.swing.JLabel();
         lblProductModel = new javax.swing.JLabel();
         lblCompanyName1 = new javax.swing.JLabel();
         lblItemUnit = new javax.swing.JLabel();
         lblAvailableQTY = new javax.swing.JLabel();
-        txtProductID = new javax.swing.JTextField();
+        txtProductModel = new javax.swing.JTextField();
         jTextFieldAvailableQTYValue = new javax.swing.JTextField();
-        jLabelProductName = new javax.swing.JLabel();
-        jLabelProductModel = new javax.swing.JLabel();
         jLabelCompanyNameValue = new javax.swing.JLabel();
         lblInvoiceIDValue = new javax.swing.JLabel();
         lblTime = new javax.swing.JLabel();
         jLabelItemUnitValue = new javax.swing.JLabel();
-        lblItemSelectAction = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        lblPassword = new javax.swing.JLabel();
+        jScrollPane = new javax.swing.JScrollPane();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
-        jButtonRecentlyAdded = new javax.swing.JButton();
         btnExpenses = new javax.swing.JButton();
-        jComboBoxSelectAction = new javax.swing.JComboBox<>();
+        txtProductID = new javax.swing.JTextField();
+        jPasswordField = new javax.swing.JPasswordField();
+        JlabelWrong = new javax.swing.JLabel();
         Background = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -246,37 +252,33 @@ public class Stock extends javax.swing.JFrame {
         lblProductID.setText("Product ID");
         getContentPane().add(lblProductID, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 370, 103, 23));
 
-        lblProductName.setForeground(new java.awt.Color(255, 255, 255));
-        lblProductName.setText("Product Name");
-        getContentPane().add(lblProductName, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 400, 103, 23));
-
         lblProductModel.setForeground(new java.awt.Color(255, 255, 255));
         lblProductModel.setText("Product Model");
-        getContentPane().add(lblProductModel, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 420, 103, 23));
+        getContentPane().add(lblProductModel, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 400, 103, 23));
 
         lblCompanyName1.setForeground(new java.awt.Color(255, 255, 255));
         lblCompanyName1.setText("Company Name");
-        getContentPane().add(lblCompanyName1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 440, 103, 23));
+        getContentPane().add(lblCompanyName1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 430, 103, 23));
 
         lblItemUnit.setForeground(new java.awt.Color(255, 255, 255));
         lblItemUnit.setText("Item Unit");
-        getContentPane().add(lblItemUnit, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 460, 103, 23));
+        getContentPane().add(lblItemUnit, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 450, 103, 23));
 
         lblAvailableQTY.setForeground(new java.awt.Color(255, 255, 255));
         lblAvailableQTY.setText("Available QTY");
         getContentPane().add(lblAvailableQTY, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 480, 103, 23));
 
-        txtProductID.addFocusListener(new java.awt.event.FocusAdapter() {
+        txtProductModel.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                txtProductIDFocusGained(evt);
+                txtProductModelFocusGained(evt);
             }
         });
-        txtProductID.addActionListener(new java.awt.event.ActionListener() {
+        txtProductModel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtProductIDActionPerformed(evt);
+                txtProductModelActionPerformed(evt);
             }
         });
-        getContentPane().add(txtProductID, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 370, 220, 23));
+        getContentPane().add(txtProductModel, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 400, 220, 23));
 
         jTextFieldAvailableQTYValue.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -285,17 +287,9 @@ public class Stock extends javax.swing.JFrame {
         });
         getContentPane().add(jTextFieldAvailableQTYValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 480, 220, -1));
 
-        jLabelProductName.setForeground(new java.awt.Color(255, 255, 255));
-        jLabelProductName.setText("Product Name");
-        getContentPane().add(jLabelProductName, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 400, 90, 20));
-
-        jLabelProductModel.setForeground(new java.awt.Color(255, 255, 255));
-        jLabelProductModel.setText("Product Model");
-        getContentPane().add(jLabelProductModel, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 420, 90, 20));
-
         jLabelCompanyNameValue.setForeground(new java.awt.Color(255, 255, 255));
         jLabelCompanyNameValue.setText("Company Name");
-        getContentPane().add(jLabelCompanyNameValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 440, 90, 20));
+        getContentPane().add(jLabelCompanyNameValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 430, 450, 20));
 
         lblInvoiceIDValue.setFont(new java.awt.Font("Titillium Web", 1, 16)); // NOI18N
         lblInvoiceIDValue.setForeground(new java.awt.Color(255, 255, 255));
@@ -308,17 +302,17 @@ public class Stock extends javax.swing.JFrame {
 
         jLabelItemUnitValue.setForeground(new java.awt.Color(255, 255, 255));
         jLabelItemUnitValue.setText("Item Unit");
-        getContentPane().add(jLabelItemUnitValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 460, 90, 20));
+        getContentPane().add(jLabelItemUnitValue, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 450, 90, 20));
 
-        lblItemSelectAction.setForeground(new java.awt.Color(255, 255, 255));
-        lblItemSelectAction.setText("Select Action");
-        getContentPane().add(lblItemSelectAction, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 510, 103, 23));
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 110, 890, 240));
+        lblPassword.setForeground(new java.awt.Color(255, 255, 255));
+        lblPassword.setText("Passsword");
+        getContentPane().add(lblPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 510, 103, 23));
+        getContentPane().add(jScrollPane, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 110, 890, 240));
 
         jButton2.setBackground(new java.awt.Color(11, 66, 159));
         jButton2.setFont(new java.awt.Font("Titillium", 1, 12)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("SAVE");
+        jButton2.setText("UPDATE");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -353,17 +347,6 @@ public class Stock extends javax.swing.JFrame {
         });
         getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 360, 170, 30));
 
-        jButtonRecentlyAdded.setBackground(new java.awt.Color(0, 51, 153));
-        jButtonRecentlyAdded.setFont(new java.awt.Font("Titillium Web", 1, 14)); // NOI18N
-        jButtonRecentlyAdded.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonRecentlyAdded.setText("RECENTLY ADDED");
-        jButtonRecentlyAdded.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonRecentlyAddedActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButtonRecentlyAdded, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 400, 170, 30));
-
         btnExpenses.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/Expenses.png"))); // NOI18N
         btnExpenses.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -380,8 +363,33 @@ public class Stock extends javax.swing.JFrame {
         });
         getContentPane().add(btnExpenses, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 400, 138, 23));
 
-        jComboBoxSelectAction.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        getContentPane().add(jComboBoxSelectAction, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 510, 220, -1));
+        txtProductID.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtProductIDFocusGained(evt);
+            }
+        });
+        txtProductID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtProductIDActionPerformed(evt);
+            }
+        });
+        getContentPane().add(txtProductID, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 370, 220, 23));
+
+        jPasswordField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jPasswordFieldFocusGained(evt);
+            }
+        });
+        jPasswordField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPasswordFieldActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jPasswordField, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 510, 220, -1));
+
+        JlabelWrong.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/cross-mark.png"))); // NOI18N
+        getContentPane().add(JlabelWrong, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 510, -1, 20));
+        JlabelWrong.setVisible(false);
 
         Background.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
         Background.setText(" ");
@@ -393,12 +401,16 @@ public class Stock extends javax.swing.JFrame {
     private void lblHomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHomeMouseClicked
         // TODO add your handling code here:
         
-        Dashboard page = new Dashboard();
+        Sell page = Sell.getRef();
+        page.setFlagTime();
+        page.setTime();
+        this.setFlagTime();
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_lblHomeMouseClicked
 
     private void lblAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAdminMouseClicked
         // TODO add your handling code here:
+        Functions.logoutLog();
         LoginPage page = LoginPage.getRef();
         page.clearField();
         RakibsTraders.changeFrame(this, page);
@@ -488,13 +500,53 @@ public class Stock extends javax.swing.JFrame {
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_btnReturnProductsActionPerformed
 
-    private void txtProductIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProductIDActionPerformed
+    private void txtProductModelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProductModelActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtProductIDActionPerformed
+    }//GEN-LAST:event_txtProductModelActionPerformed
 
-    private void txtProductIDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtProductIDFocusGained
-       
-    }//GEN-LAST:event_txtProductIDFocusGained
+    private void txtProductModelFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtProductModelFocusGained
+       String productID = this.txtProductID.getText();
+        
+       Connection con = DBConnectionProvider.getDBConnection();
+       String query1 = "Select company_name, model, item_unit,selling_price FROM products WHERE products_id = ?";
+       String query2 = "Select * From stock WHERE products_id = ?";
+//     initComboModel(companyName);
+        try{
+            PreparedStatement pstmt1 = con.prepareStatement(query1);
+            //String productID = this.txtProductID.getText();
+//            System.err.println(productID);
+            pstmt1.setString(1,productID);
+            ResultSet rs1 = pstmt1.executeQuery();
+            
+            while( rs1.next()) {
+                this.jLabelCompanyNameValue.setText(rs1.getString("company_name"));
+                this.jLabelItemUnitValue.setText(rs1.getString("item_unit"));
+                this.txtProductModel.setText(rs1.getString("model"));
+                //this.jTextFieldItemSellPrice.setText(rs1.getString("selling_price"));
+            }
+            this.txtProductModel.setEditable(false);
+            
+        }catch( Exception ex){
+            System.out.println("Faild to get DBConn:: " + ex.getMessage());
+            NoConnection no = new NoConnection();
+            RakibsTraders.popUp(no);
+            
+        }
+        
+        try{
+            PreparedStatement pstmt2 = con.prepareStatement(query2);
+            //String productID = this.txtProductID.getText();
+            pstmt2.setString (1,productID);
+            ResultSet rs2 = pstmt2.executeQuery(); 
+            
+            while( rs2.next() ){
+                this.jTextFieldAvailableQTYValue.setText(Integer.toString(rs2.getInt("left")));
+            }
+            
+        }catch(Exception ex){
+            System.out.println("Failed to get DBConn:: "+ex.getMessage());
+        }
+    }//GEN-LAST:event_txtProductModelFocusGained
 
     private void btnProductsMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProductsMouseEntered
             // TODO add your handling code here:
@@ -535,18 +587,37 @@ public class Stock extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        char[] passArray = jPasswordField.getPassword();
+        String pass = String.valueOf(passArray);
+        if(pass.equals("admin") || pass.equals(LoginPage.getRef().userPass())){
+                updateStock();
+                setData();
+        }else{
+                this.JlabelWrong.setVisible(true);
+                this.jPasswordField.setText("");
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+        ProductsTable page = new ProductsTable();
+        page.setCaller(this);
+        RakibsTraders.bigPopUp(page);
+        this.setEnabled(false);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
+        setData();
+        clearField();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
+        StockAlert page = new StockAlert();
+        page.setCaller(this);
+        RakibsTraders.bigPopUp(page);
+        this.setEnabled(false);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void btnSellFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_btnSellFocusGained
@@ -565,11 +636,6 @@ public class Stock extends javax.swing.JFrame {
         this.setFlagTime();
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_btnSellActionPerformed
-
-    private void jButtonRecentlyAddedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRecentlyAddedActionPerformed
-        // TODO add your handling code here:
-      
-    }//GEN-LAST:event_jButtonRecentlyAddedActionPerformed
 
     private void btnExpensesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExpensesMouseEntered
         // Green:
@@ -599,6 +665,23 @@ public class Stock extends javax.swing.JFrame {
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_btnReportsActionPerformed
 
+    private void txtProductIDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtProductIDFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtProductIDFocusGained
+
+    private void txtProductIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProductIDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtProductIDActionPerformed
+
+    private void jPasswordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPasswordFieldActionPerformed
+
+    private void jPasswordFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPasswordFieldFocusGained
+        // TODO add your handling code here:
+        JlabelWrong.setVisible(false);
+    }//GEN-LAST:event_jPasswordFieldFocusGained
+
     
     /**
      * @param args the command line arguments
@@ -625,39 +708,7 @@ public class Stock extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Stock.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -668,6 +719,7 @@ public class Stock extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Background;
+    private javax.swing.JLabel JlabelWrong;
     private javax.swing.JButton btnBuy;
     private javax.swing.JButton btnExpenses;
     private javax.swing.JButton btnProducts;
@@ -680,39 +732,39 @@ public class Stock extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButtonRecentlyAdded;
-    private javax.swing.JComboBox<String> jComboBoxSelectAction;
     private javax.swing.JLabel jLabelCompanyNameValue;
     private javax.swing.JLabel jLabelItemUnitValue;
-    private javax.swing.JLabel jLabelProductModel;
-    private javax.swing.JLabel jLabelProductName;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPasswordField jPasswordField;
+    private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JTextField jTextFieldAvailableQTYValue;
     private javax.swing.JLabel lblAdmin;
     private javax.swing.JLabel lblAvailableQTY;
     private javax.swing.JLabel lblCompanyName1;
     private javax.swing.JLabel lblHome;
     private javax.swing.JLabel lblInvoiceIDValue;
-    private javax.swing.JLabel lblItemSelectAction;
     private javax.swing.JLabel lblItemUnit;
     private javax.swing.JLabel lblPageTitle;
+    private javax.swing.JLabel lblPassword;
     private javax.swing.JLabel lblProductID;
     private javax.swing.JLabel lblProductModel;
-    private javax.swing.JLabel lblProductName;
     private javax.swing.JLabel lblTime;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JTextField txtProductID;
+    private javax.swing.JTextField txtProductModel;
     // End of variables declaration//GEN-END:variables
 
     //custome variables declaration
      private ArrayList<String> productID = new ArrayList<>();
      private static Stock ref;
      private Integer flagTime = 0;
+     private JTable table = new JTable();
     //end custom varibles
+     
     
     public static Stock getRef(){
         if(ref==null)
             ref = new Stock();
+        ref.setData();
         return ref;
     }
      
@@ -737,8 +789,10 @@ public class Stock extends javax.swing.JFrame {
                     while(flagTime==1/* && new GregorianCalendar().get(Calendar.SECOND)!=fsec*/){
                         Calendar cal = new GregorianCalendar();
                         sec = cal.get(Calendar.SECOND);
-                        System.out.println(sec);
+                        //System.out.println(sec);
                         hour = cal.get(Calendar.HOUR);
+                        if(hour==0)
+                            hour=12;
                         min = cal.get(Calendar.MINUTE);
                         am_pm = cal.get(Calendar.AM_PM);
                         if(am_pm == 0){
@@ -769,31 +823,112 @@ public class Stock extends javax.swing.JFrame {
         Functions.setupAutoComplete(txtProductID, productID); 
     }
     
+  
+    // setting the table to the scrpane
+    private void setData(){
+        DefaultTableModel data = new DefaultTableModel(new String[]{"SL","Products ID", "Company Name", "Model", "Dimension", "Item Unit", "Available"}, 0);
+        Connection con = DBConnectionProvider.getDBConnection();
+        String query= "select * from products";
+        String query2 = "select * from stock where products_id = ?";
+        int rownum = 0;
+        try{
+            Statement stmt = con.createStatement();
+            PreparedStatement pstmt = con.prepareStatement(query2);
+            ResultSet rs= stmt.executeQuery(query);
+            if(rs.next()){
+                do{
+                    rownum++;
+                    String col1 = rs.getString("products_id");
+                    String col2 = rs.getString("company_name");
+                    String col3 = rs.getString("model");
+                    String col4 = rs.getString("dimension");
+                    String col5 = rs.getString("item_unit");
+                    pstmt.setString(1,col1);
+                    ResultSet rs2= pstmt.executeQuery();
+                    String col6="---";
+                    while(rs2.next()){
+                        col6 = Integer.toString(rs2.getInt("left"));
+                    }
+                    data.addRow(new Object[]{rownum,col1, col2, col3, col4, col5, col6});
+                }while(rs.next());
+                table.setModel(data);
+                rs.close();
+            }
+
+        }catch(Exception ex){
+            System.out.println("No database connection"+ex);
+            NoConnection no = new NoConnection();
+            RakibsTraders.popUp(no);
+        }
+        
+        jScrollPane.getViewport().add(table);
     
-//    private void clearField() {
-//         this.txtFieldCompanyName.setText("");
-//         this.txtFieldDimension.setText("");
-//         this.txtFieldModel.setText("");
-//         this.txtFieldItemUnit.setText("");
-//         this.txtFieldPcsPerBox.setText("");
-//         this.txtFieldPurchasePrice.setText("");
-//         this.txtFieldSellingPrice.setText("");
-//         this.txtAreanotes.setText("");
-//         initComboCompanyName();
-//    }
+    }
     
-//    private void initComboCompanyName(){
-//        companyName = Functions.companyName();
-//        Functions.setupAutoComplete(txtFieldCompanyName, companyName); 
-//    }
-//    
-//    private void initComboModel(String companyName){
-//        model = Functions.model(companyName);
-//        Functions.setupAutoComplete(txtFieldModel, model);
-//    }
-//    
-//    private void initComboDimension(String companyName, String model){
-//        dimension = Functions.dimension(companyName, model);
-//        Functions.setupAutoComplete(txtFieldDimension, dimension);
-//    }
+    private void updateStock(){
+        if(checkField()){
+            NoValue page = new NoValue();
+            RakibsTraders.popUp(page);
+        }else{
+            Connection con = DBConnectionProvider.getDBConnection();
+            String query = "UPDATE `stock` SET `left` = ? WHERE `stock`.`products_id` = ?";
+            try{
+                PreparedStatement pstmt = con.prepareStatement(query);
+                String product_ID = txtProductID.getText();
+                Double left = Double.parseDouble(jTextFieldAvailableQTYValue.getText());
+                pstmt.setDouble(1,left);
+                pstmt.setString(2,product_ID);
+                pstmt.executeUpdate();
+                clearField();
+                Updated up = new Updated();
+                RakibsTraders.popUp(up);
+            }catch(Exception ex){
+                System.out.println("Failed to get DBConn:: "+ex.getMessage());
+                NoConnection no = new NoConnection();
+                RakibsTraders.popUp(no);
+            }
+        }
+    }
+    
+    private boolean checkField(){
+        if(this.jLabelCompanyNameValue.getText().equals("") || this.txtProductModel.getText().equals("") ||  this.jLabelItemUnitValue.getText().equals(""))
+            return true;
+        else return false;
+    }
+    
+    private void clearField(){
+        txtProductID.setText("");
+        txtProductModel.setText("");
+        jLabelCompanyNameValue.setText("");
+        jLabelItemUnitValue.setText("");
+        jTextFieldAvailableQTYValue.setText("");
+        jPasswordField.setText("");
+        JlabelWrong.setVisible(false);
+    }
+    
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            Functions.logoutLog();
+            //dispose();
+            RakibsTraders.close();
+        }
+    }
+    
+    public void hideField(){
+        this.lblProductID.setVisible(false);
+        this.txtProductID.setVisible(false);
+        this.lblProductModel.setVisible(false);
+        this.txtProductModel.setVisible(false);
+        this.lblCompanyName1.setVisible(false);
+        this.jLabelCompanyNameValue.setVisible(false);
+        this.lblItemUnit.setVisible(false);
+        this.jLabelItemUnitValue.setVisible(false);
+        this.lblAvailableQTY.setVisible(false);
+        this.jTextFieldAvailableQTYValue.setVisible(false);
+        this.lblPassword.setVisible(false);
+        this.jPasswordField.setVisible(false);
+        this.JlabelWrong.setVisible(false);
+        this.jButton2.setVisible(false);
+    }
 }

@@ -1,6 +1,10 @@
 package UI.PopUp;
 
 import Others.Functions;
+import UI.Sell;
+import java.awt.Color;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 /**
@@ -15,6 +19,7 @@ public class Calculate extends javax.swing.JFrame {
     public Calculate() {
         initComponents();
         setIcon();
+        initComboProductID();
     }
 
     /**
@@ -26,13 +31,14 @@ public class Calculate extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        txtFieldTimeanddate2 = new javax.swing.JTextField();
+        txtFieldPcs = new javax.swing.JTextField();
+        jTextFieldProductId = new javax.swing.JTextField();
         lblTimeanddate2 = new javax.swing.JLabel();
         lblTimeanddate5 = new javax.swing.JLabel();
-        txtFieldTimeanddate3 = new javax.swing.JTextField();
+        txtFieldBox = new javax.swing.JTextField();
         jButtonAddPayment = new javax.swing.JButton();
         lblPaymentType = new javax.swing.JLabel();
-        txtFieldTimeanddate4 = new javax.swing.JTextField();
+        txtFieldFeet = new javax.swing.JTextField();
         jLabelBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -40,7 +46,29 @@ public class Calculate extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(500, 300));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-        getContentPane().add(txtFieldTimeanddate2, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 140, 180, 23));
+
+        txtFieldPcs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFieldPcsActionPerformed(evt);
+            }
+        });
+        getContentPane().add(txtFieldPcs, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 140, 180, 23));
+
+        jTextFieldProductId.setText("Product ID");
+        jTextFieldProductId.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextFieldProductIdFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextFieldProductIdFocusLost(evt);
+            }
+        });
+        jTextFieldProductId.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldProductIdActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jTextFieldProductId, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 20, 180, -1));
 
         lblTimeanddate2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblTimeanddate2.setForeground(new java.awt.Color(255, 255, 255));
@@ -51,7 +79,13 @@ public class Calculate extends javax.swing.JFrame {
         lblTimeanddate5.setForeground(new java.awt.Color(255, 255, 255));
         lblTimeanddate5.setText("Feet");
         getContentPane().add(lblTimeanddate5, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 60, 40, 23));
-        getContentPane().add(txtFieldTimeanddate3, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, 180, 23));
+
+        txtFieldBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFieldBoxActionPerformed(evt);
+            }
+        });
+        getContentPane().add(txtFieldBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 110, 180, 23));
 
         jButtonAddPayment.setBackground(new java.awt.Color(0, 51, 153));
         jButtonAddPayment.setFont(new java.awt.Font("Titillium Web", 1, 12)); // NOI18N
@@ -68,7 +102,13 @@ public class Calculate extends javax.swing.JFrame {
         lblPaymentType.setForeground(new java.awt.Color(255, 255, 255));
         lblPaymentType.setText("Box");
         getContentPane().add(lblPaymentType, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 110, 60, 23));
-        getContentPane().add(txtFieldTimeanddate4, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 60, 180, 23));
+
+        txtFieldFeet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFieldFeetActionPerformed(evt);
+            }
+        });
+        getContentPane().add(txtFieldFeet, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 60, 180, 23));
 
         jLabelBackground.setForeground(new java.awt.Color(255, 255, 255));
         jLabelBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/Icons/background.png"))); // NOI18N
@@ -79,7 +119,49 @@ public class Calculate extends javax.swing.JFrame {
 
     private void jButtonAddPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAddPaymentActionPerformed
         // TODO add your handling code here:
+        if(txtFieldFeet.getText().equals("")){
+           Functions.boxAndPcsToFeet(jTextFieldProductId,txtFieldBox,txtFieldPcs,txtFieldFeet);
+        } else {
+            Functions.feetToBoxAndPcs(jTextFieldProductId,txtFieldBox,txtFieldPcs,txtFieldFeet);
+        }
     }//GEN-LAST:event_jButtonAddPaymentActionPerformed
+
+    private void txtFieldFeetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldFeetActionPerformed
+        // TODO add your handling code here:
+        Functions.feetToBoxAndPcs(jTextFieldProductId,txtFieldBox,txtFieldPcs,txtFieldFeet);
+    }//GEN-LAST:event_txtFieldFeetActionPerformed
+
+    private void jTextFieldProductIdFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldProductIdFocusGained
+        // TODO add your handling code here:
+         if(jTextFieldProductId.getText().equals("Product ID")){
+                   jTextFieldProductId.setText("");
+           }
+           this.jTextFieldProductId.setForeground(Color.BLACK);
+    }//GEN-LAST:event_jTextFieldProductIdFocusGained
+
+    private void jTextFieldProductIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldProductIdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldProductIdActionPerformed
+
+    private void jTextFieldProductIdFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextFieldProductIdFocusLost
+        // TODO add your handling code here:
+        if (jTextFieldProductId.getText().isEmpty()) {
+                jTextFieldProductId.setForeground(new Color(204,204,204));
+                jTextFieldProductId.setText("Product ID");
+            }
+    }//GEN-LAST:event_jTextFieldProductIdFocusLost
+
+    private void txtFieldBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldBoxActionPerformed
+        // TODO add your handling code here:
+        Functions.boxAndPcsToBoxAndPcs(jTextFieldProductId,txtFieldBox,txtFieldPcs);
+        Functions.boxAndPcsToFeet(jTextFieldProductId,txtFieldBox,txtFieldPcs,txtFieldFeet);
+    }//GEN-LAST:event_txtFieldBoxActionPerformed
+
+    private void txtFieldPcsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldPcsActionPerformed
+        // TODO add your handling code here:
+        Functions.boxAndPcsToBoxAndPcs(jTextFieldProductId,txtFieldBox,txtFieldPcs);
+        Functions.boxAndPcsToFeet(jTextFieldProductId,txtFieldBox,txtFieldPcs,txtFieldFeet);
+    }//GEN-LAST:event_txtFieldPcsActionPerformed
 
     /**
      * @param args the command line arguments
@@ -122,29 +204,36 @@ public class Calculate extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAddPayment;
     private javax.swing.JLabel jLabelBackground;
+    private javax.swing.JTextField jTextFieldProductId;
     private javax.swing.JLabel lblPaymentType;
     private javax.swing.JLabel lblTimeanddate2;
     private javax.swing.JLabel lblTimeanddate5;
-    private javax.swing.JTextField txtFieldTimeanddate2;
-    private javax.swing.JTextField txtFieldTimeanddate3;
-    private javax.swing.JTextField txtFieldTimeanddate4;
+    private javax.swing.JTextField txtFieldBox;
+    private javax.swing.JTextField txtFieldFeet;
+    private javax.swing.JTextField txtFieldPcs;
     // End of variables declaration//GEN-END:variables
     
     //custom variable
-    private String productID;
-    private String companyName;
-    private String model;
-    private String dimension;
+    private ArrayList<String> productID = new ArrayList<>();
     //end of custom variable
     
     private void setIcon(){
         this.setIconImage(new ImageIcon(getClass().getResource("/Resources/Icons/Icon.png")).getImage());
     }
     
-    public void setValue(String productID, String companyName, String model, String dimension){
-        this.productID = companyName;
-        this.companyName = companyName;
-        this.model = model;
-        this.dimension = dimension;
+    
+    private void initComboProductID(){
+        productID = Functions.productID();
+        Functions.setupAutoComplete(jTextFieldProductId, productID); 
     }
+    
+   @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            Sell page = Sell.getRef();
+            page.setEnabled(true);
+            dispose();
+        }
+    }
+    
 }

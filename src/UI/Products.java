@@ -5,11 +5,12 @@ import Database.DBConnectionProvider;
 import Others.Functions;
 import UI.BigPopUp.ProductsTable;
 import UI.BigPopUp.ViewStock;
-import UI.PopUp.Delete;
+import UI.PopUp.DeleteProducts;
 import UI.PopUp.NoConnection;
 import UI.PopUp.NoValue;
 import UI.PopUp.Save;
 import UI.PopUp.Updated;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,11 +18,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.awt.*;
 import static java.lang.Thread.sleep;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import javax.annotation.Resources.*;
 import javax.swing.ImageIcon;
 import rakibs.traders.RakibsTraders;
 
@@ -342,6 +341,20 @@ public class Products extends javax.swing.JFrame {
             }
         });
         getContentPane().add(txtFieldPcsPerBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(329, 278, 588, -1));
+
+        txtFieldItemUnit.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtFieldItemUnitFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtFieldItemUnitFocusLost(evt);
+            }
+        });
+        txtFieldItemUnit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFieldItemUnitActionPerformed(evt);
+            }
+        });
         getContentPane().add(txtFieldItemUnit, new org.netbeans.lib.awtextra.AbsoluteConstraints(329, 312, 588, -1));
         getContentPane().add(txtFieldPurchasePrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(329, 346, 588, -1));
         getContentPane().add(txtFieldSellingPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(329, 380, 588, -1));
@@ -411,12 +424,16 @@ public class Products extends javax.swing.JFrame {
     private void lblHomeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblHomeMouseClicked
         // TODO add your handling code here:
         
-        Dashboard page = new Dashboard();
+        Sell page = Sell.getRef();
+        page.setFlagTime();
+        page.setTime();
+        this.setFlagTime();
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_lblHomeMouseClicked
 
     private void lblAdminMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAdminMouseClicked
         // TODO add your handling code here:
+        Functions.logoutLog();
         LoginPage page = LoginPage.getRef();
         page.clearField();
         RakibsTraders.changeFrame(this, page);
@@ -493,7 +510,9 @@ public class Products extends javax.swing.JFrame {
     private void btnViewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewProductActionPerformed
         // TODO add your handling code here:
         ProductsTable products = new ProductsTable();
+        products.setCaller(this);
         RakibsTraders.bigPopUp(products);
+        this.setEnabled(false);
     }//GEN-LAST:event_btnViewProductActionPerformed
 
     private void btnRefrashActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefrashActionPerformed
@@ -531,7 +550,9 @@ public class Products extends javax.swing.JFrame {
         // TODO add your handling code here:
         if(checkField()){
             NoValue page = new NoValue();
+            page.setCaller(this);
             RakibsTraders.popUp(page);
+            this.setEnabled(false);
         }else if(txtFieldProductID.getText().equals("")){
             Connection con = DBConnectionProvider.getDBConnection();
             String query = "INSERT INTO `products` (`products_id`, `company_name`, `model`, `dimension`, `pcs_per_box`, `item_unit`, `purchase_price`, `selling_price`, `notes`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -586,9 +607,10 @@ public class Products extends javax.swing.JFrame {
             RakibsTraders.popUp(page);
         }else{
             Connection con = DBConnectionProvider.getDBConnection();
-            String query = "UPDATE products SET pcs_per_box = ?,item_unit = ?,purchase_price = ?,selling_price = ?,notes = ?  WHERE company_name = ? and model = ? and dimension = ?";
+            String query = "UPDATE products SET company_name = ?, model = ?, dimension = ?, pcs_per_box = ?,item_unit = ?,purchase_price = ?,selling_price = ?,notes = ?  WHERE  products_id = ?";
             try{
                 PreparedStatement pstmt = con.prepareStatement(query);
+                String product_ID = txtFieldProductID.getText();
                 String companyName = this.txtFieldCompanyName.getText();
                 String model = this.txtFieldModel.getText();
                 String dimension = this.txtFieldDimension.getText();
@@ -597,14 +619,15 @@ public class Products extends javax.swing.JFrame {
                 Double purchasePrice = Double.parseDouble(this.txtFieldPurchasePrice.getText());
                 Double sellingPrice = Double.parseDouble(this.txtFieldSellingPrice.getText());
                 String notes = this.txtAreanotes.getText();
-                pstmt.setInt(1,pcsPerbox);
-                pstmt.setString(2,itemUnit);
-                pstmt.setDouble(3,purchasePrice);
-                pstmt.setDouble(4,sellingPrice);
-                pstmt.setString(5,notes);
-                pstmt.setString(6,companyName);
-                pstmt.setString(7,model);
-                pstmt.setString(8,dimension);
+                pstmt.setString(1,companyName);
+                pstmt.setString(2,model);
+                pstmt.setString(3,dimension);
+                pstmt.setInt(4,pcsPerbox);
+                pstmt.setString(5,itemUnit);
+                pstmt.setDouble(6,purchasePrice);
+                pstmt.setDouble(7,sellingPrice);
+                pstmt.setString(8,notes);
+                pstmt.setString(9,product_ID);
                 pstmt.executeUpdate();
                 clearField();
                 Updated up = new Updated();
@@ -623,10 +646,12 @@ public class Products extends javax.swing.JFrame {
         String productID = this.txtFieldProductID.getText();
         String model = this.txtFieldModel.getText();
         String dimension = this.txtFieldDimension.getText();
-        Delete dlt = new Delete();
+        DeleteProducts dlt = new DeleteProducts();
+        dlt.setValue(productID);
+        dlt.setCaller(this);
         RakibsTraders.popUp(dlt);
-        dlt.setValue(productID, companyName, model, dimension);
         clearField();
+        this.setEnabled(false);
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void txtFieldDimensionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldDimensionActionPerformed
@@ -725,7 +750,9 @@ public class Products extends javax.swing.JFrame {
     private void btnViewStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewStockActionPerformed
         // TODO add your handling code here:
         ViewStock page = new ViewStock();
+        page.setCaller(this);
         RakibsTraders.bigPopUp(page);
+        this.setEnabled(false);
         
     }//GEN-LAST:event_btnViewStockActionPerformed
 
@@ -778,6 +805,20 @@ public class Products extends javax.swing.JFrame {
         this.setFlagTime();
         RakibsTraders.changeFrame(this, page);
     }//GEN-LAST:event_btnReportsActionPerformed
+
+    private void txtFieldItemUnitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFieldItemUnitActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFieldItemUnitActionPerformed
+
+    private void txtFieldItemUnitFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldItemUnitFocusGained
+        // TODO add your handling code here:
+        if(txtFieldProductID.getText().equals(""))
+            initComboItemUnit();
+    }//GEN-LAST:event_txtFieldItemUnitFocusGained
+
+    private void txtFieldItemUnitFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtFieldItemUnitFocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFieldItemUnitFocusLost
 
     
     /**
@@ -911,8 +952,10 @@ public class Products extends javax.swing.JFrame {
                     while(flagTime==1/* && new GregorianCalendar().get(Calendar.SECOND)!=fsec*/){
                         Calendar cal = new GregorianCalendar();
                         sec = cal.get(Calendar.SECOND);
-                        System.out.println(sec);
+                        //System.out.println(sec);
                         hour = cal.get(Calendar.HOUR);
+                        if(hour==0)
+                            hour=12;
                         min = cal.get(Calendar.MINUTE);
                         am_pm = cal.get(Calendar.AM_PM);
                         if(am_pm == 0){
@@ -954,6 +997,7 @@ public class Products extends javax.swing.JFrame {
         Functions.setupAutoComplete(txtFieldDimension, dimension);
     }
     
+    
     private void initComboItemUnit(){
         itemUnit.add("Box");
         itemUnit.add("Pcs");
@@ -967,4 +1011,12 @@ public class Products extends javax.swing.JFrame {
         else return false;
     }
     
+    @Override
+    public void processWindowEvent(WindowEvent e) {
+        if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+            Functions.logoutLog();
+            //dispose();
+            RakibsTraders.close();
+        }
+    }
 }
